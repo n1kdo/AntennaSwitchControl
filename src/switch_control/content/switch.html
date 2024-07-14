@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" lang="en">
+<!-- Copyright 2024, J. B. Otterson N1KDO. -->
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, minimum-scale=0.5, maximum-scale=2.0">
+    <title>Weather Gauges</title>
+</head>
+<style>
+    .author {
+        font-size: 8pt;
+        font-weight: bold;
+        margin-right: 2px;
+        text-align: right;
+    }
+    .author a:link, .author a:visited, .author a:hover {
+        color: black;
+        text-decoration: none;
+    }
+    body {
+        background-color: #ddd;
+        font-family: sans-serif;
+        margin: 0;
+        min-height: 400px;
+        min-width: 800px;
+    }
+    .column {
+        float: left;
+        min-width: 250px;
+        width: 33.33%
+    }
+    .header {
+        text-align: center;
+        font-size: 24pt;
+        font-weight: bold;
+        border-bottom: 24px;
+    }
+    /* ensures the increment/decrement arrows always display */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        opacity: 1;
+    }
+    .readout-header {
+        font-weight: bold;
+        margin: 5px 0 0 0;
+        text-align: center;
+    }
+    .readout-chart {
+        margin: 0 0;
+        text-align: center;
+    }
+    .reload {
+        border: 1px solid black;
+        font-size: 12px;
+        text-align: center;
+    }
+    .trend-chart {
+        background-color: #ddf;
+    }
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    .setup {
+        font-size: 8pt;
+        font-weight: bold;
+        color: black;
+        text-align: left;
+    }
+    .setup a:link, .setup a:visited, .setup a:hover {
+        color: blue;
+        text-decoration: none;
+    }
+    .timestamp {
+        margin: 0;
+        font-size: 12pt;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+<!--suppress JSUnusedLocalSymbols -->
+<script>
+    let last_temperature = 0;
+    let last_humidity = 0;
+    let last_pressure = 0;
+    let timestamp = "";
+
+    let update_secs = 60;
+    let update_timeout = 0;
+
+    function page_load() {
+        // load data from the backend.
+        get_status();
+    }
+
+    function draw_graph(cvs, trend_data, current, markers, labels) {
+        let ctx = cvs.getContext("2d");
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = "black";
+        ctx.strokeStyle = "#99b";
+        for (const [index, marker] of markers.entries()) {
+            let y = 255 - marker;
+            ctx.beginPath();
+            ctx.moveTo(20, y);
+            ctx.lineTo(260, y);
+            ctx.stroke();
+            ctx.font = "normal normal bold 8px monospace";
+            ctx.fillText(labels[index], 0, y + 1);
+        }
+        ctx.fillStyle = "rgb(0, 0, 255)";
+        let ct = "" + current;
+        let x = 120 - 10 * ct.length;
+        let y = 40;
+        ctx.font = "normal normal bold 48px monospace";
+        ctx.fillText(ct, x, y);
+        ctx.strokeStyle = "Red";
+        let data = trend_data.split(" ");
+        ctx.beginPath();
+        x = 20
+        y = 0;
+        let set_start = -1;
+        for (let d of data) {
+            let v = parseInt(d, 16);
+            if (v !== 255) {
+                y = 255 - v;
+                if (set_start === -1) {
+                    ctx.moveTo(x, y);
+                    set_start = x;
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            x++;
+        }
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+
+    function process_get_status_response(message) {
+        let status_data = JSON.parse(message);
+        timestamp = status_data.timestamp;
+        last_temperature = status_data.last_temperature;
+        last_humidity = status_data.last_humidity;
+        last_pressure = status_data.last_pressure;
+
+        document.getElementById("t-header").innerText = "Temperature " + last_temperature + "\xb0F";
+        document.getElementById("h-header").innerText = "" + last_humidity + "% Humidity";
+        document.getElementById("p-header").innerText = "Barometric Pressure " + last_pressure + "\" Hg.";
+
+        let t_trend = status_data.t_trend;
+        let h_trend = status_data.h_trend;
+        let p_trend = status_data.p_trend;
+
+        let cvs = document.getElementById("t_trend");
+        let markers = [3, 20, 36, 53, 70, 86, 103, 120, 136, 153, 170, 186, 203, 220, 236];
+        let labels = [' -20', ' -10', '   0', '  10', '  20', '  30', '  40', '  50', '  60', '  70', '  80', '  90', ' 100', ' 110', ' 120'];
+
+        draw_graph(cvs, t_trend, last_temperature, markers, labels);
+
+        cvs = document.getElementById("h_trend");
+        markers = [63, 127, 191];  // markers at 25, 50,75%
+        labels = [" 25%", " 50%", " 75%"];
+        let current = "" + last_humidity + "%";
+        draw_graph(cvs, h_trend, current, markers, labels);
+
+        cvs = document.getElementById("p_trend");
+        markers = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240];
+        labels  = [" 950", " 960", " 970", " 980", " 990", "1000", "1010", "1020", "1030", "1040", "1050", "1060", "1070"];
+        draw_graph(cvs, p_trend, last_pressure, markers, labels);
+
+        document.getElementById("timestamp").innerHTML = timestamp;
+        document.getElementById('refresh_radio_0').checked = (update_secs === 0);
+        document.getElementById('refresh_radio_1').checked = (update_secs === 1);
+        document.getElementById('refresh_radio_5').checked = (update_secs === 5);
+        document.getElementById('refresh_radio_60').checked = (update_secs === 60);
+
+        if (update_timeout !== 0) {
+            clearTimeout(update_timeout)
+            update_timeout = 0;
+        }
+
+        if (update_secs > 0) {
+            update_timeout = setTimeout(get_status, update_secs * 1000);
+        }
+    }
+
+    function get_status() {
+        let xmlHttp = new XMLHttpRequest();
+        if (xmlHttp == null) {
+            alert("get a better browser!");
+            return;
+        }
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState === 4) {
+                if (xmlHttp.status === 200) {
+                    process_get_status_response(xmlHttp.responseText);
+                }
+                else
+                {
+                    if (xmlHttp.status === 0) {
+                        alert("No response from device.");
+                    } else {
+                        alert("Got HTTP status " + xmlHttp.status + " from device.");
+                    }
+                }
+            }
+        }
+        xmlHttp.open("GET", "/api/status", true);
+        xmlHttp.send();
+    }
+
+    function set_refresh(secs) {
+        update_secs = secs
+        if (update_secs === 0) {
+            if (update_timeout !== 0) {
+                clearTimeout(update_timeout)
+                update_timeout = 0;
+            }
+        } else {
+            get_status();
+        }
+    }
+</script>
+<body onload="page_load()">
+<div class="header">Weather Gauges</div>
+<div class="timestamp"><p class="timestamp" id="timestamp">Unknown Time</p></div>
+<div class="row">
+    <div class="column">
+        <p class="readout-header" id="t-header">Temperature ?&deg;F</p>
+        <p class="readout-chart"><canvas class="trend-chart"  width="260" height="256" id="t_trend"></canvas></p>
+        <div class="setup"><a href="setup.html">Setup</a></div>
+    </div>
+    <div class="column">
+        <p class="readout-header" id="h-header">?% Humidity</p>
+        <p class="readout-chart"><canvas class="trend-chart" width="260" height="256" id="h_trend"></canvas></p>
+        <div class="reload">Refresh&nbsp;
+            <input type="radio" name="refresh_radio" id="refresh_radio_0" value="0" onclick="set_refresh(0)"/>
+            <label for="refresh_radio_0">Never</label>&nbsp;
+            <input type="radio" name="refresh_radio" id="refresh_radio_1" value="1" onclick="set_refresh(1)"/>
+            <label for="refresh_radio_1">1s</label>&nbsp;
+            <input type="radio" name="refresh_radio" id="refresh_radio_5" value="5" onclick="set_refresh(5)"/>
+            <label for="refresh_radio_5">5s</label>&nbsp;
+            <input type="radio" name="refresh_radio" id="refresh_radio_60" value="60" onclick="set_refresh(60)"/>
+            <label for="refresh_radio_60">60s</label>
+        </div>
+    </div>
+    <div class="column">
+        <p class="readout-header" id="p-header">Barometric Pressure ?&quot; Hg.</p>
+        <p class="readout-chart"><canvas class="trend-chart" width="260" height="256" id="p_trend"></canvas></p>
+        <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240204</div>
+    </div>
+</div>
+</body>
+</html>
