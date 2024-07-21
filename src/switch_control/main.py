@@ -50,6 +50,7 @@ else:
     import logging
     from not_machine import machine
 
+BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 blinky = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
 button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO1 / pin 2
@@ -66,7 +67,7 @@ DEFAULT_WEB_PORT = 80
 restart = False
 port = None
 http_server = HttpServer(content_dir=CONTENT_DIR)
-morse_code_sender = MorseCode(onboard)
+morse_code_sender = MorseCode(blinky)
 
 
 def read_config():
@@ -82,6 +83,24 @@ def read_config():
 def save_config(config):
     with open(CONFIG_FILE, 'w') as config_file:
         json.dump(config, config_file)
+
+
+def default_config():
+    return {
+        'SSID': 'your_network_ssid',
+        'secret': 'your_network_password',
+        'tcp_port': '73',
+        'web_port': '80',
+        'ap_mode': False,
+        'dhcp': True,
+        'hostname': 'ant-switch',
+        'ip_address': '192.168.1.73',
+        'netmask': '255.255.255.0',
+        'gateway': '192.168.1.1',
+        'dns_server': '8.8.8.8',
+        'port_bands': [0, 0, 0, 0, 0, 0, 0, 0],
+        'port_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set']
+    }
 
 
 # noinspection PyUnusedLocal
@@ -241,6 +260,9 @@ async def serve_serial_client(reader, writer):
 async def main():
     global port, restart
     config = read_config()
+    if len(config) == 0:
+        # create default configuration
+        config = default_config()
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
     if tcp_port < 0 or tcp_port > 65535:
         tcp_port = DEFAULT_TCP_PORT

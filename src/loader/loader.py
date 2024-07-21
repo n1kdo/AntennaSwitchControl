@@ -32,7 +32,7 @@ from serial.tools.list_ports import comports
 from pyboard import Pyboard, PyboardError
 BAUD_RATE = 115200
 
-SRC_DIR = '../8x2/'
+SRC_DIR = '../switch_control/'
 FILES_LIST = [
     'content/',
     'data/',
@@ -42,7 +42,7 @@ FILES_LIST = [
     'morse_code.py',
     # do not need not_machine.py on real hardware
     'picow_network.py',
-    'relays.py'
+    'relays.py',
     'utils.py',
     'content/favicon.ico',
     'content/files.html',

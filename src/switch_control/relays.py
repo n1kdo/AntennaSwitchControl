@@ -32,11 +32,11 @@ b_pins = [
 def set_port_a(selected):
     for i in range(len(a_pins)):
         a_pins[i].off()
-    a_pins[selected+1].on()
+    a_pins[selected-1].on()
 
 
 def set_port_b(selected):
     for i in range(len(b_pins)):
         b_pins[i].off()
-    b_pins[selected+1].on()
+    b_pins[selected-1].on()
 
