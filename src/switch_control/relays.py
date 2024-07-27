@@ -29,6 +29,18 @@ b_pins = [
 ]
 
 
+def set_port(radio: int, port_selected: int):
+    pins = None
+    if radio == 1:
+        pins = a_pins
+    elif radio == 2:
+        pins = b_pins
+    if pins is not None:
+        for i in range(len(pins)):
+            pins[i].off()
+        pins[port_selected - 1].on()
+
+
 def set_port_a(selected):
     for i in range(len(a_pins)):
         a_pins[i].off()

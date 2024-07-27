@@ -39,7 +39,7 @@ from http_server import (HttpServer,
 from morse_code import MorseCode
 from picow_network import connect_to_network
 from utils import milliseconds, upython, safe_int
-from relays import set_port_a, set_port_b
+from relays import set_port, set_port_a, set_port_b
 
 if upython:
     import machine
@@ -58,6 +58,8 @@ button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button inpu
 CONFIG_FILE = 'data/config.json'
 CONTENT_DIR = 'content/'
 
+PORT_SETTINGS_FILE = 'data/port_settings.txt'
+
 DEFAULT_SECRET = 'antenna'
 DEFAULT_SSID = 'switch'
 DEFAULT_TCP_PORT = 73
@@ -65,9 +67,33 @@ DEFAULT_WEB_PORT = 80
 
 # globals...
 restart = False
-port = None
+antennas_selected = [1, 2]
 http_server = HttpServer(content_dir=CONTENT_DIR)
 morse_code_sender = MorseCode(blinky)
+
+
+def read_antennas_selected() -> []:
+    result = [1, 2]
+    try:
+        with open(PORT_SETTINGS_FILE, 'r') as port_settings_file:
+            result[0] = safe_int(port_settings_file.readline())
+            result[1] = safe_int(port_settings_file.readline())
+    except FileNotFoundError:
+        logging.warning(f'failed to load selected antenna data, returning defaults.', 'main:read_port_selected()')
+    except Exception as ex:
+        logging.error(f'failed to load selected antenna data: {type(ex)}, {ex}', 'main:read_port_selected()')
+    return result
+
+
+def write_antennas_selected(antennas_selected):
+    try:
+        with open(PORT_SETTINGS_FILE, 'w') as port_settings_file:
+            port_settings_file.write(f'{antennas_selected[0]}\n')
+            port_settings_file.write(f'{antennas_selected[1]}\n')
+    except Exception as ex:
+        logging.error(f'failed to write selected antenna data: {type(ex)}, {ex}',
+                      'main:write_antennas_selected()')
+    return
 
 
 def read_config():
@@ -99,7 +125,8 @@ def default_config():
         'gateway': '192.168.1.1',
         'dns_server': '8.8.8.8',
         'port_bands': [0, 0, 0, 0, 0, 0, 0, 0],
-        'port_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set']
+        'port_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set'],
+        'radio_names': ['Radio 1', 'Radio 2']
     }
 
 
@@ -178,6 +205,27 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if dns_server is not None:
             config['dns_server'] = dns_server
             dirty = True
+        antenna_bands = args.get('antenna_bands')
+        if antenna_bands is not None:
+            if len(antenna_bands) == 8:
+                config['antenna_bands'] = antenna_bands
+                dirty = True
+            else:
+                errors = True
+        antenna_names = args.get('antenna_names')
+        if antenna_names is not None:
+            if len(antenna_names) == 8:
+                config['antenna_names'] = antenna_names
+                dirty = True
+            else:
+                errors = True
+        radio_names = args.get('radio_names')
+        if radio_names is not None:
+            if len(radio_names) == 2:
+                config['radio_names'] = radio_names
+                dirty = True
+            else:
+                errors = True
         if not errors:
             if dirty:
                 save_config(config)
@@ -188,7 +236,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             response = b'parameter out of range\r\n'
             http_status = 400
             bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
-
     else:
         response = b'GET or PUT only.'
         http_status = 400
@@ -212,12 +259,32 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
 
 
 async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/kpa_status'
-    payload = {'stuff': 'stuff'
-               }
-
+    payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
     response = json.dumps(payload).encode('utf-8')
     http_status = 200
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
+    return bytes_sent, http_status
+
+
+async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
+    global antennas_selected
+    radio = safe_int(args.get('radio', '0'))
+    antenna_requested = safe_int(args.get('antenna_requested', '0'))
+    if 1 <= radio <= 2 and 1 <= antenna_requested <= 8:
+        other_radio = 2 if radio == 1 else 1
+        if antenna_requested == antennas_selected[other_radio]:
+            http_status = 409
+            response = b'antenna in use\r\n'
+        else:
+            antennas_selected[radio - 1] = antenna_requested
+            set_port(radio, antenna_requested)
+            write_antennas_selected(antennas_selected)
+            http_status = 200
+            response = b'ok\r\n'
+    else:
+        response = b'bad radio or antenna_requested parameter\r\n'
+        http_status = 400
+    bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
 
 
@@ -238,9 +305,8 @@ async def serve_serial_client(reader, writer):
             else:
                 if len(data) == 1:
                     b = data[0]
-                    if b == 10:  # line feed, get temperature
-                        payload = {'stuff': 'stuff'
-                                   }
+                    if b == 10:  # line feed, get status
+                        payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
                         response = (json.dumps(payload) + '\n').encode('utf-8')
                         writer.write(response)
                     elif b == 4 or b == 26 or b == 81 or b == 113:  # ^D/^z/q/Q exit
@@ -258,7 +324,8 @@ async def serve_serial_client(reader, writer):
 
 
 async def main():
-    global port, restart
+    global antennas_selected
+    antennas_selected = read_antennas_selected()
     config = read_config()
     if len(config) == 0:
         # create default configuration
@@ -291,6 +358,7 @@ async def main():
         http_server.add_uri_callback('/api/rename_file', api_rename_file_callback)
         http_server.add_uri_callback('/api/restart', api_restart_callback)
         http_server.add_uri_callback('/api/status', api_status_callback)
+        http_server.add_uri_callback('/api/select_port', api_select_antenna_callback)
 
         logging.info(f'Starting web service on port {web_port}', 'main:main')
         web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
