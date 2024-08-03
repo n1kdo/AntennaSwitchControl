@@ -44,9 +44,11 @@ FILES_LIST = [
     'picow_network.py',
     'relays.py',
     'utils.py',
+    'content/antennas.html',
     'content/favicon.ico',
     'content/files.html',
-    'content/setup.html',
+    'content/network.html',
+    'content/radios.html',
     'content/switch.html',
 ]
 SPECIAL_FILES = ['data/config.json']

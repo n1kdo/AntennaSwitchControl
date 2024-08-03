@@ -40,17 +40,34 @@ from morse_code import MorseCode
 from picow_network import connect_to_network
 from utils import milliseconds, upython, safe_int
 from relays import set_port, set_port_a, set_port_b
+import micro_logging as logging
 
 if upython:
     import machine
     import uasyncio as asyncio
-    import micro_logging as logging
 else:
     import asyncio
-    import logging
     from not_machine import machine
 
 BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
+# port_bands is a BITMASK, 16 bits wide.
+BAND_160M_MASK = 0x0001
+BAND_80M_MASK = 0x0002
+BAND_60M_MASK = 0x0004
+BAND_40M_MASK = 0x0008
+BAND_30M_MASK = 0x0010
+BAND_20M_MASK = 0x0020
+BAND_17M_MASK = 0x0040
+BAND_15M_MASK = 0x0080
+BAND_12M_MASK = 0x0100
+BAND_10M_MASK = 0x0200
+BAND_6M_MASK = 0x0400
+BAND_2M_MASK = 0x0800
+BAND_70CM_MASK = 0x1000
+BAND_OTHER1_MASK = 0x2000  # not used
+BAND_OTHER2_MASK = 0x4000  # not used
+BAND_OTHER3_MASK = 0x8000  # not used
+
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 blinky = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
 button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO1 / pin 2
@@ -68,6 +85,7 @@ DEFAULT_WEB_PORT = 80
 # globals...
 restart = False
 antennas_selected = [1, 2]
+config = {}
 http_server = HttpServer(content_dir=CONTENT_DIR)
 morse_code_sender = MorseCode(blinky)
 
@@ -97,7 +115,7 @@ def write_antennas_selected(antennas_selected):
 
 
 def read_config():
-    config = {}
+    global config
     try:
         with open(CONFIG_FILE, 'r') as config_file:
             config = json.load(config_file)
@@ -139,6 +157,7 @@ async def slash_callback(http, verb, args, reader, writer, request_headers=None)
 
 # noinspection PyUnusedLocal
 async def api_config_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/api/config'
+    global config
     if verb == 'GET':
         payload = read_config()
         # payload.pop('secret')  # do not return the secret
@@ -259,7 +278,10 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
 
 
 async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/kpa_status'
-    payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
+    payload = {'radio_1_antenna': antennas_selected[0],
+               'radio_2_antenna': antennas_selected[1],
+               'radio_names': config['radio_names'],
+               'antenna_names': config['antenna_names']}
     response = json.dumps(payload).encode('utf-8')
     http_status = 200
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
@@ -324,7 +346,7 @@ async def serve_serial_client(reader, writer):
 
 
 async def main():
-    global antennas_selected
+    global antennas_selected, config
     antennas_selected = read_antennas_selected()
     config = read_config()
     if len(config) == 0:
@@ -377,7 +399,6 @@ async def main():
     else:
         last_pressed = False
 
-    count = 0
     while True:
         if upython:
             await asyncio.sleep(0.25)
@@ -392,13 +413,6 @@ async def main():
 
             if restart:
                 machine.soft_reset()
-
-            count += 1
-            set_port_a(count)
-            set_port_b(count)
-            if count >= 8:
-                count = 0
-
         else:
             await asyncio.sleep(10.0)
 

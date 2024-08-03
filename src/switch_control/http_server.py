@@ -81,7 +81,7 @@ class HttpServer:
     MP_END_BOUND = 4
 
     DANGER_ZONE_FILE_NAMES = [
-        'config.html',
+        'network.html',
         'files.html',
     ]
 

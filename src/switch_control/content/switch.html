@@ -3,7 +3,7 @@
 <!-- Copyright 2024, J. B. Otterson N1KDO. -->
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=0.8, minimum-scale=0.5, maximum-scale=2.0">
-    <title>Weather Gauges</title>
+    <title>Antenna Switch Control</title>
 </head>
 <style>
     .author {
@@ -81,10 +81,8 @@
 </style>
 <!--suppress JSUnusedLocalSymbols -->
 <script>
-    let last_temperature = 0;
-    let last_humidity = 0;
-    let last_pressure = 0;
-    let timestamp = "";
+    let radio_1_port = 0;
+    let radio_2_port = 0;
 
     let update_secs = 60;
     let update_timeout = 0;
@@ -94,55 +92,10 @@
         get_status();
     }
 
-    function draw_graph(cvs, trend_data, current, markers, labels) {
-        let ctx = cvs.getContext("2d");
-        ctx.clearRect(0, 0, cvs.width, cvs.height);
-        ctx.fillStyle = "black";
-        ctx.strokeStyle = "#99b";
-        for (const [index, marker] of markers.entries()) {
-            let y = 255 - marker;
-            ctx.beginPath();
-            ctx.moveTo(20, y);
-            ctx.lineTo(260, y);
-            ctx.stroke();
-            ctx.font = "normal normal bold 8px monospace";
-            ctx.fillText(labels[index], 0, y + 1);
-        }
-        ctx.fillStyle = "rgb(0, 0, 255)";
-        let ct = "" + current;
-        let x = 120 - 10 * ct.length;
-        let y = 40;
-        ctx.font = "normal normal bold 48px monospace";
-        ctx.fillText(ct, x, y);
-        ctx.strokeStyle = "Red";
-        let data = trend_data.split(" ");
-        ctx.beginPath();
-        x = 20
-        y = 0;
-        let set_start = -1;
-        for (let d of data) {
-            let v = parseInt(d, 16);
-            if (v !== 255) {
-                y = 255 - v;
-                if (set_start === -1) {
-                    ctx.moveTo(x, y);
-                    set_start = x;
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            }
-            x++;
-        }
-        ctx.lineTo(x, y);
-        ctx.stroke();
-    }
-
     function process_get_status_response(message) {
         let status_data = JSON.parse(message);
-        timestamp = status_data.timestamp;
-        last_temperature = status_data.last_temperature;
-        last_humidity = status_data.last_humidity;
-        last_pressure = status_data.last_pressure;
+        radio_1_port = status_data.radio_1_port;
+        radio_2_port = status_data.radio_2_port;
 
         document.getElementById("t-header").innerText = "Temperature " + last_temperature + "\xb0F";
         document.getElementById("h-header").innerText = "" + last_humidity + "% Humidity";
@@ -229,7 +182,7 @@
     <div class="column">
         <p class="readout-header" id="t-header">Temperature ?&deg;F</p>
         <p class="readout-chart"><canvas class="trend-chart"  width="260" height="256" id="t_trend"></canvas></p>
-        <div class="setup"><a href="setup.html">Setup</a></div>
+        <div class="setup"><a href="network.html">Network</a></div>
     </div>
     <div class="column">
         <p class="readout-header" id="h-header">?% Humidity</p>
