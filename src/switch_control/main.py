@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024 J. B. Otterson N1KDO.'
-__version__ = '0.0.0'
+__version__ = '0.0.1'
 
 #
 # Copyright 2022, 2024 J. B. Otterson N1KDO.
@@ -96,7 +96,7 @@ def read_antennas_selected() -> []:
         with open(PORT_SETTINGS_FILE, 'r') as port_settings_file:
             result[0] = safe_int(port_settings_file.readline())
             result[1] = safe_int(port_settings_file.readline())
-    except FileNotFoundError:
+    except OSError:
         logging.warning(f'failed to load selected antenna data, returning defaults.', 'main:read_port_selected()')
     except Exception as ex:
         logging.error(f'failed to load selected antenna data: {type(ex)}, {ex}', 'main:read_port_selected()')
@@ -291,20 +291,21 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
 async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
     global antennas_selected
     radio = safe_int(args.get('radio', '0'))
-    antenna_requested = safe_int(args.get('antenna_requested', '0'))
+    antenna_requested = safe_int(args.get('antenna', '0'))
     if 1 <= radio <= 2 and 1 <= antenna_requested <= 8:
         other_radio = 2 if radio == 1 else 1
-        if antenna_requested == antennas_selected[other_radio]:
+        if antenna_requested == antennas_selected[other_radio-1]:
             http_status = 409
-            response = b'antenna in use\r\n'
+            response = b'That antenna is in use.\r\n'
         else:
             antennas_selected[radio - 1] = antenna_requested
+            logging.debug(f'calling set_port({radio}, {antenna_requested})')
             set_port(radio, antenna_requested)
             write_antennas_selected(antennas_selected)
             http_status = 200
             response = b'ok\r\n'
     else:
-        response = b'bad radio or antenna_requested parameter\r\n'
+        response = b'Bad radio or antenna parameter\r\n'
         http_status = 400
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
@@ -346,8 +347,12 @@ async def serve_serial_client(reader, writer):
 
 
 async def main():
-    global antennas_selected, config
+    global antennas_selected, config, restart
     antennas_selected = read_antennas_selected()
+    logging.debug(f'calling set_port(1, {antennas_selected[0]})')
+    set_port(1, antennas_selected[0])
+    logging.debug(f'calling set_port(2, {antennas_selected[1]})')
+    set_port(2, antennas_selected[1])
     config = read_config()
     if len(config) == 0:
         # create default configuration
@@ -380,7 +385,7 @@ async def main():
         http_server.add_uri_callback('/api/rename_file', api_rename_file_callback)
         http_server.add_uri_callback('/api/restart', api_restart_callback)
         http_server.add_uri_callback('/api/status', api_status_callback)
-        http_server.add_uri_callback('/api/select_port', api_select_antenna_callback)
+        http_server.add_uri_callback('/api/select_antenna', api_select_antenna_callback)
 
         logging.info(f'Starting web service on port {web_port}', 'main:main')
         web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
@@ -388,11 +393,6 @@ async def main():
         tcp_server = asyncio.create_task(asyncio.start_server(serve_serial_client, '0.0.0.0', tcp_port))
     else:
         logging.error('no network connection', 'main:main')
-
-    if upython:
-        pass
-#        if pcf8575_device is not None:
-#            bme280_task = asyncio.create_task(bme280_reader(bme280_device))
 
     if upython:
         last_pressed = button.value() == 0
