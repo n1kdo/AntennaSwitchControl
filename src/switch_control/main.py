@@ -39,7 +39,7 @@ from http_server import (HttpServer,
 from morse_code import MorseCode
 from picow_network import connect_to_network
 from utils import milliseconds, upython, safe_int
-from relays import set_port, set_port_a, set_port_b
+from relays import set_port
 import micro_logging as logging
 
 if upython:
@@ -94,12 +94,13 @@ def read_antennas_selected() -> []:
     result = [1, 2]
     try:
         with open(PORT_SETTINGS_FILE, 'r') as port_settings_file:
-            result[0] = safe_int(port_settings_file.readline())
-            result[1] = safe_int(port_settings_file.readline())
+            result[0] = safe_int(port_settings_file.readline().strip())
+            result[1] = safe_int(port_settings_file.readline().strip())
     except OSError:
         logging.warning(f'failed to load selected antenna data, returning defaults.', 'main:read_port_selected()')
     except Exception as ex:
         logging.error(f'failed to load selected antenna data: {type(ex)}, {ex}', 'main:read_port_selected()')
+    logging.info(f'read antennas selected: {result[0]}, {result[1]}')
     return result
 
 

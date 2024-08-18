@@ -51,7 +51,7 @@ FILES_LIST = [
     'content/radios.html',
     'content/switch.html',
 ]
-SPECIAL_FILES = ['data/config.json']
+SPECIAL_FILES = ['data/config.json', 'data/port_settings.txt']
 
 
 def get_ports_list():
@@ -193,8 +193,8 @@ def load_device(port, force):
         else:
             put_file(file, target)
 
-    # this is logic that will not overwrite config.json if it is present,
-    # if it is not present, it will use the contents of config.json.example
+    # this is logic that will not overwrite any of the SPECIAL FILES if present,
+    # if it is not present, it will use the contents of $file.example
     for file in SPECIAL_FILES:
         if file not in existing_files:
             put_file(file, target, src_file_name=f'{file}.example')
