@@ -49,7 +49,6 @@
             text-align: left;
             position: absolute;
             top: 340px;
-            width: 120px;
         }
         .bottom_links a:link, .bottom_links a:visited, .bottom_links a:hover {
             color: blue;
@@ -106,6 +105,12 @@
             text-align: right;
             width: 40%;
         }
+
+        .selected {
+            color: red;
+            padding-right: 4px;
+        }
+
         table {
             margin-top: 10px;
             margin-bottom: 10px;
@@ -271,9 +276,6 @@
             //alert(message);
         }
 
-        function cancel_page() {
-            window.location.href = "/";
-        }
     </script>
     <body onload="page_load()">
         <div class="header">Configure Antennas</div>
@@ -440,8 +442,6 @@
 
             </form>
             <div class="centered">
-                    <input type="button" id="cancel_button" value="Cancel" title="Back to Switch Control"
-                           onclick="cancel_page()"/>
                     <input type="button" id="reset_button" value="Reset" title="Reload Configuration"
                            onclick="get_config()"/>
                     <input type="button" id="apply_button" value="Apply" title="Save Configuration" onclick="set_config()"/>
@@ -449,10 +449,13 @@
         </div>
         <div class="row">
             <div class="bottom_links">
-                <a href="network.html">Network</a>
+                <a href="switch.html">Switch</a>
                 <a href="radios.html">Radios</a>
+                <span class="selected">Antennas</span>
+                <a href="network.html">Network</a>
+                <a href="files.html">Files</a>
             </div>
-            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240803</div>
+            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
         </div>
     </body>
 </html>

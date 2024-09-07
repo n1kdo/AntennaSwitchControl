@@ -65,9 +65,9 @@
     }
     
     div.refresh_radio {
-        margin: 20px 0 0 200px;
+        margin: 10px 100px;
         text-align: left;
-        width: 100px;
+        width: auto;
     }
 
     .antenna_name {
@@ -80,6 +80,11 @@
         font-weight: bold;
         text-align: center;
         width: 8em;
+    }
+
+    .selected {
+        color: red;
+        padding-right: 4px;
     }
 
     .table-heading {
@@ -249,20 +254,22 @@
     <fieldset>
         <legend>Auto-Refresh</legend>
         <input type="radio" name="refresh_radio" id="refresh_radio_0" value="0" onclick="set_refresh(0)"/>
-        <label for="refresh_radio_0">Never</label><br>
+        <label for="refresh_radio_0">Never&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input type="radio" name="refresh_radio" id="refresh_radio_1" value="1" onclick="set_refresh(1)"/>
-        <label for="refresh_radio_1">1 second</label><br>
+        <label for="refresh_radio_1">1 second&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input type="radio" name="refresh_radio" id="refresh_radio_5" value="5" onclick="set_refresh(5)"/>
-        <label for="refresh_radio_5">5 seconds</label><br>
+        <label for="refresh_radio_5">5 seconds</label>
     </fieldset>
 </div>
 <div>
     <div class="bottom_links">
-        <a href="antennas.html">Antennas</a>
+        <span class="selected">Switch</span>
         <a href="radios.html">Radios</a>
+        <a href="antennas.html">Antennas</a>
         <a href="network.html">Network</a>
+        <a href="files.html">Files</a>
     </div>
-    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240803</div>
+    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
 </div>
 </body>
 </html>

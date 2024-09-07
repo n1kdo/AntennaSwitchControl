@@ -38,7 +38,6 @@
             text-align: left;
             position: absolute;
             top: 340px;
-            width: 120px;
         }
         .bottom_links a:link, .bottom_links a:visited, .bottom_links a:hover {
             color: blue;
@@ -100,6 +99,10 @@
             padding: 0 5px 0 0;
             text-align: right;
             width: 40%;
+        }
+        .selected {
+            color: red;
+            padding-right: 4px;
         }
     </style>
     <script>
@@ -250,10 +253,6 @@
             cancel_page();
         }
 
-        function cancel_page() {
-            window.location.href = "/";
-        }
-
         function dhcp_change() {
             let dhcp = document.getElementById("dhcp_input").checked;
             document.getElementById("ip_address_input").disabled = dhcp;
@@ -306,11 +305,9 @@
             </form>
             <div class="centered">
                 <p>
-                    <input type="button" id="cancel_button" value="Cancel" title="Back to Switch Control"
-                           onclick="cancel_page()"/>
                     <input type="button" id="reset_button" value="Reset" title="Reload Setup"
                            onclick="get_config()"/>
-                    <input type="button" id="restart_button" value="Restart" title="Restart Controller to use new setup"
+                    <input type="button" id="restart_button" value="Restart" title="Restart Device to use new setup"
                            onclick="restart()"/>
                     <input type="button" id="apply_button" value="Apply" title="Save Setup" onclick="set_config()"/>
                 </p>
@@ -318,10 +315,13 @@
         </div>
         <div class="row">
             <div class="bottom_links">
+                <a href="switch.html">Switch</a>
                 <a href="radios.html">Radios</a>
                 <a href="antennas.html">Antennas</a>
+                <span class="selected">Network</span>
+                <a href="files.html">Files</a>
             </div>
-            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240803</div>
+            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
         </div>
     </body>
 </html>

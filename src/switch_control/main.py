@@ -37,7 +37,7 @@ from http_server import (HttpServer,
                          api_upload_file_callback,
                          api_get_files_callback)
 from morse_code import MorseCode
-from picow_network import connect_to_network
+from picow_network import PicowNetwork
 from utils import milliseconds, upython, safe_int
 from relays import set_port
 import micro_logging as logging
@@ -69,8 +69,8 @@ BAND_OTHER2_MASK = 0x4000  # not used
 BAND_OTHER3_MASK = 0x8000  # not used
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
-blinky = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
-button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO1 / pin 2
+morse_led = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
+reset_button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO1 / pin 2
 
 CONFIG_FILE = 'data/config.json'
 CONTENT_DIR = 'content/'
@@ -85,9 +85,8 @@ DEFAULT_WEB_PORT = 80
 # globals...
 restart = False
 antennas_selected = [1, 2]
+keep_running = True
 config = {}
-http_server = HttpServer(content_dir=CONTENT_DIR)
-morse_code_sender = MorseCode(blinky)
 
 
 def read_antennas_selected() -> []:
@@ -265,9 +264,9 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
 
 # noinspection PyUnusedLocal
 async def api_restart_callback(http, verb, args, reader, writer, request_headers=None):
-    global restart
+    global keep_running
     if upython:
-        restart = True
+        keep_running = False
         response = b'ok\r\n'
         http_status = 200
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
@@ -348,7 +347,7 @@ async def serve_serial_client(reader, writer):
 
 
 async def main():
-    global antennas_selected, config, restart
+    global antennas_selected, keep_running, config, restart
     antennas_selected = read_antennas_selected()
     logging.debug(f'calling set_port(1, {antennas_selected[0]})')
     set_port(1, antennas_selected[0])
@@ -365,57 +364,58 @@ async def main():
     if web_port < 0 or web_port > 65535:
         web_port = DEFAULT_WEB_PORT
 
-    connected = True
-    if upython:
-        try:
-            ip_address = connect_to_network(config, DEFAULT_SSID, DEFAULT_SECRET, morse_code_sender)
-            connected = ip_address is not None
-        except Exception as ex:
-            connected = False
-            logging.error(f'Network connection failed, {type(ex)}, {ex}', 'main:main')
+    ap_mode = config.get('ap_mode', False)
 
     if upython:
-        morse_task = asyncio.create_task(morse_code_sender.morse_sender())
+        picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
+        network_keepalive_task = asyncio.create_task(picow_network.keep_alive())
+        morse_code_sender = MorseCode(morse_led)
+        morse_sender_task = asyncio.create_task(morse_code_sender.morse_sender())
 
-    if connected:
-        http_server.add_uri_callback('/', slash_callback)
-        http_server.add_uri_callback('/api/config', api_config_callback)
-        http_server.add_uri_callback('/api/get_files', api_get_files_callback)
-        http_server.add_uri_callback('/api/upload_file', api_upload_file_callback)
-        http_server.add_uri_callback('/api/remove_file', api_remove_file_callback)
-        http_server.add_uri_callback('/api/rename_file', api_rename_file_callback)
-        http_server.add_uri_callback('/api/restart', api_restart_callback)
-        http_server.add_uri_callback('/api/status', api_status_callback)
-        http_server.add_uri_callback('/api/select_antenna', api_select_antenna_callback)
+    http_server = HttpServer(content_dir=CONTENT_DIR)
+    http_server.add_uri_callback('/', slash_callback)
+    http_server.add_uri_callback('/api/config', api_config_callback)
+    http_server.add_uri_callback('/api/get_files', api_get_files_callback)
+    http_server.add_uri_callback('/api/upload_file', api_upload_file_callback)
+    http_server.add_uri_callback('/api/remove_file', api_remove_file_callback)
+    http_server.add_uri_callback('/api/rename_file', api_rename_file_callback)
+    http_server.add_uri_callback('/api/restart', api_restart_callback)
+    http_server.add_uri_callback('/api/status', api_status_callback)
+    http_server.add_uri_callback('/api/select_antenna', api_select_antenna_callback)
 
-        logging.info(f'Starting web service on port {web_port}', 'main:main')
-        web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
-        logging.info(f'Starting tcp service on port {tcp_port}', 'main:main')
-        tcp_server = asyncio.create_task(asyncio.start_server(serve_serial_client, '0.0.0.0', tcp_port))
-    else:
-        logging.error('no network connection', 'main:main')
+    logging.info(f'Starting web service on port {web_port}', 'main:main')
+    web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
+    logging.info(f'Starting tcp service on port {tcp_port}', 'main:main')
+    tcp_server = asyncio.create_task(asyncio.start_server(serve_serial_client, '0.0.0.0', tcp_port))
 
-    if upython:
-        last_pressed = button.value() == 0
-    else:
-        last_pressed = False
-
-    while True:
+    reset_button_pressed_count = 0
+    four_count = 0
+    last_message = ''
+    while keep_running:
         if upython:
             await asyncio.sleep(0.25)
-            pressed = button.value() == 0
-            if not last_pressed and pressed:  # look for activating edge
-                ap_mode = config.get('ap_mode') or False
+            four_count += 1
+            pressed = reset_button.value() == 0
+            if pressed:
+                reset_button_pressed_count += 1
+            else:
+                if reset_button_pressed_count > 0:
+                    reset_button_pressed_count -= 1
+            if reset_button_pressed_count > 7:
+                logging.info('reset button pressed', 'main:main')
                 ap_mode = not ap_mode
                 config['ap_mode'] = ap_mode
                 save_config(config)
-                restart = True
-            last_pressed = pressed
-
-            if restart:
-                machine.soft_reset()
+                keep_running = False
+            if four_count >= 3:  # check for new message every one second
+                if picow_network.get_message() != last_message:
+                    last_message = picow_network.get_message()
+                    morse_code_sender.set_message(last_message)
+                four_count = 0
         else:
             await asyncio.sleep(10.0)
+    if upython:
+        machine.soft_reset()
 
 
 if __name__ == '__main__':

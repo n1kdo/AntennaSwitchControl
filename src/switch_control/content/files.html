@@ -12,7 +12,8 @@
         text-align: right;
         position: absolute;
         top: 340px;
-        width: 498px;
+        left: 410px;
+        width: 90px;
     }
 
     .author a:link, .author a:visited, .author a:hover {
@@ -27,6 +28,20 @@
         margin: 0;
         height: 350px;
         width: 500px;
+    }
+
+    .bottom_links {
+        font-size: 8pt;
+        font-weight: bold;
+        text-align: left;
+        position: absolute;
+        top: 340px;
+    }
+
+    .bottom_links a:link, .bottom_links a:visited, .bottom_links a:hover {
+        color: blue;
+        text-decoration: none;
+        padding-right: 4px;
     }
 
     .centered {
@@ -44,7 +59,7 @@
         padding: 10px;
     }
 
-    .file_button {  /* this is used, but pycharm can't see that */
+    .file_button { /* this is used, but pycharm can't see that */
         background: transparent;
         border: none;
         color: blue;
@@ -66,7 +81,7 @@
         overflow: auto;
     }
 
-   .header {
+    .header {
         text-align: center;
         font-size: 24pt;
         font-weight: bold;
@@ -96,6 +111,11 @@
         text-align: right;
         width: 40%;
     }
+
+    .selected {
+        color: red;
+        padding-right: 4px;
+    }
 </style>
 <script>
     function page_load() {
@@ -120,15 +140,15 @@
 
     function files_func(value) {
         let download_cell = document.createElement("td");
-        download_cell.innerHTML = '<a href="' + value + '" download>'+ value + '</a>';
+        download_cell.innerHTML = '<a href="' + value + '" download>' + value + '</a>';
         let delete_cell = document.createElement("td");
         if (value.endsWith('.html')) {
             delete_cell.innerHTML = ''; // <input type="button" onclick="delete_file(\''+value+'\')" value="Delete" class="file_button" disabled>';
         } else {
-            delete_cell.innerHTML = '<input type="button" onclick="remove_file(\''+value+'\')" value="Delete" class="file_button">';
+            delete_cell.innerHTML = '<input type="button" onclick="remove_file(\'' + value + '\')" value="Delete" class="file_button">';
         }
         let rename_cell = document.createElement("td");
-        rename_cell.innerHTML = '<input type="button" onclick="rename_file(\''+value+'\')" value="Rename" class="file_button"</input>';
+        rename_cell.innerHTML = '<input type="button" onclick="rename_file(\'' + value + '\')" value="Rename" class="file_button"</input>';
         let file_row = document.createElement("tr");
         file_row.appendChild(download_cell);
         file_row.appendChild(delete_cell);
@@ -175,10 +195,6 @@
         get_files();
     }
 
-    function cancel_page() {
-        window.location.href = "/";
-    }
-
     function file_changed() {
         document.getElementById("upload_button").disabled = false;
     }
@@ -211,7 +227,7 @@
 
     function rename_file(filename) {
         if (filename !== undefined) {
-        let newname = prompt('enter new name for "' + filename + '"', filename);
+            let newname = prompt('enter new name for "' + filename + '"', filename);
             let payload = {};
             payload.filename = filename;
             payload.newname = newname
@@ -249,15 +265,23 @@
         </p>
         <div class="centered">
             <p>
-                <input type="button" id="cancel_button" class="form_button" value="Cancel" title="Back to Rotator Control"
-                       onclick="cancel_page()"/>
                 <input type="button" id="reset_button" class="form_button" value="Reset" title="Reload Configuration"
                        onclick="get_files()"/>
-                <input type="button" id="upload_button" class="form_button" value="Upload" title="Upload File" onclick="upload()"/>
+                <input type="button" id="upload_button" class="form_button" value="Upload" title="Upload File"
+                       onclick="upload()"/>
             </p>
         </div>
     </div>
 </div>
-<div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240127</div>
+<div class="row">
+    <div class="bottom_links">
+        <a href="switch.html">Switch</a>
+        <a href="radios.html">Radios</a>
+        <a href="antennas.html">Antennas</a>
+        <a href="network.html">Network</a>
+        <span class="selected">Files</span>
+    </div>
+    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
+</div>
 </body>
 </html>
