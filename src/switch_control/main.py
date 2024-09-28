@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024 J. B. Otterson N1KDO.'
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 #
 # Copyright 2022, 2024 J. B. Otterson N1KDO.
@@ -277,11 +277,13 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
     return bytes_sent, http_status
 
 
-async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/kpa_status'
+async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/status'
     payload = {'radio_1_antenna': antennas_selected[0],
                'radio_2_antenna': antennas_selected[1],
                'radio_names': config['radio_names'],
-               'antenna_names': config['antenna_names']}
+               'antenna_names': config['antenna_names'],
+               'antenna_bands': config['antenna_bands'],
+               }
     response = json.dumps(payload).encode('utf-8')
     http_status = 200
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
