@@ -304,8 +304,11 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             logging.debug(f'calling set_port({radio}, {antenna_requested})')
             set_port(radio, antenna_requested)
             write_antennas_selected(antennas_selected)
+            payload = {'radio': radio, 'antenna': antenna_requested}
+            response = json.dumps(payload).encode('utf-8')
             http_status = 200
-            response = b'ok\r\n'
+            bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
+            return bytes_sent, http_status  # OUCH return not at end of func. gnarly.
     else:
         response = b'Bad radio or antenna parameter\r\n'
         http_status = 400
