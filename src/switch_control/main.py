@@ -298,7 +298,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
         other_radio = 2 if radio == 1 else 1
         if antenna_requested == antennas_selected[other_radio-1]:
             http_status = 409
-            response = b'That antenna is in use.\r\n'
+            response = b'Antenna In Use\r\n'
         else:
             antennas_selected[radio - 1] = antenna_requested
             logging.debug(f'calling set_port({radio}, {antenna_requested})')
@@ -310,7 +310,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
             return bytes_sent, http_status  # OUCH return not at end of func. gnarly.
     else:
-        response = b'Bad radio or antenna parameter\r\n'
+        response = b'Bad parameter\r\n'
         http_status = 400
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
@@ -373,9 +373,7 @@ async def main():
 
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
-        network_keepalive_task = asyncio.create_task(picow_network.keep_alive())
         morse_code_sender = MorseCode(morse_led)
-        morse_sender_task = asyncio.create_task(morse_code_sender.morse_sender())
 
     http_server = HttpServer(content_dir=CONTENT_DIR)
     http_server.add_uri_callback('/', slash_callback)
