@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "parts")(type "KiCad")(uri "C:/Users/Jeff/Documents/pico-w-dual-serial/parts.pretty")(options "")(descr ""))
+  (lib (name "Library")(type "KiCad")(uri "${KIPRJMOD}/Library.pretty")(options "")(descr ""))
+)

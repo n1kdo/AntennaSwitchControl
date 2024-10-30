@@ -1,3 +1,4 @@
 .idea/
 src/switch_control/data/config.json
 src/switch_control/data/port_settings.txt
+/kicad/AntennaSwitchControl/AntennaSwitchControl-backups/
