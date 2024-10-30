@@ -9,8 +9,8 @@
 	(paper "A")
 	(title_block
 		(title "2x8 Controller")
-		(date "2024-06-30")
-		(rev "0.0.1")
+		(date "2024-10-30")
+		(rev "0.0.2")
 		(company "N1KDO 2024 CC-By-SA")
 	)
 	(layers
@@ -178,14 +178,14 @@
 	(net 90 "/B8")
 	(net 91 "Net-(U1-GPIO1)")
 	(net 92 "unconnected-(U1-GPIO3-Pad5)")
-	(net 93 "unconnected-(U1-GPIO4-Pad6)_0")
-	(net 94 "unconnected-(U1-GPIO5-Pad7)_0")
-	(net 95 "unconnected-(U1-ADC_VREF-Pad35)_0")
-	(net 96 "unconnected-(U1-3V3_EN-Pad37)_0")
-	(net 97 "unconnected-(U1-GPIO28_ADC2-Pad34)_0")
-	(net 98 "unconnected-(U1-GPIO2-Pad4)_0")
+	(net 93 "unconnected-(U1-RUN-Pad30)_1")
+	(net 94 "unconnected-(U1-GPIO14-Pad19)_1")
+	(net 95 "unconnected-(U1-GPIO5-Pad7)_1")
+	(net 96 "unconnected-(U1-GPIO2-Pad4)_1")
+	(net 97 "unconnected-(U1-GPIO4-Pad6)_1")
+	(net 98 "unconnected-(U1-3V3_EN-Pad37)_1")
 	(net 99 "unconnected-(U1-GPIO15-Pad20)")
-	(net 100 "unconnected-(U1-GPIO14-Pad19)_0")
+	(net 100 "unconnected-(U1-GPIO3-Pad5)_1")
 	(net 101 "unconnected-(U1-GPIO22-Pad29)")
 	(net 102 "unconnected-(U1-RUN-Pad30)")
 	(net 103 "unconnected-(U1-VBUS-Pad40)")
@@ -196,15 +196,15 @@
 	(net 108 "unconnected-(U1-GPIO5-Pad7)")
 	(net 109 "unconnected-(U1-GPIO4-Pad6)")
 	(net 110 "unconnected-(U1-GPIO2-Pad4)")
-	(net 111 "unconnected-(U1-RUN-Pad30)_0")
+	(net 111 "unconnected-(U1-GPIO28_ADC2-Pad34)_1")
 	(net 112 "unconnected-(U1-GPIO14-Pad19)")
 	(net 113 "unconnected-(U1-3V3_EN-Pad37)")
 	(net 114 "unconnected-(U1-GPIO28_ADC2-Pad34)")
-	(net 115 "unconnected-(U1-GPIO3-Pad5)_0")
+	(net 115 "unconnected-(U1-GPIO22-Pad29)_1")
 	(net 116 "unconnected-(U1-ADC_VREF-Pad35)")
-	(net 117 "unconnected-(U1-GPIO22-Pad29)_0")
-	(net 118 "unconnected-(U1-GPIO15-Pad20)_0")
-	(net 119 "unconnected-(U1-VBUS-Pad40)_0")
+	(net 117 "unconnected-(U1-GPIO15-Pad20)_1")
+	(net 118 "unconnected-(U1-ADC_VREF-Pad35)_1")
+	(net 119 "unconnected-(U1-VBUS-Pad40)_1")
 	(footprint "Package_TO_SOT_THT:TO-92_Inline"
 		(layer "F.Cu")
 		(uuid "00491e81-340e-49b2-9c6f-830a3b0af42f")
@@ -272,7 +272,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/b7f2c013-ecf5-4de9-8fda-0cb24827656e")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -451,7 +451,7 @@
 				)
 			)
 		)
-		(property "Value" "10"
+		(property "Value" "100"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "9bba8db1-831f-43df-a079-26ce4603054a")
@@ -501,7 +501,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b65ce8d6-0430-44b8-ae39-4d354b86111a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -833,7 +833,7 @@
 		)
 		(path "/3903d3fc-46fa-4879-99fc-244cc439c4c8")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -1165,7 +1165,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/b609d46c-57df-49ad-8ab0-2575e7100609")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -1533,7 +1533,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/e198c58c-4e4a-4bd8-b49f-bf2c26c307ef")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -1772,7 +1772,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/ecc6c2d8-d3f4-4582-9a0c-30cd22f4d910")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -1994,7 +1994,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "f1ae9541-9252-4730-b65a-99eb82e8634f")
@@ -2056,7 +2056,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/85b6f1c4-f62d-4b4c-987a-24834f5c35d0")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -2328,7 +2328,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/7c7869b7-f69e-4443-adec-4ac31a390124")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -2617,7 +2617,7 @@
 		)
 		(path "/3c8562e8-bf8e-4271-853f-8aa748ad9a08")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -2985,7 +2985,7 @@
 		)
 		(path "/de8bced1-d316-490d-b873-b22d8473d643")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -3293,7 +3293,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/3138ce14-96f8-44e9-a9f2-a512f60f7c0b")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -3515,7 +3515,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "f07898b7-b696-4ea7-b196-74be0fc8f346")
@@ -3577,7 +3577,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/a9664977-f827-400a-ac75-4a1b2a525656")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -3861,7 +3861,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/b272c47a-0780-43cc-a69e-2bfbb04c35d4")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -4160,7 +4160,7 @@
 		)
 		(path "/2d792ed4-a2bd-4acd-ae4b-bc5c15f10ae0")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -4480,7 +4480,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/d1880b78-87f3-4f70-b507-99c0c284b5e7")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -4669,7 +4669,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "f568e7ae-c692-46b7-83e1-503cda9cbc01")
@@ -4731,7 +4731,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/d3498be2-7fb7-4c5a-b23c-81dcc68aeedd")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -5027,7 +5027,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/d91ebaa7-5598-425d-8ee2-b329878c2aee")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -5333,7 +5333,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "fc3a04d6-d91f-4332-8411-a8548d75b65c")
@@ -5395,7 +5395,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/1d3e0bdb-6b5d-45dc-8564-94425613a14a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -5679,7 +5679,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/7fa356f5-bfe4-42bf-8a9f-2e27de15c3ab")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -5868,7 +5868,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "a7fcc859-126c-45ce-93fb-6ba74d0198b9")
@@ -5930,7 +5930,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/409d05cc-4bca-4064-97c2-3472a3c771db")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -6202,7 +6202,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/ac213bf8-0466-4d58-b163-39b65bcd0dbf")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -6751,7 +6751,7 @@
 		)
 		(path "/1e2481c2-940e-4666-8b8d-9039d2b35331")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -6998,7 +6998,7 @@
 		(at 141.96 105.945)
 		(descr "TO-220-3, Vertical, RM 2.54mm, see https://www.vishay.com/docs/66542/to-220-1.pdf")
 		(tags "TO-220-3 Vertical RM 2.54mm")
-		(property "Reference" "U3"
+		(property "Reference" "U2"
 			(at 2.54 -4.27 0)
 			(layer "F.SilkS")
 			(uuid "8a8318a2-74f7-4b27-b242-0ca0cc68bcb5")
@@ -7071,7 +7071,7 @@
 		(property ki_fp_filters "TO?252* TO?263* TO?220*")
 		(path "/d0f6b4ac-bc53-4977-8878-6315f5744176")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.58 -3.27)
@@ -7326,7 +7326,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "feb0dce2-afc6-48e7-9aca-034b0f4e1bc8")
@@ -7388,7 +7388,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/5fdb12d1-a9da-4d73-a6fc-94abbe8c10f5")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -7720,7 +7720,7 @@
 		)
 		(path "/1d71218f-ecb5-4c1a-a5fe-3b9deba0876d")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -8088,7 +8088,7 @@
 		)
 		(path "/bb4e14be-f1c3-498c-987f-07a0dcdd97f8")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -8420,7 +8420,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/f5083d81-2338-47ca-8516-5cd73e50dc7b")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -8776,7 +8776,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/7e0f279b-3741-4831-aa1e-91342352fbe0")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -9005,7 +9005,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/82038ab6-2d1b-459f-a4a4-eb915b6ead97")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -9258,7 +9258,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/e51b6085-fb37-44fa-bc00-6ab73ffd0a4a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -9614,7 +9614,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/a5ee8a1b-ab43-4bd7-bc4b-c6e683d6d5d3")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -9846,7 +9846,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/b35ada4b-a27f-476a-b7fb-6c12d61b3e65")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -9981,7 +9981,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/e61d1486-27f9-489b-a066-517df6ce35f9")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -10349,7 +10349,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/69756a59-d0a3-4296-b98d-0e2ac7d73f16")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -10600,7 +10600,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/8c8c15d8-242a-44e5-a964-f4576ab258d8")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -10789,7 +10789,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "7a0bac01-9f80-4f4b-88d7-de0e2a96e9d8")
@@ -10851,7 +10851,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/bdc8a408-2b4c-4fcf-a7b4-acb5bf56d1ef")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -11123,7 +11123,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/671d3e16-3be7-4e1a-aed5-42a5e4c44ca3")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -11395,7 +11395,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/e538e656-a63d-4ace-8ecf-300f83db0057")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -11627,7 +11627,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/996cfff4-933c-4720-bf35-59acd4a4b5e1")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -11738,7 +11738,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/5891a666-4d0d-46d5-8d67-6fb8dcee7d9b")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -11970,7 +11970,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/9677ad5a-a43b-42cd-93c5-9502478cbc0c")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -12081,7 +12081,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/61200647-963f-418b-ab41-1b2aec8caf0f")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -12313,7 +12313,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/f58739cf-93ba-4bb3-a11c-d727355e0353")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -12436,7 +12436,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/83f323b2-20b8-43bf-9eb0-78325f63ceb9")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -12687,7 +12687,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/d9656d57-f615-4590-b870-c61f83f1a577")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -12938,7 +12938,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/401586c5-9ede-4132-a9dc-2f0c8fe8d429")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -13177,7 +13177,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/1a047c48-8545-4ebf-a54b-67ddd0109d10")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -13418,7 +13418,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/678af2c9-dbc2-46c1-bef4-f8864f88605e")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -13607,7 +13607,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "1f69cc4c-f4fd-45ab-a65a-7110271f74d7")
@@ -13669,7 +13669,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/deaf0f09-2b14-46ef-b1a0-7e355e4479f6")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -13941,7 +13941,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/a9c9ea35-b6f9-4705-b41b-a88fb7839db1")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -14170,7 +14170,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0af51af7-2f87-4833-8ace-d6f966a3228a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -14445,7 +14445,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/a494c99f-5cca-44e7-a25a-5a1143b73bb3")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -14568,7 +14568,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/17f849af-8f59-49a9-958f-d6baa5767b66")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -14831,7 +14831,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/cba66547-0618-4562-9dc1-e6a03bc16a6e")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -15187,7 +15187,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/2ba1061e-6487-4109-8066-35fe6a90436d")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -15519,7 +15519,7 @@
 		)
 		(path "/b4eb502f-540a-464b-95b2-90a924a9ee6a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -15839,7 +15839,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b9693549-9e5f-4956-8083-f929a60ce2ac")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -16111,7 +16111,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/8af2789f-56b0-4d37-9353-ae1afb255a6c")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -16362,7 +16362,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/2627e579-3664-4ebf-8e52-25ea0ba3aae5")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -17028,7 +17028,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/ee22d2e1-d081-4f69-84e4-63768a7abc5d")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -17384,7 +17384,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/cea38b2d-1bc2-4f65-ae41-750d40322ecc")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -17680,7 +17680,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/73732778-4ee7-469e-9cf3-9180bfbecd52")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -18048,7 +18048,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/346862a9-1ffb-465a-ae73-2378e30aa318")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -18287,7 +18287,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/b9fd79e4-d400-4894-a42c-2948c075cf94")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -18456,9 +18456,9 @@
 		(descr "70553-0001-5")
 		(tags "Connector")
 		(property "Reference" "J3"
-			(at -1.27 6.006 90)
+			(at -1.27 6.006 -90)
 			(layer "F.SilkS")
-			(uuid "94097a39-f32a-41e1-bb84-f9a9d58cd4f4")
+			(uuid "13566a12-043b-4d0a-9cda-4dbc1acca81d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18467,10 +18467,10 @@
 			)
 		)
 		(property "Value" "POWER"
-			(at -1.27 6.006 90)
+			(at -1.27 6.006 -90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "f87c4314-2b87-49d3-b6c3-cfaeaf6e4a82")
+			(uuid "243098ec-62e9-4bde-a169-3e4254ed01fa")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18479,10 +18479,10 @@
 			)
 		)
 		(property "Footprint" "705530001"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "0b3f3a1d-edf1-4d29-b323-47cd5a9465f1")
+			(uuid "1b230fd9-d3ae-42d7-8fbe-4a2935b1741d")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18491,10 +18491,10 @@
 			)
 		)
 		(property "Datasheet" "https://www.mouser.it/datasheet/2/276/2/705530001_sd-1608007.pdf"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "978f8894-f9fb-48e3-8b57-fbe60a61994a")
+			(uuid "c6c1c670-5aa7-4626-9c64-d2a707174164")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18503,10 +18503,10 @@
 			)
 		)
 		(property "Description" "2 pin .156 header"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "ca94923f-534a-4cf0-8a1e-2866686c341b")
+			(uuid "1dc94e7e-f985-45ed-923c-65417a27d1b2")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18514,35 +18514,25 @@
 				)
 			)
 		)
+		(property "Part" "26-60-4020"
+			(at 0 0 -90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "ac7638f4-3229-4e26-ab8a-3cf77804c120")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
 		(property "Height" "7.12"
-			(at -68.924 152.056 0)
+			(at 0 0 -90)
+			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "392d3713-3113-482a-875f-2e7e8a6a8d41")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Manufacturer_Name" "Molex"
-			(at -68.924 152.056 0)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "dee6c427-84c8-422c-ba15-c69818eb5d96")
-			(effects
-				(font
-					(size 1 1)
-					(thickness 0.15)
-				)
-			)
-		)
-		(property "Manufacturer_Part_Number" "70553-0001"
-			(at -68.924 152.056 0)
-			(layer "F.Fab")
-			(hide yes)
-			(uuid "6a4f86e1-3c6e-483f-8d6c-2261e340eb90")
+			(uuid "00576613-7045-4b58-b0ef-d2e552e9e0b7")
 			(effects
 				(font
 					(size 1 1)
@@ -18551,10 +18541,11 @@
 			)
 		)
 		(property "Mouser Part Number" "538-70553-0001"
-			(at -68.924 152.056 0)
+			(at 0 0 -90)
+			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "77468b06-fe76-4976-92bf-8ec4b6a48cbf")
+			(uuid "67841cfc-26ac-4182-8528-a277624e59c5")
 			(effects
 				(font
 					(size 1 1)
@@ -18563,10 +18554,11 @@
 			)
 		)
 		(property "Mouser Price/Stock" "https://www.mouser.co.uk/ProductDetail/Molex/70553-0001?qs=tYx%252BZc2nXqqznXDBRnwLig%3D%3D"
-			(at -68.924 152.056 0)
+			(at 0 0 -90)
+			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "759566a5-45b2-47b3-90c2-7e291ad831ef")
+			(uuid "184597c0-332f-4c29-874e-a8e529eef010")
 			(effects
 				(font
 					(size 1 1)
@@ -18574,11 +18566,25 @@
 				)
 			)
 		)
-		(property "Part" "26-60-4020"
-			(at -68.924 152.056 0)
+		(property "Manufacturer_Name" "Molex"
+			(at 0 0 -90)
+			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7b693982-8685-47d2-b6d4-71c5782f5c7b")
+			(uuid "f10d7622-cfb2-4ea5-a293-9c2f90d0f19c")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Manufacturer_Part_Number" "70553-0001"
+			(at 0 0 -90)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "24a86de9-534b-482e-b1da-7ddca33a0a80")
 			(effects
 				(font
 					(size 1 1)
@@ -18588,7 +18594,7 @@
 		)
 		(path "/fa0dbe0a-ee79-4279-859e-c722cd5a7f3a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -4.955 12.89)
@@ -18598,7 +18604,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "3fa415aa-bbca-49eb-9f5b-d2d8231c0a4b")
+			(uuid "9feed741-77ea-4e42-b12e-dcf840426c1e")
 		)
 		(fp_line
 			(start 2.415 12.89)
@@ -18608,7 +18614,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "6cd108fe-b77e-4cfd-a938-327657cf6727")
+			(uuid "ac47e124-fc1d-43ae-b21b-ed50d1b88253")
 		)
 		(fp_line
 			(start 2.415 -0.7)
@@ -18618,7 +18624,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "16ee1fc1-3d11-43d6-897b-d7e7758afc08")
+			(uuid "5b75d2cf-663f-4488-9407-5c86dc8b81ca")
 		)
 		(fp_line
 			(start -0.1 -1.4)
@@ -18628,7 +18634,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "088b8ee5-0b13-4b6f-ac52-4eb552d59dd2")
+			(uuid "453e13fe-d68e-43d6-bb60-7678699bceb0")
 		)
 		(fp_line
 			(start 0.1 -1.4)
@@ -18638,7 +18644,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "cf0ed4b2-04c5-4dac-84ae-c7765fa1783c")
+			(uuid "8911f0bd-bf6b-43ed-8894-e43d67a6fe7d")
 		)
 		(fp_arc
 			(start -0.1 -1.4)
@@ -18649,7 +18655,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "8d4a7872-0413-4ed3-9c8a-8f8b8320401b")
+			(uuid "0891486a-f173-436e-b25b-4f37249de5b4")
 		)
 		(fp_arc
 			(start 0.1 -1.4)
@@ -18660,7 +18666,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "1ca4be8b-bc3a-4712-98c6-357907824579")
+			(uuid "90171597-7c5b-4b90-b83a-54a2eeeeece6")
 		)
 		(fp_line
 			(start -5.955 13.89)
@@ -18670,7 +18676,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "5c9f03e8-51a9-4ad9-aaf9-56a497333d0c")
+			(uuid "2cbc2f7a-6fca-456d-b75a-8e6653c8922f")
 		)
 		(fp_line
 			(start 3.415 13.89)
@@ -18680,7 +18686,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "55c3d603-979a-474f-943a-41ad004dfd2b")
+			(uuid "a82b7acb-4a56-43ca-a6f1-dce964a99bb3")
 		)
 		(fp_line
 			(start -5.955 -1.878)
@@ -18690,7 +18696,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "9d7fa233-d0b5-419a-aef2-e1b435c2d2fd")
+			(uuid "9fd2dab3-2ca3-482e-bdf8-937af3e9f5d7")
 		)
 		(fp_line
 			(start 3.415 -1.878)
@@ -18700,7 +18706,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "df2ee416-e6d6-43e5-a6d2-c5140cc57fa6")
+			(uuid "d17d645d-fa9c-48d9-b740-09afa254916d")
 		)
 		(fp_line
 			(start -4.955 12.89)
@@ -18710,7 +18716,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "d4c2725f-983b-49df-900c-524af425f712")
+			(uuid "86456eaf-b110-4685-a4e4-97a5843693fc")
 		)
 		(fp_line
 			(start 2.415 12.89)
@@ -18720,7 +18726,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "80187c16-5f29-4989-bf92-094eec95c97a")
+			(uuid "314bbf77-0a87-482d-9348-e31247529329")
 		)
 		(fp_line
 			(start -4.955 -0.7)
@@ -18730,7 +18736,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "766ce1d8-8b12-4e3f-99d9-f57fdbf608f2")
+			(uuid "f0fd1d9a-cd8c-436b-920c-3df761ae29df")
 		)
 		(fp_line
 			(start 2.415 -0.7)
@@ -18740,12 +18746,12 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "a58738db-dc73-42d7-8878-75b75af90935")
+			(uuid "32a025af-f5e5-4398-9c5e-9b992f1793b5")
 		)
 		(fp_text user "${REFERENCE}"
-			(at -1.27 6.006 90)
+			(at -1.27 6.006 -90)
 			(layer "F.Fab")
-			(uuid "9fe733b4-43c1-47a5-b216-db3daf68d88f")
+			(uuid "d7d8173b-9899-4720-a0dc-7620e632f30a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -18762,7 +18768,7 @@
 			(net 2 "GND")
 			(pinfunction "1")
 			(pintype "passive")
-			(uuid "1ef1d974-a681-4e3e-a684-57f821a75da5")
+			(uuid "c7b5f6ec-7a7f-4b23-8049-c4c52e54a0fc")
 		)
 		(pad "2" thru_hole circle
 			(at -2.54 0 270)
@@ -18773,9 +18779,9 @@
 			(net 107 "Net-(F1-Pad1)")
 			(pinfunction "2")
 			(pintype "passive")
-			(uuid "b8cabf0e-0934-46e1-ac89-cefbfda97b3a")
+			(uuid "205a9243-c5e1-4422-86a9-c3fee39f9c98")
 		)
-		(model "C:/Users/Jeff/Desktop/relays/LIB_70553-0001/70553-0001/3D/70553-0001.stp"
+		(model "70553-0001.stp"
 			(offset
 				(xyz -1.269999962 -7.090000046 2.910000042)
 			)
@@ -18878,7 +18884,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/d07f9270-9ff0-4097-b966-a98388d8f14f")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -19258,7 +19264,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/d5a978e6-3bd2-4d0c-a66a-7a1d766e0f92")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -19614,7 +19620,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/a5905be7-f2d7-48b1-b9c8-235f4f286292")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 2.36 1.47)
@@ -19969,7 +19975,7 @@
 		)
 		(path "/244ca6ce-b571-4432-87d6-ef5dbf965510")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -10.5 -25.5)
@@ -20746,7 +20752,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 98 "unconnected-(U1-GPIO2-Pad4)_0")
+			(net 96 "unconnected-(U1-GPIO2-Pad4)_1")
 			(pinfunction "GPIO2")
 			(pintype "bidirectional+no_connect")
 			(uuid "510f2f11-be85-44fe-ba69-dc1c59847c88")
@@ -20769,7 +20775,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 115 "unconnected-(U1-GPIO3-Pad5)_0")
+			(net 100 "unconnected-(U1-GPIO3-Pad5)_1")
 			(pinfunction "GPIO3")
 			(pintype "bidirectional+no_connect")
 			(uuid "7c7617b6-f8ed-4331-8bcc-14dcbbcc1cd2")
@@ -20792,7 +20798,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 93 "unconnected-(U1-GPIO4-Pad6)_0")
+			(net 97 "unconnected-(U1-GPIO4-Pad6)_1")
 			(pinfunction "GPIO4")
 			(pintype "bidirectional+no_connect")
 			(uuid "58bfb69d-9893-4f94-b43e-dbeccf696784")
@@ -20815,7 +20821,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 94 "unconnected-(U1-GPIO5-Pad7)_0")
+			(net 95 "unconnected-(U1-GPIO5-Pad7)_1")
 			(pinfunction "GPIO5")
 			(pintype "bidirectional+no_connect")
 			(uuid "3e881568-df69-4219-8a32-f0bf8ffd03bc")
@@ -21106,7 +21112,7 @@
 				(offset -0.9 0)
 			)
 			(layers "F.Cu" "F.Mask")
-			(net 100 "unconnected-(U1-GPIO14-Pad19)_0")
+			(net 94 "unconnected-(U1-GPIO14-Pad19)_1")
 			(pinfunction "GPIO14")
 			(pintype "bidirectional+no_connect")
 			(uuid "3ce1eaab-a614-4882-94d7-30199a86a9d1")
@@ -21129,7 +21135,7 @@
 				(offset -0.9 0)
 			)
 			(layers "F.Cu" "F.Mask")
-			(net 118 "unconnected-(U1-GPIO15-Pad20)_0")
+			(net 117 "unconnected-(U1-GPIO15-Pad20)_1")
 			(pinfunction "GPIO15")
 			(pintype "bidirectional+no_connect")
 			(uuid "cb300a63-90dc-40cc-8fb3-ede0cd685b31")
@@ -21326,7 +21332,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 117 "unconnected-(U1-GPIO22-Pad29)_0")
+			(net 115 "unconnected-(U1-GPIO22-Pad29)_1")
 			(pinfunction "GPIO22")
 			(pintype "bidirectional+no_connect")
 			(uuid "bff13db4-6898-4869-b358-7ba94dcd9516")
@@ -21349,7 +21355,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 111 "unconnected-(U1-RUN-Pad30)_0")
+			(net 93 "unconnected-(U1-RUN-Pad30)_1")
 			(pinfunction "RUN")
 			(pintype "input+no_connect")
 			(uuid "24a777c1-f878-4fa6-98fe-9890ceeb1960")
@@ -21454,7 +21460,7 @@
 				(offset 0.9 0)
 			)
 			(layers "F.Cu" "F.Mask")
-			(net 97 "unconnected-(U1-GPIO28_ADC2-Pad34)_0")
+			(net 111 "unconnected-(U1-GPIO28_ADC2-Pad34)_1")
 			(pinfunction "GPIO28_ADC2")
 			(pintype "bidirectional+no_connect")
 			(uuid "9a8360f9-ab3d-4398-9874-9e102086c539")
@@ -21465,7 +21471,7 @@
 			(drill 1.02)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net 95 "unconnected-(U1-ADC_VREF-Pad35)_0")
+			(net 118 "unconnected-(U1-ADC_VREF-Pad35)_1")
 			(pinfunction "ADC_VREF")
 			(pintype "input+no_connect")
 			(uuid "d808e25a-75bd-4bbb-adc1-0bf04c9b2426")
@@ -21523,7 +21529,7 @@
 				(offset 0.9 0)
 			)
 			(layers "F.Cu" "F.Mask")
-			(net 96 "unconnected-(U1-3V3_EN-Pad37)_0")
+			(net 98 "unconnected-(U1-3V3_EN-Pad37)_1")
 			(pinfunction "3V3_EN")
 			(pintype "input+no_connect")
 			(uuid "6385c5f2-3726-4d8a-9e7e-3617caa63621")
@@ -21593,7 +21599,7 @@
 				(offset 0.9 0)
 			)
 			(layers "F.Cu" "F.Mask")
-			(net 119 "unconnected-(U1-VBUS-Pad40)_0")
+			(net 119 "unconnected-(U1-VBUS-Pad40)_1")
 			(pinfunction "VBUS")
 			(pintype "unspecified+no_connect")
 			(uuid "f1f5584a-c6bd-45da-b80c-9a3eaece7b0a")
@@ -21792,7 +21798,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/8ac7fbe2-afa0-442f-b70f-402f700428e1")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -22148,7 +22154,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/a3bd3dc0-c58c-40f1-9416-682a76447867")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -22401,7 +22407,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/c580d1dd-eefb-43be-ab56-46037593d6fc")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -22757,7 +22763,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/93e6ba33-f606-4c7c-95f2-9eaffb0d8dbc")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -22979,7 +22985,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "ea64925d-75c4-407e-ad77-1be001f57807")
@@ -23041,7 +23047,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/1f8e65ea-17ec-40b3-b3ef-023951647a2f")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -23373,7 +23379,7 @@
 		)
 		(path "/df7e996d-3696-4509-bc7f-6d12332a3592")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -23693,7 +23699,7 @@
 		(property ki_fp_filters "*polyfuse* *PTC*")
 		(path "/6f1f83eb-1839-4126-801d-07fb34f6e9fc")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.83 -2.12)
@@ -23875,7 +23881,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "3931f261-657b-4cf9-855d-e28cc42c4af8")
@@ -23937,7 +23943,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/8632fc18-1636-4821-b175-96ff895c52bf")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -24221,7 +24227,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/c3831361-4894-4957-b7c6-a4588f6c8f69")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -24460,7 +24466,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/914e1cbc-9000-4ceb-b1ce-de6d8d9d8e24")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -24910,7 +24916,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/94e795c7-5377-4780-ac5a-a688ddb489bf")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -25081,7 +25087,7 @@
 		)
 		(path "/33d9b640-6bf1-4525-8b84-fe8020a225ef")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -25401,7 +25407,7 @@
 		(property ki_fp_filters "CP_*")
 		(path "/e272b935-c787-47ae-9be2-b5fa4fc0295b")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.83 -4.08)
@@ -27086,7 +27092,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "0af8cdf8-a74c-43cc-a8ec-5ac4b2279b57")
@@ -27148,7 +27154,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/e3c2c6c0-0a5e-4894-af76-bb00d6be57c9")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -27432,7 +27438,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/b3ac22b7-bab8-43d4-8a88-12f492a85086")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 -1.236)
@@ -27671,7 +27677,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/d970149d-ce44-4bc6-9837-a06fd30bcaf0")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -27955,7 +27961,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/e7dc421b-79ba-4522-9426-0f9bfd73a14d")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -28144,7 +28150,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "1c6e341b-2c06-4fcc-9695-e934379fb370")
@@ -28206,7 +28212,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/7e297371-bfec-4860-a0d7-724858ef9130")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -28538,7 +28544,7 @@
 		)
 		(path "/4a573296-8e75-4dd5-881a-5e19909f9057")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -28796,7 +28802,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "2d5ddfcb-6987-4591-8106-702c5e933be5")
@@ -28858,7 +28864,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/4f338983-5a17-43c1-8052-b761d9e9db46")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -29190,7 +29196,7 @@
 		)
 		(path "/68c36594-586e-4e86-9240-6999883f2054")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -29558,7 +29564,7 @@
 		)
 		(path "/ae49e3eb-450f-4c30-8a1c-efe6530e51e8")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -29926,7 +29932,7 @@
 		)
 		(path "/5b61560e-cca6-47df-9bbc-15816701d84a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 16.7 8.8)
@@ -30246,7 +30252,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/b1a1ff74-d15a-4657-b476-c3fb3586007f")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.29 1.08)
@@ -30509,7 +30515,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/2ffc5040-3525-4194-b3df-0789a3693079")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -30889,7 +30895,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/b2d1d2e1-9d61-4435-8b52-8d43185803ac")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -31305,7 +31311,7 @@
 		)
 		(path "/a5aba1b1-c70d-46af-8462-e7e2973c04e0")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -31616,7 +31622,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/acea5da8-0550-4a10-96ba-f85da25e2e89")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -31739,7 +31745,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/e9e4395b-e469-4f6d-9ed4-b49510eb2ad4")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -32011,7 +32017,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b652a096-e4e2-4965-b651-728ad549ddc1")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -32233,7 +32239,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "88af497b-66c6-48d1-8fd7-f7786e4247ac")
@@ -32295,7 +32301,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/25498185-4b2a-4af9-945c-c07b20b3f29a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -32570,7 +32576,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/3faf4ea3-2b06-450e-8c9c-869d2f45d4df")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -32621,9 +32627,9 @@
 		(descr "70553-0116-2")
 		(tags "Connector")
 		(property "Reference" "J1"
-			(at 13.97 6.036 90)
+			(at 13.97 6.036 -90)
 			(layer "F.SilkS")
-			(uuid "dde640fb-e527-4029-ad45-54bdbde25341")
+			(uuid "5f145e87-0709-482b-997f-834766265989")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32632,10 +32638,10 @@
 			)
 		)
 		(property "Value" "Conn_01x12_Socket"
-			(at 13.97 6.036 90)
+			(at 13.97 6.036 -90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "906ef668-9699-4179-ac24-cfde8447e2b3")
+			(uuid "77d904ef-8c4f-4d6c-873c-320104cd748a")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32644,10 +32650,10 @@
 			)
 		)
 		(property "Footprint" "705530116"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "62a47fc8-6613-468e-87df-f537a5656024")
+			(uuid "19b2576c-b31b-42e7-9821-f5a7592f58c1")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32656,10 +32662,10 @@
 			)
 		)
 		(property "Datasheet" "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/705/70553/705530116_sd.pdf?inline"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "3d5fceb9-a0b0-46f7-91a9-fec096274f22")
+			(uuid "671fd90b-663c-4ea6-9fc8-4d4ba7ce2498")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32668,10 +32674,10 @@
 			)
 		)
 		(property "Description" "Headers & Wire Housings 2.54MM SR RA 12P HDR AU L-PRO SHRD"
-			(at 0 0 90)
+			(at 0 0 -90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "5c5103e2-6fa7-4bb3-bed2-0818715d012c")
+			(uuid "ffea8790-1018-41e2-9459-f7f31ff0e562")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32684,7 +32690,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "d53a7dde-8230-4e5a-be3d-63c524cae406")
+			(uuid "3af65603-7382-4a8f-90f8-8bda5b9ecbe4")
 			(effects
 				(font
 					(size 1 1)
@@ -32697,7 +32703,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "f846c521-84b6-4cfb-862b-3d98dc48b0d6")
+			(uuid "741467e1-c4f9-46c1-80cd-a014fe831df9")
 			(effects
 				(font
 					(size 1 1)
@@ -32710,7 +32716,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "eb2dde53-9750-4876-b701-59e3945d6fa7")
+			(uuid "bea47d7b-265a-4944-83e2-82e20d01c07c")
 			(effects
 				(font
 					(size 1 1)
@@ -32723,7 +32729,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "ca905bbe-ec4d-4752-98e2-488e9982a9c0")
+			(uuid "bdbb1f78-9a0a-4337-a87c-04353f70a630")
 			(effects
 				(font
 					(size 1 1)
@@ -32736,7 +32742,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "c7bc212f-f4bb-4157-9fa1-289e48fd48b7")
+			(uuid "4923c944-74a1-452b-a418-2371e3b4e32d")
 			(effects
 				(font
 					(size 1 1)
@@ -32746,7 +32752,7 @@
 		)
 		(path "/a49fd5bc-fc48-4a0a-be23-412d239df8fb")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.545 12.89)
@@ -32756,7 +32762,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "79c967ff-f3fb-41ce-b843-809863e744d6")
+			(uuid "9027a9fd-3344-4524-afa2-8c069f70b2b4")
 		)
 		(fp_line
 			(start 30.485 12.89)
@@ -32766,7 +32772,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "89f9efd3-361c-4643-b2da-f9ad9d1c3d8a")
+			(uuid "6dbc0b9c-66cd-4838-a054-13df628c0b57")
 		)
 		(fp_line
 			(start -2.545 -0.7)
@@ -32776,7 +32782,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "474c2246-ba1a-4e2e-9b8f-0e8684155af1")
+			(uuid "4b5aa98b-4938-473b-9294-55c639041dc0")
 		)
 		(fp_line
 			(start -1.27 -0.7)
@@ -32786,7 +32792,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "139df8d2-1935-4b07-8525-13d9fc8fa2a5")
+			(uuid "911e5de4-07d7-43b7-b459-ea24d638ec78")
 		)
 		(fp_line
 			(start 30.485 -0.7)
@@ -32796,7 +32802,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "cd7aede1-3b38-4108-85ff-075ddc5177dc")
+			(uuid "5b9ad141-7cee-43c8-a9a8-314e41124816")
 		)
 		(fp_line
 			(start 0 -1.3)
@@ -32806,7 +32812,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "af9d5198-2f5f-4d99-ab9f-05bf52f6d2a7")
+			(uuid "b8a2ea14-4bdc-43f0-a270-e82a5cf1a5d0")
 		)
 		(fp_line
 			(start 0 -1.4)
@@ -32816,7 +32822,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "fbee56f6-c3de-451a-b546-a4624b6de7f0")
+			(uuid "006cb4a3-0641-4632-b284-f27be9a86aaa")
 		)
 		(fp_arc
 			(start 0 -1.3)
@@ -32827,7 +32833,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "22580b6b-cfb8-470c-bbae-647068098684")
+			(uuid "9c93639c-7a83-48e7-bff4-1df8b36eb3f2")
 		)
 		(fp_arc
 			(start 0 -1.4)
@@ -32838,7 +32844,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "ececebce-1819-4dc3-a4fb-521647d31deb")
+			(uuid "1e9a3781-5fbd-4cf8-b8be-f42b0a096fbe")
 		)
 		(fp_line
 			(start -3.545 13.89)
@@ -32848,7 +32854,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "033ac2f4-0427-4395-ac5a-c0ca6c0cf2a9")
+			(uuid "46067e4e-560e-44a5-bb7d-6cf105cbb7ea")
 		)
 		(fp_line
 			(start 31.485 13.89)
@@ -32858,7 +32864,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "0b3916b8-a6f1-4af4-9720-a6603136fdc9")
+			(uuid "31a86f50-a437-45ba-82e8-4c99ca872410")
 		)
 		(fp_line
 			(start -3.545 -1.817)
@@ -32868,7 +32874,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "c467dd88-8cc8-4e51-b3b0-7ff198c5c73d")
+			(uuid "9b5377f5-1b77-4593-bc85-9617fba230f3")
 		)
 		(fp_line
 			(start 31.485 -1.817)
@@ -32878,7 +32884,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "6fecd2de-125f-4cc1-af80-ccac9f617b62")
+			(uuid "f9fb5887-ffe2-411c-9885-f824517777de")
 		)
 		(fp_line
 			(start -2.545 12.89)
@@ -32888,7 +32894,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "70ae0735-bacd-40e8-a6fd-3af4279d5f0d")
+			(uuid "0a6ef9d8-dd05-41fe-b877-b3e559c3fd87")
 		)
 		(fp_line
 			(start 30.485 12.89)
@@ -32898,7 +32904,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "f59d4f09-c659-4af8-8bea-97b00b9891f9")
+			(uuid "ee55d23e-5ddd-4f62-9b3b-fb7726c134ab")
 		)
 		(fp_line
 			(start -2.545 -0.7)
@@ -32908,7 +32914,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "81bce060-b616-4001-9f82-f546de85b93c")
+			(uuid "d86318c4-9d3e-4f21-ba52-e40e4d249c54")
 		)
 		(fp_line
 			(start 30.485 -0.7)
@@ -32918,12 +32924,12 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "7dfadedd-29c3-41dd-af3b-760302279c5a")
+			(uuid "5f57e07d-fbad-46e4-9924-b65fe0efaaee")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 13.97 6.036 90)
+			(at 13.97 6.036 -90)
 			(layer "F.Fab")
-			(uuid "3b61a352-36f6-406a-a003-e126f7519f87")
+			(uuid "4872541a-575f-4f57-9be7-78805f763caf")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -32940,7 +32946,7 @@
 			(net 2 "GND")
 			(pinfunction "1")
 			(pintype "passive")
-			(uuid "1f3e56c4-eb37-4b94-93b3-8965d962e3f6")
+			(uuid "fbd79fa8-3725-4ba2-a263-27be56012a82")
 		)
 		(pad "2" thru_hole circle
 			(at 2.54 0 270)
@@ -32951,7 +32957,7 @@
 			(net 1 "+12V")
 			(pinfunction "2")
 			(pintype "passive")
-			(uuid "49faac1a-30dd-4b05-88f9-84698ce7e358")
+			(uuid "ec5db2f3-14ab-4f23-9216-c8a6d5c87546")
 		)
 		(pad "3" thru_hole circle
 			(at 5.08 0 270)
@@ -32962,7 +32968,7 @@
 			(net 49 "/OAC")
 			(pinfunction "3")
 			(pintype "passive")
-			(uuid "720a3210-6e84-4ab1-9970-af86e4c1314a")
+			(uuid "8f0b297f-4eff-49e6-82ce-bcda5703e2f1")
 		)
 		(pad "4" thru_hole circle
 			(at 7.62 0 270)
@@ -32973,7 +32979,7 @@
 			(net 49 "/OAC")
 			(pinfunction "4")
 			(pintype "passive")
-			(uuid "dd5a523c-3d2f-4689-b448-815168b6f369")
+			(uuid "6e5d5e9d-5c0e-4e72-97f3-e7080332d45a")
 		)
 		(pad "5" thru_hole circle
 			(at 10.16 0 270)
@@ -32984,7 +32990,7 @@
 			(net 48 "/OA8")
 			(pinfunction "5")
 			(pintype "passive")
-			(uuid "c4d2ec6d-997a-41b1-9a81-f97e34c90060")
+			(uuid "eee0ce76-6c08-489e-97cb-af748933f748")
 		)
 		(pad "6" thru_hole circle
 			(at 12.7 0 270)
@@ -32995,7 +33001,7 @@
 			(net 47 "/OA7")
 			(pinfunction "6")
 			(pintype "passive")
-			(uuid "dce7523e-87b8-40d2-a91e-1c4f09ded102")
+			(uuid "5ce25ed3-4f50-4be9-8dc7-f51b68396279")
 		)
 		(pad "7" thru_hole circle
 			(at 15.24 0 270)
@@ -33006,7 +33012,7 @@
 			(net 46 "/OA6")
 			(pinfunction "7")
 			(pintype "passive")
-			(uuid "cbddcfa2-427d-4d25-addb-be33cb6331aa")
+			(uuid "c0896a0b-016a-4564-be3e-dc4c9187f42c")
 		)
 		(pad "8" thru_hole circle
 			(at 17.78 0 270)
@@ -33017,7 +33023,7 @@
 			(net 45 "/OA5")
 			(pinfunction "8")
 			(pintype "passive")
-			(uuid "368da74a-68fe-4237-9a91-a84581824925")
+			(uuid "6fc7dc87-9aa4-4434-a9c5-bc64e78979a8")
 		)
 		(pad "9" thru_hole circle
 			(at 20.32 0 270)
@@ -33028,7 +33034,7 @@
 			(net 44 "/OA4")
 			(pinfunction "9")
 			(pintype "passive")
-			(uuid "89eec93d-4b2b-4087-a0be-7e5b25aec37d")
+			(uuid "3200ee90-c105-4153-8188-762803def7f0")
 		)
 		(pad "10" thru_hole circle
 			(at 22.86 0 270)
@@ -33039,7 +33045,7 @@
 			(net 43 "/OA3")
 			(pinfunction "10")
 			(pintype "passive")
-			(uuid "98968cbe-da48-419d-a031-8af245dab586")
+			(uuid "c4591c29-4b0d-406c-9992-6dcc62eacd98")
 		)
 		(pad "11" thru_hole circle
 			(at 25.4 0 270)
@@ -33050,7 +33056,7 @@
 			(net 42 "/OA2")
 			(pinfunction "11")
 			(pintype "passive")
-			(uuid "f9bb1275-637b-4582-a2ab-a1e86ec2b34e")
+			(uuid "a20878a0-a087-4feb-92f1-471a45927c1c")
 		)
 		(pad "12" thru_hole circle
 			(at 27.94 0 270)
@@ -33061,17 +33067,17 @@
 			(net 41 "/OA1")
 			(pinfunction "12")
 			(pintype "passive")
-			(uuid "f5673c9d-8321-4739-bc30-9c8faef41dbe")
+			(uuid "81187f59-05e0-452e-9e00-f06ab1900182")
 		)
-		(model "C:/Users/Jeff/Desktop/relays/LIB_70553-0116/70553-0116/3D/70553-0116.stp"
+		(model "70553-0116.stp"
 			(offset
-				(xyz 14 -7.5 3)
+				(xyz 0 0 0)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz -90 0 0)
+				(xyz 0 0 0)
 			)
 		)
 	)
@@ -33084,7 +33090,7 @@
 		(property "Reference" "J2"
 			(at 13.97 6.036 90)
 			(layer "F.SilkS")
-			(uuid "002d449f-2915-4ca1-a7fe-0e1916e16498")
+			(uuid "fcbaf15f-1980-4178-8325-1b20cf63f783")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33096,7 +33102,7 @@
 			(at 13.97 6.036 90)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "0aa25f10-38ea-4873-8deb-0eb4efccf7a0")
+			(uuid "659c2321-49c6-411d-b99d-e6ba93f69e0e")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33108,7 +33114,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "63c1e122-4c7b-4051-8168-68d455b36ad7")
+			(uuid "a578953b-586a-4d4c-9d1f-be396aabdcb9")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33120,7 +33126,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "7da16883-6bc2-4b64-a993-a4272229baec")
+			(uuid "e6093195-5211-413f-94c8-7f04bff8ef28")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33132,7 +33138,7 @@
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "685e4ad0-0736-4054-9861-0eba5fc8e1c9")
+			(uuid "e3ad5e7d-7b66-4ed3-ba31-0ee3cd59421b")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33145,7 +33151,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "81699541-632b-4760-9aae-1a3ed649b177")
+			(uuid "8071ca2a-0acb-41ab-bc83-6ad8325158de")
 			(effects
 				(font
 					(size 1 1)
@@ -33158,7 +33164,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "dee33ff6-0f38-4a81-87ae-53cf2ba0fef9")
+			(uuid "d3fb9e30-214d-4aff-b27c-e4f776e66cf9")
 			(effects
 				(font
 					(size 1 1)
@@ -33171,7 +33177,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "b49dc8bf-45ff-4762-a24a-988c331081ef")
+			(uuid "ddae51bc-08bf-4bc0-822a-1c7744644339")
 			(effects
 				(font
 					(size 1 1)
@@ -33184,7 +33190,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "1d131be6-7a28-4e9a-8fc3-d4ef427952be")
+			(uuid "9d0d7eb3-f091-4642-ac91-c7b72183b823")
 			(effects
 				(font
 					(size 1 1)
@@ -33197,7 +33203,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "aaa14b97-0e49-4169-8fb1-7ff4990555ae")
+			(uuid "a5339746-a978-4507-ae45-23666383b361")
 			(effects
 				(font
 					(size 1 1)
@@ -33207,7 +33213,7 @@
 		)
 		(path "/85c368b9-fecc-4838-a219-6e1b0cfa3816")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0 -1.4)
@@ -33217,7 +33223,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "293dbf35-19ae-4f98-a4d7-185d572bf624")
+			(uuid "9f1d3bab-3819-444a-b604-3c42d52ea741")
 		)
 		(fp_line
 			(start 0 -1.3)
@@ -33227,7 +33233,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "6f885db7-86bc-4557-9dd7-76fb0d35dda8")
+			(uuid "d467548b-e762-41f6-98c2-7f12678868ab")
 		)
 		(fp_line
 			(start 30.485 -0.7)
@@ -33237,7 +33243,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "b053be3c-154f-4576-a481-8c20a17a3a8d")
+			(uuid "fc27bc15-e24f-45c6-9582-648c5294db87")
 		)
 		(fp_line
 			(start -1.27 -0.7)
@@ -33247,7 +33253,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "6f9a2d69-90b2-4852-be4a-bfad13d7ebc7")
+			(uuid "2908b373-01bb-4595-a2b1-09d5f46dc67f")
 		)
 		(fp_line
 			(start -2.545 -0.7)
@@ -33257,7 +33263,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "e09d9613-49c4-456a-ad92-b16979707634")
+			(uuid "10b436ce-b489-4cc6-91b4-f263fc8f8c38")
 		)
 		(fp_line
 			(start 30.485 12.89)
@@ -33267,7 +33273,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "49218578-48a5-4420-9a84-c1460f2a6d39")
+			(uuid "5f398b0b-90a4-488e-986e-5429023301c3")
 		)
 		(fp_line
 			(start -2.545 12.89)
@@ -33277,7 +33283,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "867fb225-b7ea-488b-a1eb-d8144ba6f3a0")
+			(uuid "79a26dc0-dbb7-4d3f-a850-61faa7f156d6")
 		)
 		(fp_arc
 			(start 0 -1.4)
@@ -33288,7 +33294,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "33a54964-f330-4fcd-bad4-e92bf4502ae1")
+			(uuid "d0f2d6ff-acaf-4cc1-b140-6fa716ba7482")
 		)
 		(fp_arc
 			(start 0 -1.3)
@@ -33299,7 +33305,7 @@
 				(type solid)
 			)
 			(layer "F.SilkS")
-			(uuid "4ee74126-2642-4d0e-a126-939a1826dc14")
+			(uuid "13bd67a9-3f25-4ae2-81a9-5dec6fdd3814")
 		)
 		(fp_line
 			(start 31.485 -1.817)
@@ -33309,7 +33315,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "75cc429d-9842-46cb-8ea9-1cd35d943501")
+			(uuid "8dde2a0c-3dde-406d-8e64-6fba7f0cafb5")
 		)
 		(fp_line
 			(start -3.545 -1.817)
@@ -33319,7 +33325,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "01c6c4a3-99b1-4f41-8dcb-21093085f2bf")
+			(uuid "b0b083b9-a28f-45a6-abc8-4be4eadfe054")
 		)
 		(fp_line
 			(start 31.485 13.89)
@@ -33329,7 +33335,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "b55e8b58-299e-4408-b5fa-b05610623aed")
+			(uuid "7bcf4d54-1f87-4c17-bee5-699e460a0219")
 		)
 		(fp_line
 			(start -3.545 13.89)
@@ -33339,7 +33345,7 @@
 				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "883a7bd5-5a2e-41fa-a20f-18c6834a8afc")
+			(uuid "2510e203-b290-4983-b58c-7a8b2d95f9fc")
 		)
 		(fp_line
 			(start 30.485 -0.7)
@@ -33349,7 +33355,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "50186511-9a11-4b02-8de1-34f1f19e3594")
+			(uuid "41f1800a-d214-4f42-8c20-173df9c24684")
 		)
 		(fp_line
 			(start -2.545 -0.7)
@@ -33359,7 +33365,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "930048ce-031c-4fde-a528-02d90bd7da5e")
+			(uuid "68237190-95d7-424e-b17a-6e3ba96e62eb")
 		)
 		(fp_line
 			(start 30.485 12.89)
@@ -33369,7 +33375,7 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "cc49d7db-5175-4be7-ae99-207706a841eb")
+			(uuid "11ae39c5-1ec2-4c90-8a25-b72a90b7b7ad")
 		)
 		(fp_line
 			(start -2.545 12.89)
@@ -33379,12 +33385,12 @@
 				(type solid)
 			)
 			(layer "F.Fab")
-			(uuid "365a873e-ff62-4966-9e43-c3a5dc800f79")
+			(uuid "899aa4c5-8d53-4240-845f-2b8b15a7252a")
 		)
 		(fp_text user "${REFERENCE}"
 			(at 13.97 6.036 90)
 			(layer "F.Fab")
-			(uuid "0f1e355a-18e3-4e3e-bb7d-a3559db1f3a7")
+			(uuid "a8546b5f-304d-48bf-add0-6b187c465f71")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -33401,7 +33407,7 @@
 			(net 2 "GND")
 			(pinfunction "1")
 			(pintype "passive")
-			(uuid "66888108-3e91-4d02-a225-a91949764d0e")
+			(uuid "53026db5-2190-47a1-83ed-e5ffac20b38f")
 		)
 		(pad "2" thru_hole circle
 			(at 2.54 0 90)
@@ -33412,7 +33418,7 @@
 			(net 1 "+12V")
 			(pinfunction "2")
 			(pintype "passive")
-			(uuid "f471a454-ce3b-4c9c-ae8d-4c1afbf2b224")
+			(uuid "18c52a82-4a4d-416b-92c3-8d2a89f7529b")
 		)
 		(pad "3" thru_hole circle
 			(at 5.08 0 90)
@@ -33423,7 +33429,7 @@
 			(net 58 "/OBC")
 			(pinfunction "3")
 			(pintype "passive")
-			(uuid "c2ba35e3-8354-4299-b3d5-cd814b0a5538")
+			(uuid "eb0e0261-05e4-4812-8db9-aaa3dd7476d0")
 		)
 		(pad "4" thru_hole circle
 			(at 7.62 0 90)
@@ -33434,7 +33440,7 @@
 			(net 58 "/OBC")
 			(pinfunction "4")
 			(pintype "passive")
-			(uuid "e540cd6b-0dd5-4f74-8c25-c128434e2a76")
+			(uuid "1f66b223-5f0a-4f4a-9e62-d0ec4b9ba093")
 		)
 		(pad "5" thru_hole circle
 			(at 10.16 0 90)
@@ -33445,7 +33451,7 @@
 			(net 57 "/OB8")
 			(pinfunction "5")
 			(pintype "passive")
-			(uuid "13dadc46-f4af-4542-a6f6-ac6732c492bc")
+			(uuid "9140aa93-6bf5-418b-847b-6fcc1688661a")
 		)
 		(pad "6" thru_hole circle
 			(at 12.7 0 90)
@@ -33456,7 +33462,7 @@
 			(net 56 "/OB7")
 			(pinfunction "6")
 			(pintype "passive")
-			(uuid "1c447a3a-3c4a-49c2-b40c-2b50cdff41c9")
+			(uuid "ecbfd1e6-2e33-48f6-9984-4b421cb3e260")
 		)
 		(pad "7" thru_hole circle
 			(at 15.24 0 90)
@@ -33467,7 +33473,7 @@
 			(net 55 "/OB6")
 			(pinfunction "7")
 			(pintype "passive")
-			(uuid "810b64f6-e1d9-4c12-a204-87937b2e780c")
+			(uuid "57c3936f-cd59-42ca-b151-22c129baedd9")
 		)
 		(pad "8" thru_hole circle
 			(at 17.78 0 90)
@@ -33478,7 +33484,7 @@
 			(net 54 "/OB5")
 			(pinfunction "8")
 			(pintype "passive")
-			(uuid "a6c7c955-4421-40ae-9800-527d8af1d12b")
+			(uuid "514ee08a-6602-4afb-8c2c-045c74398f88")
 		)
 		(pad "9" thru_hole circle
 			(at 20.32 0 90)
@@ -33489,7 +33495,7 @@
 			(net 53 "/OB4")
 			(pinfunction "9")
 			(pintype "passive")
-			(uuid "748494c9-797a-4a13-a750-7ca794dc7d8f")
+			(uuid "b8ce6369-06fb-4e07-a28e-f74db05efc90")
 		)
 		(pad "10" thru_hole circle
 			(at 22.86 0 90)
@@ -33500,7 +33506,7 @@
 			(net 52 "/OB3")
 			(pinfunction "10")
 			(pintype "passive")
-			(uuid "4ababfcd-5b8d-43de-b94b-4cd9b35900f3")
+			(uuid "a421056a-da04-4fa7-8ff9-d6425d4c63ba")
 		)
 		(pad "11" thru_hole circle
 			(at 25.4 0 90)
@@ -33511,7 +33517,7 @@
 			(net 51 "/OB2")
 			(pinfunction "11")
 			(pintype "passive")
-			(uuid "eb7fe95b-c8bc-4314-ae77-1683c0837ba8")
+			(uuid "f62c9f89-b133-4cd4-8036-b4e0dda2dc85")
 		)
 		(pad "12" thru_hole circle
 			(at 27.94 0 90)
@@ -33522,17 +33528,17 @@
 			(net 50 "/OB1")
 			(pinfunction "12")
 			(pintype "passive")
-			(uuid "676e9d88-b744-4368-9c5d-66d7d07a5ece")
+			(uuid "5bc46930-fe5a-44ae-b584-46bb4f5ab0f6")
 		)
-		(model "C:/Users/Jeff/Desktop/relays/LIB_70553-0116/70553-0116/3D/70553-0116.stp"
+		(model "70553-0116.stp"
 			(offset
-				(xyz 14 -7 3)
+				(xyz 0 0 0)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz -90 0 0)
+				(xyz 0 0 0)
 			)
 		)
 	)
@@ -33603,7 +33609,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/9757ad9d-54c4-4aff-927a-bfbd730ce6aa")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -33856,7 +33862,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/bd8c51a0-7734-4533-9509-cf4bdc3f92a7")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.09 1.47)
@@ -34212,7 +34218,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/26c101d0-65f8-474e-ae4e-f70001e48431")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -34484,7 +34490,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/b957211a-4a79-49ad-b635-7070eef7f30c")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -34725,7 +34731,7 @@
 		)
 		(path "/57f9e7c8-eea8-47b7-bcc5-77e0b47fd279")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 2.94 7.98)
@@ -35079,7 +35085,7 @@
 		(property ki_fp_filters "CP_*")
 		(path "/cb908a75-2e33-4ee6-b7b6-5be6f2d794bc")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.29 -2.58)
@@ -36444,7 +36450,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/d1b4c0f8-a4fe-47ae-a41a-867b7d8adaee")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.08 -1.37)
@@ -36666,7 +36672,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "8ec86874-a206-42e0-a3b7-92414dc6ec1e")
@@ -36728,7 +36734,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/464ca378-93fe-4c87-9bef-07a2499472e2")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -37024,7 +37030,7 @@
 		(property ki_fp_filters "D*DO?41*")
 		(path "/d5c0b34e-2446-4752-9160-ba4b9b538568")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 6.53 -1.47)
@@ -37440,7 +37446,7 @@
 		)
 		(path "/5ac6de54-8463-42b1-b8b0-d03507637b40")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.1 0)
@@ -37784,7 +37790,7 @@
 		(property ki_fp_filters "TO-???* *_Diode_* *SingleDiode* D_*")
 		(path "/86121692-5ee4-4492-9a8d-22357a520b23")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 9 1.92)
@@ -38140,7 +38146,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/5e44e876-a223-49d4-95e8-ecfd8fb8eb0a")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -38412,7 +38418,7 @@
 		(property ki_fp_filters "TO?92*")
 		(path "/f0acee32-43b1-4914-bead-f225a595a457")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -0.53 1.85)
@@ -38653,7 +38659,7 @@
 		(property ki_fp_filters "CP_*")
 		(path "/23ff1de4-0923-4104-a4ff-05e6f57d02a9")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.554775 -1.475)
@@ -40018,7 +40024,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/d0afaa3c-4b19-444b-9554-9dcd7491b8cd")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -40240,7 +40246,7 @@
 				)
 			)
 		)
-		(property "Value" "330"
+		(property "Value" "1K"
 			(at 3.81 2.37 90)
 			(layer "F.Fab")
 			(uuid "8bfe6e28-a7b3-4937-b507-7d1b59ee570e")
@@ -40302,7 +40308,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/330930aa-ecde-4d37-937f-d899beb4d585")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -40574,7 +40580,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/2035fbfb-5863-4818-9191-af397b9b477d")
 		(sheetname "Root")
-		(sheetfile "16-relays.kicad_sch")
+		(sheetfile "AntennaSwitchControl.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 0.54 1.37)
@@ -41588,6 +41594,19 @@
 		)
 		(layer "Edge.Cuts")
 		(uuid "ff1d52d1-42ed-4bfa-bcdc-f5d55d68e504")
+	)
+	(gr_text "V 0.0.2 2024-10-30"
+		(at 115.316 124.587 0)
+		(layer "F.SilkS")
+		(uuid "51dbcb6d-667b-413d-8d67-9e61ca329b4d")
+		(effects
+			(font
+				(size 1.5 1.5)
+				(thickness 0.3)
+				(bold yes)
+			)
+			(justify left bottom)
+		)
 	)
 	(gr_text "N1KDO 2024\n"
 		(at 132.5 91.5 0)
@@ -46243,7 +46262,7 @@
 		(end 135.61 44.99)
 		(width 0.508)
 		(layer "B.Cu")
-		(net 98)
+		(net 96)
 		(uuid "e441ac44-62b7-4618-8c2b-b3f792b1aa48")
 	)
 	(segment

@@ -14,10 +14,10 @@ request an antenna for that band.  If no antenna is available, the band decoder
 will activate the K3s' "TX INHIBIT" lead and prevent the radio from transmitting
 into the wrong antenna or no antenna.
 
-This runs on the [N1KDO 16 Relays Board](https://github.com/n1kdo/16-relays/)
+[Bill of Materials](BOM.md)
 
-The Band Selector (radio interface) is [here](https://github.com/n1kdo/BandSelector).  
-This is the other component for this project.
+The Band Selector (radio interface) is [here](https://github.com/n1kdo/BandSelector) -- 
+This is the other component for this project, you will need _two_ -- one for each radio.
 
 ## Board Image
 ![Board Image](images/board-image.jpg)
