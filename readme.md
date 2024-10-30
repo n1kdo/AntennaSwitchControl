@@ -16,6 +16,9 @@ into the wrong antenna or no antenna.
 
 This runs on the [N1KDO 16 Relays Board](https://github.com/n1kdo/16-relays/)
 
+The Band Selector (radio interface) is [here](https://github.com/n1kdo/BandSelector).  
+This is the other component for this project.
+
 ## Board Image
 ![Board Image](board-image.jpg)
 
