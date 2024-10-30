@@ -19,18 +19,22 @@ This runs on the [N1KDO 16 Relays Board](https://github.com/n1kdo/16-relays/)
 The Band Selector (radio interface) is [here](https://github.com/n1kdo/BandSelector).  
 This is the other component for this project.
 
+![Interfaced to Six Pak](images/with-six-pak.jpg)
+
+# UI Images
+
 ## Board Image
-![Board Image](board-image.jpg)
+![Board Image](images/board-image.jpg)
 
 ## "Control Panel" Image
-![Control UI](control-ui.png)
+![Control UI](images/control-ui.png)
 
 ## Antenna Setup UI
-![Antenna Setup UI](antenna-ui.png)
+![Antenna Setup UI](images/antenna-ui.png)
 
 ## Radio Setup UI
-![Radio Setup UI](radios-ui.png)
+![Radio Setup UI](images/radios-ui.png)
 
 ## Network Setup UI
-![Network Setup UI](network-ui.png)
+![Network Setup UI](images/network-ui.png)
 
