@@ -198,6 +198,13 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+        hostname = args.get('hostname')
+        if hostname is not None:
+            if 0 < len(hostname) < 64:
+                config['hostname'] = hostname
+                dirty = True
+            else:
+                errors = True
         ap_mode_arg = args.get('ap_mode')
         if ap_mode_arg is not None:
             ap_mode = True if ap_mode_arg == '1' else False

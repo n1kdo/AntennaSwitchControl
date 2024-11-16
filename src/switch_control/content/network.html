@@ -134,6 +134,7 @@
                 secret = config.secret;
             }
             document.getElementById("secret_input").value = secret;
+            document.getElementById("hostname_input").value = config.hostname;
             document.getElementById("tcp_port_input").value = config.tcp_port;
             document.getElementById("web_port_input").value = config.web_port;
             let dhcp = config.dhcp
@@ -155,6 +156,7 @@
         function set_config() {
             let ssid = document.getElementById("ssid_input").value
             let secret = document.getElementById("secret_input").value
+            let hostname = document.getElementById("hostname_input").value
             let tcp_port = document.getElementById("tcp_port_input").value
             let web_port = document.getElementById("web_port_input").value
             let dhcp = document.getElementById("dhcp_input").checked;
@@ -165,6 +167,10 @@
             let dns_server = document.getElementById("dns_server_input").value;
             if (ssid.length < 1 || ssid.length > 64) {
                 alert("Invalid SSID!");
+                return;
+            }
+            if (hostname.length < 1 || hostname.length > 64) {
+                alert("Invalid hostname!");
                 return;
             }
             if (secret.length > 64) {
@@ -205,6 +211,7 @@
             let config = {};
             config.SSID = ssid;
             config.secret = secret;
+            config.hostname = hostname;
             config.tcp_port = tcp_port;
             config.web_port = web_port;
             config.dhcp = dhcp_val;
@@ -275,6 +282,10 @@
                     <input type="password" id="secret_input" maxlength="64">
                 </p>
                 <p>
+                    <label for="hostname_input">Hostname:</label>
+                    <input type="text" id="hostname_input" maxlength="64">
+                </p>
+                <p>
                     <label for="tcp_port_input">TCP Port:</label>
                     <input type="number" id="tcp_port_input" min="0" max="65535">
                 </p>
@@ -321,7 +332,7 @@
                 <span class="selected">Network</span>
                 <a href="files.html">Files</a>
             </div>
-            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
+            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20241116</div>
         </div>
     </body>
 </html>
