@@ -1,0 +1,24 @@
+{
+  "source_directory" : "../switch_control/",
+  "files": [
+    "content/",
+    "data/",
+    "http_server.py",
+    "main.py",
+    "micro_logging.py",
+    "morse_code.py",
+    "picow_network.py",
+    "relays.py",
+    "utils.py",
+    "content/antennas.html",
+    "content/favicon.ico",
+    "content/files.html",
+    "content/network.html",
+    "content/radios.html",
+    "content/switch.html"
+  ],
+  "special_files": [
+    "data/config.json",
+    "data/port_settings.txt"
+  ]
+}
