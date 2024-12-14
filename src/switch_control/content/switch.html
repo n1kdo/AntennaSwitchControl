@@ -63,7 +63,7 @@
         font-weight: bold;
         border-bottom: 24px;
     }
-    
+
     div.refresh_radio {
         margin: 10px 100px;
         text-align: left;
@@ -74,6 +74,17 @@
         font-weight: bold;
         text-align: center;
         width: 10em;
+    }
+
+    .no_antenna_name {
+        color: red;
+        font-weight: bold;
+        text-align: center;
+        width: 10em;
+    }
+
+    .no_antenna_radio {
+        accent-color: red;
     }
 
     .radio_name {
@@ -123,7 +134,7 @@
             }
         }
 
-        xmlHttp.open("POST",  "/api/select_antenna", true);
+        xmlHttp.open("POST", "/api/select_antenna", true);
         xmlHttp.setRequestHeader("Content-Type", "application/json");
         xmlHttp.send(payload);
         // update the UI after a short period
@@ -132,7 +143,7 @@
             update_timeout = 0;
         }
         update_timeout = setTimeout(get_status, 500);
-      }
+    }
 
     function process_get_status_response(message) {
         let status_data = JSON.parse(message);
@@ -150,6 +161,10 @@
             element_name = "r2_a" + (i + 1) + "_radio";
             document.getElementById(element_name).checked = ((i + 1) === radio_2_antenna);
         }
+        // update no antenna selection
+        document.getElementById("a0_name").innerHTML = "No Antenna";
+        document.getElementById("r1_a0_radio").checked = (radio_1_antenna === 0);
+        document.getElementById("r2_a0_radio").checked = (radio_2_antenna === 0);
 
         let button_secs = update_secs;
         if (auto_updates > 0) {
@@ -205,48 +220,56 @@
             <td>&nbsp;</td>
             <td class="table-heading">Antenna</td>
             <td>&nbsp;</td>
-            <td class="table-heading">Radio</td></tr>
+            <td class="table-heading">Radio</td>
+        </tr>
         <tr>
-            <td rowspan="8" class="radio_name" id="r1_name"></td>
-            <td><input type="radio" name="r1_a1_radio" id="r1_a1_radio" value="r1a1" onclick="select_antenna(1, 1)"></td>
+            <td rowspan="9" class="radio_name" id="r1_name"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a1_radio" value="r1a1" onclick="select_antenna(1, 1)"></td>
             <td class="antenna_name" id="a1_name"></td>
-            <td><input type="radio" name="r2_a1_radio" id="r2_a1_radio" value="r1a2" onclick="select_antenna(2, 1)"></td>
-            <td rowspan="8" class="radio_name" id="r2_name"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a1_radio" value="r1a2" onclick="select_antenna(2, 1)"></td>
+            <td rowspan="9" class="radio_name" id="r2_name"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a2_radio" id="r1_a2_radio" value="r1a2" onclick="select_antenna(1, 2)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a2_radio" value="r1a2" onclick="select_antenna(1, 2)"></td>
             <td class="antenna_name" id="a2_name"></td>
-            <td><input type="radio" name="r1_a2_radio" id="r2_a2_radio" value="r2a2" onclick="select_antenna(2, 2)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a2_radio" value="r2a2" onclick="select_antenna(2, 2)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a3_radio" id="r1_a3_radio" value="r1a3" onclick="select_antenna(1, 3)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a3_radio" value="r1a3" onclick="select_antenna(1, 3)"></td>
             <td class="antenna_name" id="a3_name"></td>
-            <td><input type="radio" name="r1_a3_radio" id="r2_a3_radio" value="r2a3" onclick="select_antenna(2, 3)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a3_radio" value="r2a3" onclick="select_antenna(2, 3)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a4_radio" id="r1_a4_radio" value="r1a4" onclick="select_antenna(1, 4)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a4_radio" value="r1a4" onclick="select_antenna(1, 4)"></td>
             <td class="antenna_name" id="a4_name"></td>
-            <td><input type="radio" name="r1_a4_radio" id="r2_a4_radio" value="r2a4" onclick="select_antenna(2, 4)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a4_radio" value="r2a4" onclick="select_antenna(2, 4)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a5_radio" id="r1_a5_radio" value="r1a5" onclick="select_antenna(1, 5)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a5_radio" value="r1a5" onclick="select_antenna(1, 5)"></td>
             <td class="antenna_name" id="a5_name"></td>
-            <td><input type="radio" name="r1_a5_radio" id="r2_a5_radio" value="r2a5" onclick="select_antenna(2, 5)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a5_radio" value="r2a5" onclick="select_antenna(2, 5)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a6_radio" id="r1_a6_radio" value="r1a6" onclick="select_antenna(1, 6)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a6_radio" value="r1a6" onclick="select_antenna(1, 6)"></td>
             <td class="antenna_name" id="a6_name"></td>
-            <td><input type="radio" name="r1_a6_radio" id="r2_a6_radio" value="r2a6" onclick="select_antenna(2, 6)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a6_radio" value="r2a6" onclick="select_antenna(2, 6)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a7_radio" id="r1_a7_radio" value="r1a7" onclick="select_antenna(1, 7)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a7_radio" value="r1a7" onclick="select_antenna(1, 7)"></td>
             <td class="antenna_name" id="a7_name"></td>
-            <td><input type="radio" name="r1_a7_radio" id="r2_a7_radio" value="r2a7" onclick="select_antenna(2, 7)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a7_radio" value="r2a7" onclick="select_antenna(2, 7)"></td>
         </tr>
         <tr>
-            <td><input type="radio" name="r1_a8_radio" id="r1_a8_radio" value="r1a8" onclick="select_antenna(1, 8)"></td>
+            <td><input type="radio" name="r1_radio" id="r1_a8_radio" value="r1a8" onclick="select_antenna(1, 8)"></td>
             <td class="antenna_name" id="a8_name"></td>
-            <td><input type="radio" name="r1_a8_radio" id="r2_a8_radio" value="r2a8" onclick="select_antenna(2, 8)"></td>
+            <td><input type="radio" name="r2_radio" id="r2_a8_radio" value="r2a8" onclick="select_antenna(2, 8)"></td>
+        </tr>
+        <tr>
+            <td><input type="radio" class="no_antenna_radio" name="r1_radio" id="r1_a0_radio" value="r1a0"
+                       onclick="select_antenna(1, 0)"></td>
+            <td class="no_antenna_name" id="a0_name">No Antenna</td>
+            <td><input type="radio" class="no_antenna_radio" name="r2_radio" id="r2_a0_radio" value="r2a0"
+                       onclick="select_antenna(2, 0)"></td>
         </tr>
     </table>
 </div>
@@ -269,7 +292,7 @@
         <a href="network.html">Network</a>
         <a href="files.html">Files</a>
     </div>
-    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
+    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20241214</div>
 </div>
 </body>
 </html>

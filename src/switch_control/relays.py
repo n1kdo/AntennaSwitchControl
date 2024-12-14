@@ -23,14 +23,17 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.9'
+__version__ = '0.1.0'
 
 from utils import upython
+import micro_logging as logging
 
 if not upython:
     from not_machine import machine
 else:
     import machine
+
+NUM_RELAYS = 8
 
 a_pins = [
     machine.Pin(13, machine.Pin.OUT, value=0),  # GP9 pin 17
@@ -57,12 +60,16 @@ b_pins = [
 
 
 def set_port(radio: int, port_selected: int):
-    pins = None
-    if radio == 1:
-        pins = a_pins
-    elif radio == 2:
-        pins = b_pins
-    if pins is not None:
-        for i in range(len(pins)):
-            pins[i].off()
-        pins[port_selected - 1].on()
+    if 0 <= port_selected < NUM_RELAYS:
+        pins = None
+        if radio == 1:
+            pins = a_pins
+        elif radio == 2:
+            pins = b_pins
+        if pins is not None:
+            for i in range(len(pins)):
+                pins[i].off()
+            if port_selected > 0:
+                pins[port_selected - 1].on()
+    else:
+        logging.error(f'Invalid port_selected {port_selected}')

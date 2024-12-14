@@ -167,7 +167,10 @@ class PicowNetwork:
             max_wait = 15
             # wl_status = self.wlan.status()
             logging.info(f'...connecting to "{self.ssid}"...', 'PicowNetwork:connect_to_network')
-            self.wlan.connect(self.ssid, self.secret)
+            try:
+                self.wlan.connect(self.ssid, self.secret)
+            except OSError as ose:
+                logging.error(f'Failed to connect: {ose}.', 'PicowNetwork:connect_to_network')
             last_wl_status = -9
             while max_wait > 0:
                 wl_status = self.wlan.status()

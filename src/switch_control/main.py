@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024 J. B. Otterson N1KDO.'
-__version__ = '0.0.2'
+__version__ = '0.0.9'
 
 #
 # Copyright 2022, 2024 J. B. Otterson N1KDO.
@@ -35,7 +35,8 @@ from http_server import (HttpServer,
                          api_rename_file_callback,
                          api_remove_file_callback,
                          api_upload_file_callback,
-                         api_get_files_callback)
+                         api_get_files_callback,
+                         HTTP_STATUS_OK, HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CONFLICT)
 from morse_code import MorseCode
 from picow_network import PicowNetwork
 from utils import milliseconds, upython, safe_int
@@ -103,11 +104,11 @@ def read_antennas_selected() -> []:
     return result
 
 
-def write_antennas_selected(antennas_selected):
+def write_antennas_selected(new_antennas_selected):
     try:
         with open(PORT_SETTINGS_FILE, 'w') as port_settings_file:
-            port_settings_file.write(f'{antennas_selected[0]}\n')
-            port_settings_file.write(f'{antennas_selected[1]}\n')
+            port_settings_file.write(f'{new_antennas_selected[0]}\n')
+            port_settings_file.write(f'{new_antennas_selected[1]}\n')
     except Exception as ex:
         logging.error(f'failed to write selected antenna data: {type(ex)}, {ex}',
                       'main:write_antennas_selected()')
@@ -162,7 +163,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         payload = read_config()
         # payload.pop('secret')  # do not return the secret
         response = json.dumps(payload).encode('utf-8')
-        http_status = 200
+        http_status = HTTP_STATUS_OK
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == 'POST':
         config = read_config()
@@ -256,15 +257,15 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             if dirty:
                 save_config(config)
             response = b'ok\r\n'
-            http_status = 200
+            http_status = HTTP_STATUS_OK
             bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
         else:
             response = b'parameter out of range\r\n'
-            http_status = 400
+            http_status = HTTP_STATUS_BAD_REQUEST
             bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     else:
         response = b'GET or PUT only.'
-        http_status = 400
+        http_status = HTTP_STATUS_BAD_REQUEST
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
 
@@ -275,10 +276,10 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
     if upython:
         keep_running = False
         response = b'ok\r\n'
-        http_status = 200
+        http_status = HTTP_STATUS_OK
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     else:
-        http_status = 400
+        http_status = HTTP_STATUS_BAD_REQUEST
         response = b'not permitted except on PICO-W'
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     return bytes_sent, http_status
@@ -291,20 +292,21 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                'antenna_names': config['antenna_names'],
                'antenna_bands': config['antenna_bands'],
                }
-    response = json.dumps(payload).encode('utf-8')
-    http_status = 200
-    bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
-    return bytes_sent, http_status
+    bytes_sent = http.send_simple_response(writer,
+                                           HTTP_STATUS_OK,
+                                           http.CT_APP_JSON,
+                                           json.dumps(payload).encode('utf-8'))
+    return bytes_sent, HTTP_STATUS_OK
 
 
 async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
     global antennas_selected
     radio = safe_int(args.get('radio', '0'))
     antenna_requested = safe_int(args.get('antenna', '0'))
-    if 1 <= radio <= 2 and 1 <= antenna_requested <= 8:
+    if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
         other_radio = 2 if radio == 1 else 1
-        if antenna_requested == antennas_selected[other_radio-1]:
-            http_status = 409
+        if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio-1]:
+            http_status = HTTP_STATUS_CONFLICT
             response = b'Antenna In Use\r\n'
         else:
             antennas_selected[radio - 1] = antenna_requested
@@ -312,13 +314,15 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             set_port(radio, antenna_requested)
             write_antennas_selected(antennas_selected)
             payload = {'radio': radio, 'antenna': antenna_requested}
-            response = json.dumps(payload).encode('utf-8')
-            http_status = 200
-            bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
+            http_status = HTTP_STATUS_OK
+            bytes_sent = http.send_simple_response(writer,
+                                                   http_status,
+                                                   http.CT_APP_JSON,
+                                                   json.dumps(payload).encode('utf-8'))
             return bytes_sent, http_status  # OUCH return not at end of func. gnarly.
     else:
         response = b'Bad parameter\r\n'
-        http_status = 400
+        http_status = HTTP_STATUS_BAD_REQUEST
     bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
 
@@ -430,7 +434,7 @@ async def main():
 
 if __name__ == '__main__':
     # logging.loglevel = logging.DEBUG
-    logging.loglevel = logging.INFO  # DEBUG
+    logging.loglevel = logging.INFO
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
