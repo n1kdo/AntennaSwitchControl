@@ -23,25 +23,34 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.1'
+__version__ = '0.0.6'
 
-from utils import get_timestamp
+from utils import get_timestamp, upython
 
-DEBUG = 5
-INFO = 4
-WARNING = 3
-ERROR = 2
-CRITICAL = 1
-NOTHING = 0
+if not upython:
+    def const(i):
+        return i
+
+DEBUG = const(5)
+INFO = const(4)
+WARNING = const(3)
+ERROR = const(2)
+CRITICAL = const(1)
+NOTHING = const(0)
 
 loglevel = ERROR
 
+# this is used to determine if logging.level() methods should be called,
+# purpose is to reduce heap pollution from building complex log messages.
+def should_log(level):
+    return level <= loglevel
 
 def _log(level: str, message: str, caller=None):
+    level = '[' + level + ']'
     if caller is None:
-        print(f'{get_timestamp()} [{level}] {message}')
+        print(f'{get_timestamp()} {level:<11s} {message}')
     else:
-        print(f'{get_timestamp()} [{level}] [{caller}] {message}')
+        print(f'{get_timestamp()} {level:<11s} [{caller}] {message}')
 
 
 def debug(message, caller=None):
@@ -62,6 +71,13 @@ def warning(message, caller=None):
 def error(message, caller=None):
     if loglevel >= ERROR:
         _log('ERROR', message, caller)
+
+
+def exception(message:str, caller:str = None, exc_info:Exception = None) -> None:
+    if exc_info is not None:
+        _log('EXCEPTION', f'{message} {type(exc_info)} {exc_info}', caller)
+    else:
+        _log('EXCEPTION', message, caller)
 
 
 def critical(message, caller=None):
