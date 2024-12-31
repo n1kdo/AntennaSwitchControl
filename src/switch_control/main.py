@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024 J. B. Otterson N1KDO.'
-__version__ = '0.0.9'
+__version__ = '0.1.0'
 
 #
 # Copyright 2022, 2024 J. B. Otterson N1KDO.
@@ -43,31 +43,32 @@ from utils import milliseconds, upython, safe_int
 from relays import set_port
 import micro_logging as logging
 
+import asyncio
 if upython:
     import machine
-    import uasyncio as asyncio
 else:
-    import asyncio
     from not_machine import machine
+    def const(i):
+        return i
 
 BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
 # port_bands is a BITMASK, 16 bits wide.
-BAND_160M_MASK = 0x0001
-BAND_80M_MASK = 0x0002
-BAND_60M_MASK = 0x0004
-BAND_40M_MASK = 0x0008
-BAND_30M_MASK = 0x0010
-BAND_20M_MASK = 0x0020
-BAND_17M_MASK = 0x0040
-BAND_15M_MASK = 0x0080
-BAND_12M_MASK = 0x0100
-BAND_10M_MASK = 0x0200
-BAND_6M_MASK = 0x0400
-BAND_2M_MASK = 0x0800
-BAND_70CM_MASK = 0x1000
-BAND_OTHER1_MASK = 0x2000  # not used
-BAND_OTHER2_MASK = 0x4000  # not used
-BAND_OTHER3_MASK = 0x8000  # not used
+BAND_160M_MASK = const(0x0001)
+BAND_80M_MASK = const(0x0002)
+BAND_60M_MASK = const(0x0004)
+BAND_40M_MASK = const(0x0008)
+BAND_30M_MASK = const(0x0010)
+BAND_20M_MASK = const(0x0020)
+BAND_17M_MASK = const(0x0040)
+BAND_15M_MASK = const(0x0080)
+BAND_12M_MASK = const(0x0100)
+BAND_10M_MASK = const(0x0200)
+BAND_6M_MASK = const(0x0400)
+BAND_2M_MASK = const(0x0800)
+BAND_70CM_MASK = const(0x1000)
+BAND_OTHER1_MASK = const(0x2000)  # not used
+BAND_OTHER2_MASK = const(0x4000)  # not used
+BAND_OTHER3_MASK = const(0x8000)  # not used
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 morse_led = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
@@ -310,7 +311,8 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             response = b'Antenna In Use\r\n'
         else:
             antennas_selected[radio - 1] = antenna_requested
-            logging.debug(f'calling set_port({radio}, {antenna_requested})')
+            if logging.should_log(logging.DEBUG):
+                logging.debug(f'calling set_port({radio}, {antenna_requested})')
             set_port(radio, antenna_requested)
             write_antennas_selected(antennas_selected)
             payload = {'radio': radio, 'antenna': antenna_requested}
@@ -365,9 +367,11 @@ async def serve_serial_client(reader, writer):
 async def main():
     global antennas_selected, keep_running, config, restart
     antennas_selected = read_antennas_selected()
-    logging.debug(f'calling set_port(1, {antennas_selected[0]})')
+    if logging.should_log(logging.DEBUG):
+        logging.debug(f'calling set_port(1, {antennas_selected[0]})')
     set_port(1, antennas_selected[0])
-    logging.debug(f'calling set_port(2, {antennas_selected[1]})')
+    if logging.should_log(logging.DEBUG):
+        logging.debug(f'calling set_port(2, {antennas_selected[1]})')
     set_port(2, antennas_selected[1])
     config = read_config()
     if len(config) == 0:
