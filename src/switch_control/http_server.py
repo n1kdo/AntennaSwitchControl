@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.9.1'
+__version__ = '0.1.0'
 
 import gc
 import json
@@ -35,14 +35,16 @@ if upython:
     import micro_logging as logging
 else:
     import logging
+    def const(i):
+        return i
 
 # these are the HTTP responses that will be sent.
-HTTP_STATUS_OK = 200
-HTTP_STATUS_CREATED = 201
-HTTP_STATUS_BAD_REQUEST = 400
-HTTP_STATUS_CONFLICT = 409
-HTTP_STATUS_NOT_FOUND = 404
-HTTP_STATUS_INTERNAL_SERVER_ERROR = 500
+HTTP_STATUS_OK = const(200)
+HTTP_STATUS_CREATED = const(201)
+HTTP_STATUS_BAD_REQUEST = const(400)
+HTTP_STATUS_CONFLICT = const(409)
+HTTP_STATUS_NOT_FOUND = const(404)
+HTTP_STATUS_INTERNAL_SERVER_ERROR = const(500)
 
 
 class HttpServer:
@@ -68,25 +70,25 @@ class HttpServer:
     HTTP_STATUS_TEXT = {
         HTTP_STATUS_OK: 'OK',
         HTTP_STATUS_CREATED: 'Created',
-        202: 'Accepted',
-        204: 'No Content',
-        301: 'Moved Permanently',
-        302: 'Moved Temporarily',
-        304: 'Not Modified',
+        #202: 'Accepted',
+        #204: 'No Content',
+        #301: 'Moved Permanently',
+        #302: 'Moved Temporarily',
+        #304: 'Not Modified',
         HTTP_STATUS_BAD_REQUEST: 'Bad Request',
-        401: 'Unauthorized',
-        403: 'Forbidden',
+        #401: 'Unauthorized',
+        #403: 'Forbidden',
         HTTP_STATUS_NOT_FOUND: 'Not Found',
         HTTP_STATUS_CONFLICT: 'Conflict',
         HTTP_STATUS_INTERNAL_SERVER_ERROR: 'Internal Server Error',
-        501: 'Not Implemented',
-        502: 'Bad Gateway',
-        503: 'Service Unavailable',
+        #501: 'Not Implemented',
+        #502: 'Bad Gateway',
+        #503: 'Service Unavailable',
     }
-    MP_START_BOUND = 1
-    MP_HEADERS = 2
-    MP_DATA = 3
-    MP_END_BOUND = 4
+    MP_START_BOUND = const(1)
+    MP_HEADERS = const(2)
+    MP_DATA = const(3)
+    MP_END_BOUND = const(4)
 
     DANGER_ZONE_FILE_NAMES = [
         'network.html',
@@ -166,13 +168,15 @@ class HttpServer:
 
     async def serve_http_client(self, reader, writer):
         t0 = milliseconds()
-        http_status = 418  # can only make tea, sorry.
+        http_status = HTTP_STATUS_INTERNAL_SERVER_ERROR
         bytes_sent = 0
         partner = writer.get_extra_info('peername')[0]
-        logging.debug(f'web client connected from {partner}', 'http_server:serve_http_client')
+        if logging.should_log(logging.DEBUG):
+            logging.debug(f'web client connected from {partner}', 'http_server:serve_http_client')
         request_line = await reader.readline()
         request = request_line.decode().strip()
-        logging.debug(f'request: {request}', 'http_server:serve_http_client')
+        if logging.should_log(logging.DEBUG):
+            logging.debug(f'request: {request}', 'http_server:serve_http_client')
         pieces = request.split(' ')
         if len(pieces) != 3:  # does the http request line look approximately correct?
             http_status = HTTP_STATUS_BAD_REQUEST
