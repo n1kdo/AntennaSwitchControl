@@ -101,7 +101,7 @@ def read_antennas_selected() -> []:
         logging.warning(f'failed to load selected antenna data, returning defaults.', 'main:read_port_selected()')
     except Exception as ex:
         logging.error(f'failed to load selected antenna data: {type(ex)}, {ex}', 'main:read_port_selected()')
-    logging.info(f'read antennas selected: {result[0]}, {result[1]}')
+    logging.info(f'read antennas selected: {result[0]}, {result[1]}', 'main:read_port_selected')
     return result
 
 
@@ -161,9 +161,9 @@ async def slash_callback(http, verb, args, reader, writer, request_headers=None)
 async def api_config_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/api/config'
     global config
     if verb == 'GET':
-        payload = read_config()
-        # payload.pop('secret')  # do not return the secret
-        response = json.dumps(payload).encode('utf-8')
+        response = read_config()
+        #response.pop('secret')  # do not return the secret
+        response['secret'] = 'REDACTED'
         http_status = HTTP_STATUS_OK
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == 'POST':
@@ -296,7 +296,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
     bytes_sent = http.send_simple_response(writer,
                                            HTTP_STATUS_OK,
                                            http.CT_APP_JSON,
-                                           json.dumps(payload).encode('utf-8'))
+                                           payload)
     return bytes_sent, HTTP_STATUS_OK
 
 
@@ -320,7 +320,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             bytes_sent = http.send_simple_response(writer,
                                                    http_status,
                                                    http.CT_APP_JSON,
-                                                   json.dumps(payload).encode('utf-8'))
+                                                   payload)
             return bytes_sent, http_status  # OUCH return not at end of func. gnarly.
     else:
         response = b'Bad parameter\r\n'
