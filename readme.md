@@ -20,6 +20,7 @@ This is the other component for this project, you will need _two_ &mdash;  one f
 ## Bill of Materials
 
 * [Bill of Materials](BOM.md)
+* The approximate cost to buy these parts is about $106.
 
 ## Board Image
 
@@ -48,3 +49,5 @@ This is the other component for this project, you will need _two_ &mdash;  one f
 ## Network Setup UI
 
 ![Network Setup UI](images/network-ui.png)
+
+n1kdo 20250105
