@@ -48,7 +48,7 @@ HTTP_STATUS_INTERNAL_SERVER_ERROR = const(500)
 
 
 class HttpServer:
-    BUFFER_SIZE = 4096
+    _BUFFER_SIZE = 4096
     CT_TEXT_TEXT = 'text/text'
     CT_TEXT_HTML = 'text/html'
     CT_APP_JSON = 'application/json'
@@ -85,10 +85,10 @@ class HttpServer:
         #502: 'Bad Gateway',
         #503: 'Service Unavailable',
     }
-    MP_START_BOUND = const(1)
-    MP_HEADERS = const(2)
-    MP_DATA = const(3)
-    MP_END_BOUND = const(4)
+    _MP_START_BOUND = const(1)
+    _MP_HEADERS = const(2)
+    _MP_DATA = const(3)
+    _MP_END_BOUND = const(4)
 
     DANGER_ZONE_FILE_NAMES = [
         'network.html',
@@ -98,7 +98,7 @@ class HttpServer:
     def __init__(self, content_dir):
         self.content_dir = content_dir
         self.uri_map = {}
-        self.buffer = bytearray(self.BUFFER_SIZE)
+        self.buffer = bytearray(self._BUFFER_SIZE)
         self.bmv = memoryview(self.buffer)
 
     def add_uri_callback(self, uri, callback):
@@ -122,14 +122,14 @@ class HttpServer:
         http_status = HTTP_STATUS_OK
         self.start_response(writer, HTTP_STATUS_OK, content_type, content_length)
         try:
-            with open(filename, 'rb', self.BUFFER_SIZE) as infile:
+            with open(filename, 'rb', self._BUFFER_SIZE) as infile:
                 while True:
                     bytes_read = infile.readinto(self.bmv)
-                    if bytes_read == self.BUFFER_SIZE:
+                    if bytes_read == self._BUFFER_SIZE:
                         writer.write(self.bmv)
                     else:
                         writer.write(self.bmv[0:bytes_read])
-                    if bytes_read < self.BUFFER_SIZE:
+                    if bytes_read < self._BUFFER_SIZE:
                         break
         except Exception as exc:
             logging.error(f'{type(exc)} {exc}', 'http_server:serve_content')
@@ -137,9 +137,9 @@ class HttpServer:
 
     def start_response(self, writer, http_status=HTTP_STATUS_OK, content_type=None, response_size=0, extra_headers=None):
         status_text = self.HTTP_STATUS_TEXT.get(http_status) or 'Confused'
-        protocol = 'HTTP/1.0'
-        writer.write(f'{protocol} {http_status} {status_text}\r\n'.encode('utf-8'))
-        writer.write('Access-Control-Allow-Origin: *\n'.encode('utf-8'))  # CORS override
+        # protocol = 'HTTP/1.0'
+        writer.write(f'HTTP/1.0 {http_status} {status_text}\r\n'.encode('utf-8'))
+        writer.write(b'Access-Control-Allow-Origin: *\r\n')  # CORS override
         if content_type is not None and len(content_type) > 0:
             writer.write(f'Content-type: {content_type}; charset=UTF-8\r\n'.encode('utf-8'))
         if response_size > 0:
@@ -183,6 +183,8 @@ class HttpServer:
         return args_dict
 
     async def serve_http_client(self, reader, writer):
+        gc.collect()
+        # micropython.mem_info()
         t0 = milliseconds()
         http_status = HTTP_STATUS_INTERNAL_SERVER_ERROR
         bytes_sent = 0
@@ -274,12 +276,8 @@ class HttpServer:
         writer.close()
         await writer.wait_closed()
         elapsed = milliseconds() - t0
-        if http_status == HTTP_STATUS_OK:
-            logging.info(f'{partner} {request} {http_status} {bytes_sent} {elapsed} ms',
-                         'http_server:serve_http_client')
-        else:
-            logging.info(f'{partner} {request} {http_status} {bytes_sent} {elapsed} ms',
-                         'http_server:serve_http_client')
+        logging.info(f'{partner} {request} {http_status} {bytes_sent} {elapsed} ms',
+                     'http_server:serve_http_client')
         gc.collect()
 
 #
@@ -343,14 +341,14 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
             logging.info(f'upload content length {request_content_length}', 'main:api_upload_file_callback')
             start_boundary = http.HYPHENS + boundary
             end_boundary = start_boundary + http.HYPHENS
-            state = http.MP_START_BOUND
+            state = http._MP_START_BOUND
             filename = None
             output_file = None
             writing_file = False
             more_bytes = True
             leftover_bytes = []
             while more_bytes:
-                buffer = await reader.read(HttpServer.BUFFER_SIZE)
+                buffer = await reader.read(HttpServer._BUFFER_SIZE)
                 remaining_content_length -= len(buffer)
                 if remaining_content_length == 0:  # < BUFFER_SIZE:
                     more_bytes = False
@@ -359,7 +357,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                     leftover_bytes = []
                 start = 0
                 while start < len(buffer):
-                    if state == http.MP_DATA:
+                    if state == http._MP_DATA:
                         if not output_file:
                             output_file = open(http.content_dir + 'uploaded_' + filename, 'wb')
                             writing_file = True
@@ -370,7 +368,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 end = i
                                 writing_file = False
                                 break
-                        if end == HttpServer.BUFFER_SIZE:
+                        if end == HttpServer._BUFFER_SIZE:
                             if buffer[-1] == 13:
                                 leftover_bytes = buffer[-1:]
                                 buffer = buffer[:-1]
@@ -385,7 +383,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 end -= 3
                         output_file.write(buffer[start:end])
                         if not writing_file:
-                            state = http.MP_END_BOUND
+                            state = http._MP_END_BOUND
                             output_file.close()
                             output_file = None
                             response = f'Uploaded {filename} successfully'.encode('utf-8')
@@ -398,14 +396,14 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 line = buffer[start:i].decode('utf-8')
                                 start = i + 2
                                 break
-                        if state == http.MP_START_BOUND:
+                        if state == http._MP_START_BOUND:
                             if line == start_boundary:
-                                state = http.MP_HEADERS
+                                state = http._MP_HEADERS
                             else:
                                 logging.error(f'expecting start boundary, got {line}', 'main:api_upload_file_callback')
-                        elif state == http.MP_HEADERS:
+                        elif state == http._MP_HEADERS:
                             if len(line) == 0:
-                                state = http.MP_DATA
+                                state = http._MP_DATA
                             elif line.startswith('Content-Disposition:'):
                                 pieces = line.split(';')
                                 fn = pieces[2].strip()
@@ -416,9 +414,9 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                         http_status = HTTP_STATUS_INTERNAL_SERVER_ERROR
                                         more_bytes = False
                                         start = len(buffer)
-                        elif state == http.MP_END_BOUND:
+                        elif state == http._MP_END_BOUND:
                             if line == end_boundary:
-                                state = http.MP_START_BOUND
+                                state = http._MP_START_BOUND
                             else:
                                 logging.error(f'expecting end boundary, got {line}', 'main:api_upload_file_callback')
                         else:
