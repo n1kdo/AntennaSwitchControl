@@ -30,6 +30,7 @@ __version__ = '0.1.0'
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import json
+import time
 
 from http_server import (HttpServer,
                          api_rename_file_callback,
@@ -38,6 +39,7 @@ from http_server import (HttpServer,
                          api_get_files_callback,
                          HTTP_STATUS_OK, HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CONFLICT)
 from morse_code import MorseCode
+from ntp import get_ntp_time
 from picow_network import PicowNetwork
 from utils import milliseconds, upython, safe_int
 from relays import set_port
@@ -410,6 +412,7 @@ async def main():
     reset_button_pressed_count = 0
     four_count = 0
     last_message = ''
+    time_set = False
     while keep_running:
         if upython:
             await asyncio.sleep(0.25)
@@ -433,6 +436,13 @@ async def main():
                 four_count = 0
         else:
             await asyncio.sleep(10.0)
+
+
+        if picow_network is not None and picow_network.is_connected() and not time_set:
+            get_ntp_time()
+            if time.time() > 1700000000:
+                time_set = True
+
     if upython:
         machine.soft_reset()
 

@@ -7,6 +7,7 @@
     "main.py",
     "micro_logging.py",
     "morse_code.py",
+    "ntp.py",
     "picow_network.py",
     "relays.py",
     "utils.py",

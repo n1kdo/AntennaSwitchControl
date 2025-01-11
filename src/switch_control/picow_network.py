@@ -4,11 +4,11 @@
 #
 
 __author__ = 'J. B. Otterson'
-__copyright__ = 'Copyright 2024, J. B. Otterson N1KDO.'
-__version__ = '0.9.5'
+__copyright__ = 'Copyright 2024, 2025 J. B. Otterson N1KDO.'
+__version__ = '0.9.6'
 
 #
-# Copyright 2024, J. B. Otterson N1KDO.
+# Copyright 2024, 2025, J. B. Otterson N1KDO.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -63,6 +63,7 @@ class PicowNetwork:
                  default_ssid:str='PICO-W',
                  default_secret:str='PICO-W',
                  message_func=None) -> None:
+        self._connected = False
         self._default_secret = default_secret
         self._default_ssid = default_ssid
         self._keepalive = False
@@ -106,6 +107,7 @@ class PicowNetwork:
         network.country('US')
         sleep = asyncio.sleep
         wl_status = 0
+        self._connected = False
 
         if self._access_point_mode:
             if HAS_DISPLAY:
@@ -232,6 +234,7 @@ class PicowNetwork:
                 else:
                     await self.set_message('ERROR ', wl_status)
                 return None
+            self._connected = True
             logging.info(f'...connected: {self._wlan.ifconfig()}', 'PicowNetwork:connect_to_network')
 
         onboard.on()  # turn on the LED, WAN is up.
@@ -293,7 +296,8 @@ class PicowNetwork:
             logging.warning('Network not initialized.', 'PicowNetwork:status')
 
     def is_connected(self):
-        return self._wlan.isconnected() if self._wlan is not None else False
+        return self._connected
+        # return self._wlan.isconnected() if self._wlan is not None else False
 
     def has_wan(self):
         if not self.is_connected():
@@ -338,15 +342,15 @@ class PicowNetwork:
         # eliminate >1 dict lookup
         sleep = asyncio.sleep
         while self._keepalive:
-            connected = self.is_connected()
+            # connected = self.is_connected()
             if logging.should_log(logging.DEBUG):
-                logging.debug(f'self.is_connected() = {self.is_connected()}','PicowNetwork.keepalive')
-            if not connected:
+                logging.debug(f'self.is_connected() = {self._connected}', 'PicowNetwork.keepalive')
+            if not self._connected:
                 logging.warning('not connected...  attempting network connect...', 'PicowNetwork:keep_alive')
                 await self.connect()
             else:
                 if logging.should_log(logging.DEBUG):
-                    logging.debug(f'connected = {connected}', 'PicowNetwork.keepalive')
+                    logging.debug(f'connected = {self._connected}', 'PicowNetwork.keepalive')
             await sleep(10)  # check network every 10 seconds
         logging.info('keepalive exit', 'PicowNetwork.keepalive loop exit.')
 
