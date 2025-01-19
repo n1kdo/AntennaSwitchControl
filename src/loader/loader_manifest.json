@@ -11,6 +11,7 @@
     "picow_network.py",
     "relays.py",
     "utils.py",
+    "watchdog.py",
     "content/antennas.html",
     "content/favicon.ico",
     "content/files.html",

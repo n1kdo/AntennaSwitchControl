@@ -3,11 +3,11 @@
 #
 
 __author__ = 'J. B. Otterson'
-__copyright__ = 'Copyright 2022, 2024 J. B. Otterson N1KDO.'
-__version__ = '0.1.0'
+__copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
+__version__ = '0.1.1'
 
 #
-# Copyright 2022, 2024 J. B. Otterson N1KDO.
+# Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -48,8 +48,10 @@ import micro_logging as logging
 import asyncio
 if upython:
     import machine
+    from watchdog import Watchdog
 else:
     from not_machine import machine
+
     def const(i):
         return i
 
@@ -135,17 +137,18 @@ def save_config(config):
 
 def default_config():
     return {
+        'ap_mode': True,
+        'dhcp': True,
+        'dns_server': '8.8.8.8',
+        'gateway': '192.168.1.1',
+        'hostname': 'ant-switch',
+        'ip_address': '192.168.1.73',
+        'log_level' : 'debug',
+        'netmask': '255.255.255.0',
         'SSID': 'your_network_ssid',
         'secret': 'your_network_password',
         'tcp_port': '73',
         'web_port': '80',
-        'ap_mode': True,
-        'dhcp': True,
-        'hostname': 'ant-switch',
-        'ip_address': '192.168.1.73',
-        'netmask': '255.255.255.0',
-        'gateway': '192.168.1.1',
-        'dns_server': '8.8.8.8',
         'antenna_bands': [0, 0, 0, 0, 0, 0, 0, 0],
         'antenna_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set'],
         'radio_names': ['Radio 1', 'Radio 2']
@@ -172,6 +175,14 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         config = read_config()
         dirty = False
         errors = False
+        log_level = args.get('log_level')
+        if log_level is not None:
+            log_level = log_level.strip().upper()
+            if log_level in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+                config['log_level'] = log_level
+                dirty = True
+            else:
+                errors = True
         tcp_port = args.get('tcp_port')
         if tcp_port is not None:
             tcp_port_int = safe_int(tcp_port, -2)
@@ -323,7 +334,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
                                                    http_status,
                                                    http.CT_APP_JSON,
                                                    payload)
-            return bytes_sent, http_status  # OUCH return not at end of func. gnarly.
+            return bytes_sent, http_status  # OUCH! return not at end of func. gnarly.
     else:
         response = b'Bad parameter\r\n'
         http_status = HTTP_STATUS_BAD_REQUEST
@@ -368,6 +379,16 @@ async def serve_serial_client(reader, writer):
 
 async def main():
     global antennas_selected, keep_running, config, restart
+
+    config = read_config()
+    if len(config) == 0:
+        # create default configuration
+        config = default_config()
+        save_config(config)
+
+    config_level = config.get('log_level')
+    if config_level:
+        logging.set_level(config_level)
     antennas_selected = read_antennas_selected()
     if logging.should_log(logging.DEBUG):
         logging.debug(f'calling set_port(1, {antennas_selected[0]})')
@@ -375,11 +396,6 @@ async def main():
     if logging.should_log(logging.DEBUG):
         logging.debug(f'calling set_port(2, {antennas_selected[1]})')
     set_port(2, antennas_selected[1])
-    config = read_config()
-    if len(config) == 0:
-        # create default configuration
-        config = default_config()
-        save_config(config)
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
     if tcp_port < 0 or tcp_port > 65535:
         tcp_port = DEFAULT_TCP_PORT
@@ -392,6 +408,8 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
         morse_code_sender = MorseCode(morse_led)
+        if logging.should_log(logging.DEBUG):
+            _ = Watchdog()
 
     http_server = HttpServer(content_dir=CONTENT_DIR)
     http_server.add_uri_callback('/', slash_callback)
@@ -448,7 +466,6 @@ async def main():
 
 
 if __name__ == '__main__':
-    # logging.loglevel = logging.DEBUG
     logging.loglevel = logging.INFO
     logging.info('starting', 'main:__main__')
     try:
