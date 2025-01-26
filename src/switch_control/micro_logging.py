@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.7'
+__version__ = '0.0.9'
 
 from utils import get_timestamp, upython
 
@@ -41,16 +41,21 @@ loglevel = ERROR
 
 level_names = ['NOTHING', 'CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']
 
+
 def set_level(level):
+    info(f'setting log level to {level}', 'micro_logging:set_level')
+
     global loglevel
     if isinstance(level, str):
         try:
             level = level_names.index(level)
         except ValueError:
             level = None
+
     if isinstance(level, int):
-        if NOTHING <= level <= CRITICAL:
+        if NOTHING <= level <= DEBUG:
             loglevel = level
+
 
 # this is used to determine if logging.level() methods should be called,
 # purpose is to reduce heap pollution from building complex log messages.
