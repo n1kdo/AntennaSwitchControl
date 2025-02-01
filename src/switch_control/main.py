@@ -75,8 +75,8 @@ BAND_OTHER2_MASK = const(0x4000)  # not used
 BAND_OTHER3_MASK = const(0x8000)  # not used
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
-morse_led = machine.Pin(0, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO0 / pin 1
-reset_button = machine.Pin(1, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO1 / pin 2
+morse_led = machine.Pin(17, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO17 / pin 22
+reset_button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO16 / pin 21
 
 CONFIG_FILE = 'data/config.json'
 CONTENT_DIR = 'content/'

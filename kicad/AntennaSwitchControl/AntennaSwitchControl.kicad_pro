@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.762,
-          "height": 1.524,
-          "width": 1.524
+          "drill": 1.1,
+          "height": 2.0,
+          "width": 1.905
         },
         "silk_line_width": 0.127,
         "silk_text_italic": false,
@@ -96,7 +96,7 @@
         "padstack": "error",
         "pth_inside_courtyard": "ignore",
         "shorting_items": "error",
-        "silk_edge_clearance": "warning",
+        "silk_edge_clearance": "ignore",
         "silk_over_copper": "warning",
         "silk_overlap": "warning",
         "skew_out_of_range": "error",
@@ -180,7 +180,8 @@
         }
       ],
       "track_widths": [
-        0.0
+        0.0,
+        1.0
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -482,9 +483,9 @@
         "name": "CONTACTS",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.508,
-        "via_diameter": 0.508,
-        "via_drill": 0.254,
+        "track_width": 0.762,
+        "via_diameter": 1.524,
+        "via_drill": 0.508,
         "wire_width": 40
       },
       {
@@ -499,9 +500,9 @@
         "name": "POWER",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.508,
-        "via_diameter": 0.508,
-        "via_drill": 0.254,
+        "track_width": 0.762,
+        "via_diameter": 1.524,
+        "via_drill": 0.508,
         "wire_width": 40
       },
       {
@@ -516,9 +517,9 @@
         "name": "RAW",
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.508,
-        "via_diameter": 0.508,
-        "via_drill": 0.254,
+        "track_width": 0.762,
+        "via_diameter": 1.524,
+        "via_drill": 0.508,
         "wire_width": 6
       }
     ],
@@ -547,6 +548,14 @@
       {
         "netclass": "POWER",
         "pattern": "Net-(D*-A)"
+      },
+      {
+        "netclass": "CONTACTS",
+        "pattern": "+12V"
+      },
+      {
+        "netclass": "POWER",
+        "pattern": "Net-(D18-K)"
       }
     ]
   },
