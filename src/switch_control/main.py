@@ -167,8 +167,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
     global config
     if verb == 'GET':
         response = read_config()
-        #response.pop('secret')  # do not return the secret
-        response['secret'] = 'REDACTED'
+        response['secret'] = '' # do not return the secret
         http_status = HTTP_STATUS_OK
         bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == 'POST':
@@ -408,8 +407,8 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
         morse_code_sender = MorseCode(morse_led)
-        if logging.should_log(logging.DEBUG):
-            _ = Watchdog()
+        #if logging.should_log(logging.DEBUG):
+        #    _ = Watchdog()
 
     http_server = HttpServer(content_dir=CONTENT_DIR)
     http_server.add_uri_callback('/', slash_callback)
