@@ -60,7 +60,7 @@ b_pins = [
 
 
 def set_port(radio: int, port_selected: int):
-    if 0 <= port_selected < NUM_RELAYS:
+    if 0 <= port_selected <= NUM_RELAYS:
         pins = None
         if radio == 1:
             pins = a_pins
