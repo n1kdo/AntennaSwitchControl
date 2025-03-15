@@ -315,6 +315,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                    'antenna_name': config['antenna_names'][antenna_index],
                    'antenna_bands': config['antenna_bands'][antenna_index],
                    'radio_name': config['radio_names'][radio-1],
+                   'radio_number': radio,
                    }
     else:
         payload = {'error', f'invalid radio {radio}'}
