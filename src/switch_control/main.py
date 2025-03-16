@@ -299,17 +299,32 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
 
 
 async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/status'
-    payload = {'radio_1_antenna': antennas_selected[0],
-               'radio_2_antenna': antennas_selected[1],
-               'radio_names': config['radio_names'],
-               'antenna_names': config['antenna_names'],
-               'antenna_bands': config['antenna_bands'],
-               }
+    radio = safe_int(args.get('radio', -1))
+    status = HTTP_STATUS_OK
+    if radio == -1:
+        payload = {'radio_1_antenna': antennas_selected[0],
+                   'radio_2_antenna': antennas_selected[1],
+                   'radio_names': config['radio_names'],
+                   'antenna_names': config['antenna_names'],
+                   'antenna_bands': config['antenna_bands'],
+                   }
+    elif radio == 1 or radio == 2:
+        antenna_index = antennas_selected[radio-1]
+        payload = {'antenna_index': antenna_index,
+                   'antenna_name': config['antenna_names'][antenna_index],
+                   'antenna_bands': config['antenna_bands'][antenna_index],
+                   'radio_name': config['radio_names'][radio-1],
+                   'radio_number': radio,
+                   }
+    else:
+        payload = {'error', f'invalid radio {radio}'}
+        status = HTTP_STATUS_BAD_REQUEST
+
     bytes_sent = http.send_simple_response(writer,
-                                           HTTP_STATUS_OK,
+                                           status,
                                            http.CT_APP_JSON,
                                            payload)
-    return bytes_sent, HTTP_STATUS_OK
+    return bytes_sent, status
 
 
 async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
