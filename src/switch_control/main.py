@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -310,9 +310,15 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                    }
     elif radio == 1 or radio == 2:
         antenna_index = antennas_selected[radio-1]
+        if antenna_index < 0 or antenna_index > 8:
+            antenna_name = 'No Antenna'
+            antenna_band = 0
+        else:
+            antenna_name = config['antenna_names'][antenna_index-1]
+            antenna_band = config['antenna_bands'][antenna_index-1]
         payload = {'antenna_index': antenna_index,
-                   'antenna_name': config['antenna_names'][antenna_index],
-                   'antenna_bands': config['antenna_bands'][antenna_index],
+                   'antenna_name': antenna_name,
+                   'antenna_bands':antenna_band,
                    'radio_name': config['radio_names'][radio-1],
                    'radio_number': radio,
                    }
