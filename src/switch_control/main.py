@@ -422,8 +422,8 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
         morse_code_sender = MorseCode(morse_led)
-        if logging.should_log(logging.DEBUG):
-            _ = Watchdog()
+        #if logging.should_log(logging.DEBUG):
+        #    _ = Watchdog()
 
     http_server = HttpServer(content_dir=CONTENT_DIR)
     http_server.add_uri_callback('/', slash_callback)
