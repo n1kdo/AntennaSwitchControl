@@ -46,9 +46,14 @@ HTTP_STATUS_CONFLICT = const(409)
 HTTP_STATUS_NOT_FOUND = const(404)
 HTTP_STATUS_INTERNAL_SERVER_ERROR = const(500)
 
+_BUFFER_SIZE = const(4096)
+_MP_START_BOUND = const(1)
+_MP_HEADERS = const(2)
+_MP_DATA = const(3)
+_MP_END_BOUND = const(4)
+
 
 class HttpServer:
-    _BUFFER_SIZE = 4096
     CT_TEXT_TEXT = 'text/text'
     CT_TEXT_HTML = 'text/html'
     CT_APP_JSON = 'application/json'
@@ -85,10 +90,6 @@ class HttpServer:
         #502: 'Bad Gateway',
         #503: 'Service Unavailable',
     }
-    _MP_START_BOUND = const(1)
-    _MP_HEADERS = const(2)
-    _MP_DATA = const(3)
-    _MP_END_BOUND = const(4)
 
     DANGER_ZONE_FILE_NAMES = [
         'network.html',
@@ -98,7 +99,7 @@ class HttpServer:
     def __init__(self, content_dir):
         self.content_dir = content_dir
         self.uri_map = {}
-        self.buffer = bytearray(self._BUFFER_SIZE)
+        self.buffer = bytearray(_BUFFER_SIZE)
         self.bmv = memoryview(self.buffer)
 
     def add_uri_callback(self, uri, callback):
@@ -122,15 +123,16 @@ class HttpServer:
         http_status = HTTP_STATUS_OK
         await self.start_response(writer, HTTP_STATUS_OK, content_type, content_length)
         try:
-            with open(filename, 'rb', self._BUFFER_SIZE) as infile:
+            with open(filename, 'rb', _BUFFER_SIZE) as infile:
                 while True:
+                    # readinto is supported by micropython
                     bytes_read = infile.readinto(self.bmv)
-                    if bytes_read == self._BUFFER_SIZE:
+                    if bytes_read == _BUFFER_SIZE:
                         writer.write(self.bmv)
                     else:
                         writer.write(self.bmv[0:bytes_read])
                     await writer.drain()
-                    if bytes_read < self._BUFFER_SIZE:
+                    if bytes_read < _BUFFER_SIZE:
                         break
         except Exception as exc:
             logging.error(f'{type(exc)} {exc}', 'http_server:serve_content')
@@ -343,14 +345,14 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
             logging.info(f'upload content length {request_content_length}', 'main:api_upload_file_callback')
             start_boundary = http.HYPHENS + boundary
             end_boundary = start_boundary + http.HYPHENS
-            state = http._MP_START_BOUND
+            state = _MP_START_BOUND
             filename = None
             output_file = None
             writing_file = False
             more_bytes = True
             leftover_bytes = []
             while more_bytes:
-                buffer = await reader.read(HttpServer._BUFFER_SIZE)
+                buffer = await reader.read(_BUFFER_SIZE)
                 remaining_content_length -= len(buffer)
                 if remaining_content_length == 0:  # < BUFFER_SIZE:
                     more_bytes = False
@@ -359,7 +361,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                     leftover_bytes = []
                 start = 0
                 while start < len(buffer):
-                    if state == http._MP_DATA:
+                    if state == _MP_DATA:
                         if not output_file:
                             output_file = open(http.content_dir + 'uploaded_' + filename, 'wb')
                             writing_file = True
@@ -370,7 +372,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 end = i
                                 writing_file = False
                                 break
-                        if end == HttpServer._BUFFER_SIZE:
+                        if end == _BUFFER_SIZE:
                             if buffer[-1] == 13:
                                 leftover_bytes = buffer[-1:]
                                 buffer = buffer[:-1]
@@ -385,7 +387,7 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 end -= 3
                         output_file.write(buffer[start:end])
                         if not writing_file:
-                            state = http._MP_END_BOUND
+                            state = _MP_END_BOUND
                             output_file.close()
                             output_file = None
                             response = f'Uploaded {filename} successfully'.encode('utf-8')
@@ -398,14 +400,14 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                 line = buffer[start:i].decode('utf-8')
                                 start = i + 2
                                 break
-                        if state == http._MP_START_BOUND:
+                        if state == _MP_START_BOUND:
                             if line == start_boundary:
-                                state = http._MP_HEADERS
+                                state = _MP_HEADERS
                             else:
                                 logging.error(f'expecting start boundary, got {line}', 'main:api_upload_file_callback')
-                        elif state == http._MP_HEADERS:
+                        elif state == _MP_HEADERS:
                             if len(line) == 0:
-                                state = http._MP_DATA
+                                state = _MP_DATA
                             elif line.startswith('Content-Disposition:'):
                                 pieces = line.split(';')
                                 fn = pieces[2].strip()
@@ -416,9 +418,9 @@ async def api_upload_file_callback(http, verb, args, reader, writer, request_hea
                                         http_status = HTTP_STATUS_INTERNAL_SERVER_ERROR
                                         more_bytes = False
                                         start = len(buffer)
-                        elif state == http._MP_END_BOUND:
+                        elif state == _MP_END_BOUND:
                             if line == end_boundary:
-                                state = http._MP_START_BOUND
+                                state = _MP_START_BOUND
                             else:
                                 logging.error(f'expecting end boundary, got {line}', 'main:api_upload_file_callback')
                         else:
