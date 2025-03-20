@@ -158,7 +158,7 @@ def default_config():
 # noinspection PyUnusedLocal
 async def slash_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/'
     http_status = 301
-    bytes_sent = http.send_simple_response(writer, http_status, None, None, ['Location: /switch.html'])
+    bytes_sent = await http.send_simple_response(writer, http_status, None, None, ['Location: /switch.html'])
     return bytes_sent, http_status
 
 
@@ -169,7 +169,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         response = read_config()
         response['secret'] = '' # do not return the secret
         http_status = HTTP_STATUS_OK
-        bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
+        bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == 'POST':
         config = read_config()
         dirty = False
@@ -271,15 +271,15 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 save_config(config)
             response = b'ok\r\n'
             http_status = HTTP_STATUS_OK
-            bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+            bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
         else:
             response = b'parameter out of range\r\n'
             http_status = HTTP_STATUS_BAD_REQUEST
-            bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+            bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     else:
         response = b'GET or PUT only.'
         http_status = HTTP_STATUS_BAD_REQUEST
-        bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+        bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
 
 
@@ -290,11 +290,11 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
         keep_running = False
         response = b'ok\r\n'
         http_status = HTTP_STATUS_OK
-        bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+        bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     else:
         http_status = HTTP_STATUS_BAD_REQUEST
         response = b'not permitted except on PICO-W'
-        bytes_sent = http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
+        bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     return bytes_sent, http_status
 
 
@@ -326,10 +326,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
         payload = {'error', f'invalid radio {radio}'}
         status = HTTP_STATUS_BAD_REQUEST
 
-    bytes_sent = http.send_simple_response(writer,
-                                           status,
-                                           http.CT_APP_JSON,
-                                           payload)
+    bytes_sent = await http.send_simple_response(writer, status, http.CT_APP_JSON, payload)
     return bytes_sent, status
 
 
@@ -350,15 +347,12 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
             write_antennas_selected(antennas_selected)
             payload = {'radio': radio, 'antenna': antenna_requested}
             http_status = HTTP_STATUS_OK
-            bytes_sent = http.send_simple_response(writer,
-                                                   http_status,
-                                                   http.CT_APP_JSON,
-                                                   payload)
+            bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, payload)
             return bytes_sent, http_status  # OUCH! return not at end of func. gnarly.
     else:
         response = b'Bad parameter\r\n'
         http_status = HTTP_STATUS_BAD_REQUEST
-    bytes_sent = http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+    bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
 
 
