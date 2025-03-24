@@ -1,4 +1,4 @@
-# 16-relays
+# Antenna Switch Control (Hardware)
 
 This is a board that allows a Raspberry Pi Pico-W to control 16 SPST relays.
 
@@ -12,7 +12,4 @@ it is built with extra capacity to allow a 2-in, 8-out remote switch as well.
 
 ![Real-World Image](images/v003-board-image.jpg)
 
-
-
-
-
+20250324 n1kdo
