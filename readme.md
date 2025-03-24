@@ -24,7 +24,7 @@ This is the other component for this project, you will need _two_ &mdash;  one f
 
 ## Board Image
 
-![Board Image](images/board-image.jpg)
+![Board Image](images/v003-board-image.jpg)
 
 ## Interfaced to Six Pak
 
@@ -50,4 +50,4 @@ This is the other component for this project, you will need _two_ &mdash;  one f
 
 ![Network Setup UI](images/network-ui.png)
 
-n1kdo 20250105
+n1kdo 20250324
