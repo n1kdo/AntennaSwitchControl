@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 import gc
 import json
@@ -193,10 +193,14 @@ class HttpServer:
         http_status = HTTP_STATUS_INTERNAL_SERVER_ERROR
         bytes_sent = 0
         partner = writer.get_extra_info('peername')[0]
+        if partner is None or partner == '':
+            logging.error('missing partner', 'http_server:serve_http_client')
         if logging.should_log(logging.DEBUG):
             logging.debug(f'web client connected from {partner}', 'http_server:serve_http_client')
         request_line = await reader.readline()
         request = request_line.decode().strip()
+        if request == '':
+            logging.warning('request is empty!', 'http_server:serve_http_client')
         if logging.should_log(logging.DEBUG):
             logging.debug(f'request: {request}', 'http_server:serve_http_client')
         pieces = request.split(' ')
