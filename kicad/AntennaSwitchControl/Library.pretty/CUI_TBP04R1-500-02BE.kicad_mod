@@ -1,0 +1,236 @@
+(footprint "CUI_TBP04R1-500-02BE"
+	(version 20240108)
+	(generator "pcbnew")
+	(generator_version "8.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at -5.015 -10.745 0)
+		(layer "F.SilkS")
+		(uuid "2707ce62-30ba-4745-bfa3-dc51481db152")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Value" "CUI_TBP04R1-500-02BE"
+		(at 4.51 -9.205 0)
+		(layer "F.Fab")
+		(uuid "66e9b324-c8a5-4f2b-afd1-a3a5da5c7208")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Footprint" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "3884a483-5145-4937-921b-260faa684fff")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "50de33fd-a859-4e53-9506-f04a0db7c100")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "f047c1b9-f437-4734-81df-08c4ef0f2afb")
+		(effects
+			(font
+				(size 1.27 1.27)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr through_hole)
+	(fp_line
+		(start -2.5 -2)
+		(end 7.5 -2)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "9fc05884-124f-4f3c-b858-cd3a620b063a")
+	)
+	(fp_line
+		(start -2.5 10)
+		(end -2.5 -2)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "de6ac333-c795-48b2-88bc-bfcdc282212c")
+	)
+	(fp_line
+		(start 7.5 -2)
+		(end 7.5 10)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "baa57e5d-2e0b-49f4-9706-229dca1a013b")
+	)
+	(fp_line
+		(start 7.5 10)
+		(end -2.5 10)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.SilkS")
+		(uuid "5592d14e-7b9a-4d23-9a4d-a0ced95fd054")
+	)
+	(fp_circle
+		(center 0 -3)
+		(end 0.1 -3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.SilkS")
+		(uuid "11872989-4835-4546-bae6-b4ed6862c92a")
+	)
+	(fp_line
+		(start -2.75 -2.25)
+		(end 7.75 -2.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "d388faf3-fecf-4e52-9e77-15c6c492a0c4")
+	)
+	(fp_line
+		(start -2.75 10.25)
+		(end -2.75 -2.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "b3708bee-f8f1-44d8-921e-2a4dd9e587a9")
+	)
+	(fp_line
+		(start 7.75 -2.25)
+		(end 7.75 10.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "101a6d3f-d47c-4b19-8a95-7ba2bf880ec0")
+	)
+	(fp_line
+		(start 7.75 10.25)
+		(end -2.75 10.25)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(layer "F.CrtYd")
+		(uuid "018053f2-0b98-44f0-970b-f4e9922c1098")
+	)
+	(fp_line
+		(start -2.5 -2)
+		(end 7.5 -2)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "5ca09684-ac43-4d08-b6bd-491fbece070c")
+	)
+	(fp_line
+		(start -2.5 10)
+		(end -2.5 -2)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "90d430b2-4c8b-4f50-9476-5f10f8e7ae3d")
+	)
+	(fp_line
+		(start 7.5 -2)
+		(end 7.5 10)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "4874468f-d7b3-4d01-ba75-858514300417")
+	)
+	(fp_line
+		(start 7.5 10)
+		(end -2.5 10)
+		(stroke
+			(width 0.127)
+			(type solid)
+		)
+		(layer "F.Fab")
+		(uuid "6d6cd588-06c9-4d50-a873-265ba7576731")
+	)
+	(fp_circle
+		(center 0 -3)
+		(end 0.1 -3)
+		(stroke
+			(width 0.2)
+			(type solid)
+		)
+		(fill none)
+		(layer "F.Fab")
+		(uuid "c5e3d100-82e9-4db5-8d03-c849e974215f")
+	)
+	(pad "1" thru_hole rect
+		(at 0 0)
+		(size 2.55 2.55)
+		(drill 1.7)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "f70ef7d4-5731-4080-a450-4278c43848fc")
+	)
+	(pad "2" thru_hole circle
+		(at 5 0)
+		(size 2.55 2.55)
+		(drill 1.7)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(solder_mask_margin 0.102)
+		(uuid "07e4f249-9069-4e3d-83b3-24a31c18a653")
+	)
+	(model "${KIPRJMOD}/Library.pretty/Same_Sky_TBP04R1-500-02BE.step"
+		(offset
+			(xyz 1 1 -4)
+		)
+		(scale
+			(xyz 1 1 1)
+		)
+		(rotate
+			(xyz -90 0 90)
+		)
+	)
+)
