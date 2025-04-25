@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = """
-Copyright 2022, 2024 J. B. Otterson N1KDO.
+Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
 Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
   1. Redistributions of source code must retain the above copyright notice, 
@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.9.3'
+__version__ = '0.9.4'
 
 # disable pylint import error
 # pylint: disable=E0401
@@ -64,7 +64,7 @@ class MorseCode:
         'H': (MORSE_DIT, MORSE_DIT, MORSE_DIT, MORSE_DIT),
         'I': (MORSE_DIT, MORSE_DIT),
         'N': (MORSE_DAH, MORSE_DIT),
-        #  'O': (MORSE_DAH, MORSE_DAH, MORSE_DAH),
+        'O': (MORSE_DAH, MORSE_DAH, MORSE_DAH),
         'P': (MORSE_DIT, MORSE_DAH, MORSE_DAH, MORSE_DIT),
         'R': (MORSE_DIT, MORSE_DAH, MORSE_DIT),
         'S': (MORSE_DIT, MORSE_DIT, MORSE_DIT),
