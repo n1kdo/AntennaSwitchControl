@@ -84,7 +84,7 @@ CONTENT_DIR = 'content/'
 
 PORT_SETTINGS_FILE = 'data/port_settings.txt'
 
-DEFAULT_SECRET = 'antenna'
+DEFAULT_SECRET = 'antenna-switch'
 DEFAULT_SSID = 'switch'
 DEFAULT_TCP_PORT = 73
 DEFAULT_WEB_PORT = 80
