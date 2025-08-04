@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.2'
+__version__ = '0.1.21'
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -312,11 +312,12 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
     radio = safe_int(args.get('radio', -1))
     status = HTTP_STATUS_OK
     if radio == -1:
-        payload = {'radio_1_antenna': antennas_selected[0],
-                   'radio_2_antenna': antennas_selected[1],
-                   'radio_names': config['radio_names'],
-                   'antenna_names': config['antenna_names'],
-                   'antenna_bands': config['antenna_bands'],
+        payload = {'radio_1_antenna': antennas_selected[0],  # is int (0->8), could be uint8
+                   'radio_2_antenna': antennas_selected[1],  # is int (0->8), could be uint8
+                   'radio_names': config['radio_names'],     # 2x16 char limit from UI
+                   'antenna_names': config['antenna_names'], # 8x20 char limit from UI
+                   'antenna_bands': config['antenna_bands'], # 8x int, could be uint16
+                   # 'hostname': config['hostname'],         # 64 char limit from UI
                    }
     elif radio == 1 or radio == 2:
         antenna_index = antennas_selected[radio-1]
