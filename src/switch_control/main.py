@@ -84,7 +84,7 @@ CONTENT_DIR = 'content/'
 
 PORT_SETTINGS_FILE = 'data/port_settings.txt'
 
-DEFAULT_SECRET = 'antenna'
+DEFAULT_SECRET = 'antenna-switch'
 DEFAULT_SSID = 'switch'
 DEFAULT_TCP_PORT = 73
 DEFAULT_WEB_PORT = 80
@@ -183,6 +183,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'log level {log_level} not valid', 'main:api_config_callback')
         tcp_port = args.get('tcp_port')
         if tcp_port is not None:
             tcp_port_int = safe_int(tcp_port, -2)
@@ -191,6 +192,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'tcp_port {tcp_port_int} not valid', 'main:api_config_callback')
         web_port = args.get('web_port')
         if web_port is not None:
             web_port_int = safe_int(web_port, -2)
@@ -199,6 +201,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'web_port {web_port_int} not valid', 'main:api_config_callback')
         ssid = args.get('SSID')
         if ssid is not None:
             if 0 < len(ssid) < 64:
@@ -206,13 +209,15 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'ssid  {ssid} not valid', 'main:api_config_callback')
         secret = args.get('secret')
-        if secret is not None:
+        if secret is not None and len(secret) > 0:
             if 8 <= len(secret) < 32:
                 config['secret'] = secret
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
         hostname = args.get('hostname')
         if hostname is not None:
             if 0 < len(hostname) < 64:
@@ -220,6 +225,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'hostname {hostname} not valid', 'main:api_config_callback')
         ap_mode_arg = args.get('ap_mode')
         if ap_mode_arg is not None:
             ap_mode = True if ap_mode_arg == '1' else False
@@ -253,6 +259,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'antenna_bands {antenna_bands} not valid', 'main:api_config_callback')
         antenna_names = args.get('antenna_names')
         if antenna_names is not None:
             if len(antenna_names) == 8:
@@ -260,6 +267,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'antenna_names {antenna_names} not valid', 'main:api_config_callback')
         radio_names = args.get('radio_names')
         if radio_names is not None:
             if len(radio_names) == 2:
@@ -267,6 +275,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 dirty = True
             else:
                 errors = True
+                logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
         if not errors:
             if dirty:
                 save_config(config)
@@ -466,15 +475,14 @@ async def main():
                 if picow_network.get_message() != last_message:
                     last_message = picow_network.get_message()
                     morse_code_sender.set_message(last_message)
+                # can I get the time from NTP?
+                if picow_network is not None and not time_set and picow_network.is_connected():
+                    get_ntp_time()
+                    if time.time() > 1700000000:
+                        time_set = True
                 four_count = 0
         else:
             await asyncio.sleep(10.0)
-
-
-        if picow_network is not None and picow_network.is_connected() and not time_set:
-            get_ntp_time()
-            if time.time() > 1700000000:
-                time_set = True
 
     if upython:
         machine.soft_reset()

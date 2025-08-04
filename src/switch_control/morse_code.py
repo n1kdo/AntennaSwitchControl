@@ -23,18 +23,18 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.9.4'
+__version__ = '0.9.5'
 
 # disable pylint import error
 # pylint: disable=E0401
 
+import asyncio
 import sys
+
 impl_name = sys.implementation.name
 if impl_name == 'cpython':
-    import asyncio
     import logging
 else:
-    import uasyncio as asyncio
     import micro_logging as logging
 
 
@@ -98,7 +98,7 @@ class MorseCode:
             for morse_letter in msg:
                 blink_pattern = patterns.get(morse_letter)
                 if blink_pattern is None:
-                    logging.debug(f'[MORSE_CODE] Warning: no pattern for letter {morse_letter}',
+                    logging.debug(f'No pattern for letter "{morse_letter}" ({ord(morse_letter)})',
                                   'morse_code:morse_sender')
                     blink_pattern = patterns.get(' ')
                 blink_list = list(blink_pattern)
