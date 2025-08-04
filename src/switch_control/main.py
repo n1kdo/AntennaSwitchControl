@@ -489,7 +489,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.loglevel = logging.DEBUG
+    logging.loglevel = logging.INFO
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
