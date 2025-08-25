@@ -158,6 +158,7 @@ def default_config():
 
 # noinspection PyUnusedLocal
 async def slash_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/'
+    # send redirect to /switch.html
     http_status = 301
     bytes_sent = await http.send_simple_response(writer, http_status, None, None, ['Location: /switch.html'])
     return bytes_sent, http_status
