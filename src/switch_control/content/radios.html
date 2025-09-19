@@ -124,13 +124,18 @@
             let config = JSON.parse(message);
             document.getElementById("radio_1_name").value = config.radio_names[0];
             document.getElementById("radio_2_name").value = config.radio_names[1];
+            document.getElementById("radio_1_hostname").value = config.radio_hostnames[0];
+            document.getElementById("radio_2_hostname").value = config.radio_hostnames[1];
         }
 
         function set_config() {
             let radio_1_name = document.getElementById("radio_1_name").value;
+            let radio_1_hostname = document.getElementById("radio_1_hostname").value;
             let radio_2_name = document.getElementById("radio_2_name").value;
+            let radio_2_hostname = document.getElementById("radio_2_hostname").value;
             let config = {};
             config.radio_names = [radio_1_name, radio_2_name];
+            config.radio_hostnames = [radio_1_hostname, radio_1_hostname];
             let payload = JSON.stringify(config);
             let xmlHttp = new XMLHttpRequest();
             if (xmlHttp == null) {
@@ -161,8 +166,16 @@
                     <input type="text" id="radio_1_name" maxlength="16">
                 </p>
                 <p>
+                    <label for="radio_1_hostname">Radio 1 Hostname:</label>
+                    <input type="text" id="radio_1_hostname" maxlength="16">
+                </p>
+                <p>
                     <label for="radio_2_name">Radio 2 Name:</label>
                     <input type="text" id="radio_2_name" maxlength="16">
+                </p>
+                <p>
+                    <label for="radio_2_hostname">Radio 2 Hostname:</label>
+                    <input type="text" id="radio_2_hostname" maxlength="16">
                 </p>
             </form>
             <div class="centered">
@@ -179,7 +192,7 @@
                 <a href="network.html">Network</a>
                 <a href="files.html">Files</a>
             </div>
-            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20240906</div>
+            <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20250919</div>
         </div>
     </body>
 </html>

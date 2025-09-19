@@ -30,6 +30,7 @@ __version__ = '0.1.21'
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import json
+import socket
 import time
 
 from http_server import (HttpServer,
@@ -45,6 +46,7 @@ from picow_network import PicowNetwork
 from utils import milliseconds, upython, safe_int
 from relays import set_port
 import micro_logging as logging
+import udp_messages
 
 import asyncio
 if upython:
@@ -152,7 +154,8 @@ def default_config():
         'web_port': '80',
         'antenna_bands': [0, 0, 0, 0, 0, 0, 0, 0],
         'antenna_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set'],
-        'radio_names': ['Radio 1', 'Radio 2']
+        'radio_names': ['Radio 1', 'Radio 2'],
+        'radio_hostnames': ['hostname1', 'hostname2'],
     }
 
 
@@ -277,6 +280,14 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             else:
                 errors = True
                 logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
+        radio_hostnames = args.get('radio_hostnames')
+        if radio_hostnames is not None:
+            if len(radio_hostnames) == 2:
+                config['radio_hostnames'] = radio_hostnames
+                dirty = True
+            else:
+                errors = True
+                logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
         if not errors:
             if dirty:
                 save_config(config)
@@ -342,25 +353,31 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
     return bytes_sent, status
 
 
-async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
+def select_antenna(radio:int, antenna_requested:int) -> bool:
     global antennas_selected
+    if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
+        other_radio = 2 if radio == 1 else 1
+        if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio - 1]:
+            return False
+        antennas_selected[radio - 1] = antenna_requested
+        if logging.should_log(logging.DEBUG):
+            logging.debug(f'calling set_port({radio}, {antenna_requested})')
+        set_port(radio, antenna_requested)
+        write_antennas_selected(antennas_selected)
+        return True
+
+async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
     radio = safe_int(args.get('radio', '0'))
     antenna_requested = safe_int(args.get('antenna', '0'))
     if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
-        other_radio = 2 if radio == 1 else 1
-        if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio-1]:
-            http_status = HTTP_STATUS_CONFLICT
-            response = b'Antenna In Use\r\n'
-        else:
-            antennas_selected[radio - 1] = antenna_requested
-            if logging.should_log(logging.DEBUG):
-                logging.debug(f'calling set_port({radio}, {antenna_requested})')
-            set_port(radio, antenna_requested)
-            write_antennas_selected(antennas_selected)
-            payload = {'radio': radio, 'antenna': antenna_requested}
+        if select_antenna(radio, antenna_requested):
             http_status = HTTP_STATUS_OK
+            payload = {'radio': radio, 'antenna': antenna_requested}
             bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, payload)
             return bytes_sent, http_status  # OUCH! return not at end of func. gnarly.
+        else:
+            http_status = HTTP_STATUS_CONFLICT
+            response = b'Antenna In Use\r\n'
     else:
         response = b'Bad parameter\r\n'
         http_status = HTTP_STATUS_BAD_REQUEST
@@ -417,11 +434,11 @@ async def main():
         logging.set_level(config_level)
     antennas_selected = read_antennas_selected()
     if logging.should_log(logging.DEBUG):
-        logging.debug(f'calling set_port(1, {antennas_selected[0]})')
-    set_port(1, antennas_selected[0])
+        logging.debug(f'calling select_antenna(1, {antennas_selected[0]})')
+    select_antenna(1, antennas_selected[0])
     if logging.should_log(logging.DEBUG):
-        logging.debug(f'calling set_port(2, {antennas_selected[1]})')
-    set_port(2, antennas_selected[1])
+        logging.debug(f'calling select_antenna(2, {antennas_selected[1]})')
+    select_antenna(2, antennas_selected[1])
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
     if tcp_port < 0 or tcp_port > 65535:
         tcp_port = DEFAULT_TCP_PORT
@@ -457,6 +474,9 @@ async def main():
     four_count = 0
     last_message = ''
     time_set = False
+    connected = False
+    newly_connected = False
+
     while keep_running:
         if upython:
             await asyncio.sleep(0.25)
@@ -474,6 +494,29 @@ async def main():
                 save_config(config)
                 keep_running = False
             if four_count >= 3:  # check for new message every one second
+                if picow_network is not None:
+                    if not connected:
+                        logging.debug('checking network connection', 'main:main')
+                        connected = picow_network.is_connected()
+                        if connected:
+                            logging.info('network connection established', 'main:main')
+                            ip_address = picow_network.get_ip_address()
+                            netmask = picow_network.get_netmask()
+                            logging.info(f'ip_address {ip_address}, netmask {netmask}', 'main:main')
+                            newly_connected = True
+                        else:
+                            logging.info('waiting for picow network', 'main:main')
+
+                    else:  # is connected, look for disconnect
+                        connected = picow_network.is_connected()
+                        if not connected:
+                            logging.info('network connection disconnected', 'main:main')
+                else:
+                    ip_address = socket.gethostbyname_ex(socket.gethostname())[2][-1]
+                    netmask = '255.255.255.0'
+                    connected = True
+                    newly_connected = True
+
                 if picow_network.get_message() != last_message:
                     last_message = picow_network.get_message()
                     morse_code_sender.set_message(last_message)
@@ -483,6 +526,16 @@ async def main():
                     if time.time() > 1700000000:
                         time_set = True
                 four_count = 0
+            if newly_connected:
+                if not ap_mode:
+                    # UDP send/receive
+                    broadcast_address = udp_messages.calculate_broadcast_address(ip_address, netmask)
+                    send_status_broadcasts = udp_messages.SendBroadcasts(target_ip=broadcast_address,
+                                                                         target_port=65073,
+                                                                         config=config,
+                                                                         antennas_selected=antennas_selected)
+                    status_broadcast_sender = asyncio.create_task(send_status_broadcasts.send_datagrams())
+                newly_connected = False
         else:
             await asyncio.sleep(10.0)
 

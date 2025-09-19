@@ -10,6 +10,7 @@
     "ntp.py",
     "picow_network.py",
     "relays.py",
+    "udp_messages.py",
     "uping.py",
     "utils.py",
     "watchdog.py",
