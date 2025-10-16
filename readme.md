@@ -6,7 +6,7 @@ It supports (up to) a 2-radio, 8-antenna switch, however, my target is an Array
 Solutions "SixPak" which is a 2-radio, 6-antenna remote switch.  
 
 Why IOT?  That's really about WiFi.  The board uses WiFi to connect to your network,
-which means that only power needs to be protected from Zeus, not 14 +/- wires.  
+which means that only the power leads need to be protected from Zeus, not 14 +/- wires.  
 
 I have built matching "band-decoders" to interface with my Elecraft HF radios.  
 The band decoders detect a band change on the radio and send a API request to 
@@ -16,6 +16,12 @@ prevent the radio from transmitting into the wrong antenna or no antenna.
 
 The Band Selector (radio interface) is [here](https://github.com/n1kdo/BandSelector) &mdash;
 This is the other component for this project, you will need _two_ &mdash;  one for each radio.
+
+See the Ecosystem diagram, below.
+
+## Ecosystem
+
+![Ecosystem](images/antenna-switching-ecosystem.png)
 
 ## Bill of Materials
 
@@ -50,4 +56,4 @@ This is the other component for this project, you will need _two_ &mdash;  one f
 
 ![Network Setup UI](images/network-ui.png)
 
-n1kdo 20250324
+n1kdo 20251016
