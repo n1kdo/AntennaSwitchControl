@@ -3,9 +3,8 @@
 #
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.9.93.2'  # derived from '0.9.93'  # 2025-08-09
+__version__ = '0.9.97'  # 2025-10-26
 #
-# this experimental version wants to try to ping the gateway.
 #
 # Copyright 2024, 2025, J. B. Otterson N1KDO.
 #
@@ -29,6 +28,9 @@ __version__ = '0.9.93.2'  # derived from '0.9.93'  # 2025-08-09
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import asyncio
+import socket
+import micro_logging as logging
 from utils import upython
 
 if upython:
@@ -36,24 +38,17 @@ if upython:
     import machine
     # noinspection PyUnresolvedReferences,PyPackageRequirements
     import network
-    # noinspection PyUnresolvedReferences
-    import micro_logging as logging
-    from uping import ping
-else:
-    import logging
 
-import asyncio
-import socket
 
 class PicowNetwork:
     network_status_map = {
-        network.STAT_IDLE:           'not connected',  # 0
-        network.STAT_CONNECTING:     'connecting...',  # 1
-        network.STAT_CONNECTING + 1: 'connected no IP addr',  # 2, this is undefined, but returned.
-        network.STAT_GOT_IP:         'connection successful',  # 3
-        network.STAT_WRONG_PASSWORD: 'failed, bad password',  # -3
-        network.STAT_NO_AP_FOUND:    'failed no AP replied',  # -2
-        network.STAT_CONNECT_FAIL:   'failed other problem',  # -1
+        network.STAT_IDLE:           'not connected',  # 0  CYW43_LINK_DOWN
+        network.STAT_CONNECTING:     'connecting...',  # 1  CYW43_LINK_JOIN
+        network.STAT_CONNECTING + 1: 'connected no IP addr',  # 2  CYW43_LINK_NOIP
+        network.STAT_GOT_IP:         'connection successful',  # 3 CYW43_LINK_UP
+        network.STAT_WRONG_PASSWORD: 'failed, bad password',  # -3 CYW43_LINK_FAIL
+        network.STAT_NO_AP_FOUND:    'failed no AP replied',  # -2 CYW43_LINK_NONET
+        network.STAT_CONNECT_FAIL:   'failed other problem',  # -1 CYW43_LINK_FAIL
     }
 
     def __init__(self,
@@ -119,7 +114,6 @@ class PicowNetwork:
         network.country('US')
         network.ipconfig(prefer=4)  # this is an IPv4 network
         sleep = asyncio.sleep
-        sleep_ms = asyncio.sleep_ms
         wl_status = 0
         self._connected = False
 
@@ -152,17 +146,12 @@ class PicowNetwork:
                     await self.set_message('ERROR ', -10)
                 logging.error('Failed to set hostname.', 'PicowNetwork:connect_to_network')
 
-            #
-            #define CYW43_AUTH_OPEN (0)                     ///< No authorisation required (open)
-            #define CYW43_AUTH_WPA_TKIP_PSK   (0x00200002)  ///< WPA authorisation
-            #define CYW43_AUTH_WPA2_AES_PSK   (0x00400004)  ///< WPA2 authorisation (preferred)
-            #define CYW43_AUTH_WPA2_MIXED_PSK (0x00400006)  ///< WPA2/WPA mixed authorisation
-            #
-
+            # security choices are 'SEC_OPEN', 'SEC_WPA2_WPA3', 'SEC_WPA3', 'SEC_WPA_WPA2'
+            # see https://github.com/micropython/micropython/blob/master/extmod/network_cyw43.c#L584
             if len(self._secret) == 0:
-                security = 0
+                security = network.WLAN.SEC_OPEN
             else:
-                security = 0x00400004  # CYW43_AUTH_WPA2_AES_PSK
+                security = network.WLAN.SEC_WPA2_WPA3  # CYW43_AUTH_WPA2_AES_PSK
 
             mac_addr = self._wlan.config('mac')
             mac = ''
@@ -181,7 +170,7 @@ class PicowNetwork:
                 await self.set_message('Connecting to WLAN...')
             logging.info('Connecting to WLAN...', 'PicowNetwork:connect_to_network')
             self._wlan = network.WLAN(network.WLAN.IF_STA)
-            sleep_ms(500)
+            await sleep(0.5)
             logging.debug('Connecting to WLAN...1', 'PicowNetwork:connect_to_network')
 
             if self._wlan.isconnected():
@@ -213,7 +202,7 @@ class PicowNetwork:
             self._wlan.active(True)
             self._wlan.config(pm=self._wlan.PM_NONE)  # disable power save, this is a server.
             logging.debug('Connecting to WLAN...6', 'PicowNetwork:connect_to_network')
-            await sleep_ms(100)
+            await sleep(0.1)
 
             scan_results = self._wlan.scan()
             logging.debug('Connecting to WLAN...7', 'PicowNetwork:connect_to_network')
@@ -234,6 +223,7 @@ class PicowNetwork:
                     if scan_rssi > best_rssi:
                         best_rssi = scan_rssi
                         bssid = result[1]
+            bssid_str = ''
             if bssid is not None and logging.should_log(logging.DEBUG):
                 bssid_str = ''.join([f'{b:02x}' for b in bssid])
                 logging.debug(f'Found best RSSI for SSID "{self._ssid}" on BSSID "{bssid_str}" RSSI {best_rssi}',
@@ -282,7 +272,7 @@ class PicowNetwork:
                 else:
                     await self.set_message('ERROR ', -wl_status)
                 return None
-            await sleep_ms(500)
+            await sleep(0.5)
 
         logging.info(f'...connected: {self._wlan.ipconfig('addr4')}', 'PicowNetwork:connect_to_network')
         onboard.on()  # turn on the LED, WAN is up.
@@ -375,57 +365,41 @@ class PicowNetwork:
         if not self._connected:
             return False
         s = None
+        result = False
+        router_ip = None
         try:
             router_ip = self._wlan.ifconfig()[2]
+            if logging.should_log(logging.DEBUG):
+                logging.debug(f'has_router testing IP {router_ip}', 'PicowNetwork:has_router')
             addr = socket.getaddrinfo(router_ip, 80)[0][-1]
             s = socket.socket()
             s.connect(addr)
             s.send(b'GET / HTTP/1.1\r\n\r\n')
             data = s.recv(128)
             if data is not None and len(data) > 0:
-                # print(f'got some data: "{str(data)}".')
-                return True
+                if logging.should_log(logging.DEBUG):
+                    logging.debug(f'got some data: "{str(data)}".', 'PicowNetwork:has_router')
+                result = True
         except Exception as exc:
-            logging.error(f'cannot lookup or connect to router: {exc}')
-            return False
+            logging.error(f'cannot lookup or connect to router: {exc}', 'PicowNetwork:has_router')
         finally:
             if s is not None:
                 s.close()
                 s = None
-
-    def can_ping_gateway(self):
-        if self._connected:
-            ifconfig = self.ifconfig()
-            if ifconfig is not None:
-                gateway_ip = ifconfig[2]
-                try:
-                    if logging.should_log(logging.DEBUG):
-                        logging.debug(f'trying ping to {gateway_ip}', 'PicowNetwork:can_ping_router')
-                    tx, rx = ping(gateway_ip, count=1, size=0)
-                    if logging.should_log(logging.DEBUG):
-                        logging.debug(f'ping of {gateway_ip} sent {tx} received {rx}', 'PicowNetwork:can_ping_router')
-                    return tx == rx
-                except Exception as exc:
-                    logging.error(f'ping failed: {exc}', 'PicowNetwork:can_ping_router')
-                    return False
-        return False
+        if logging.should_log(logging.DEBUG):
+            logging.debug(f'has_router testing IP {router_ip} result={result}', 'PicowNetwork:has_router')
+        return result
 
     async def keep_alive(self):
         self._keepalive = True
         sleep = asyncio.sleep
         while self._keepalive:
-            connected = self._connected
+            if not self._access_point_mode:
+                connected = self.has_router()
+            else:
+                connected = self._connected
             if logging.should_log(logging.DEBUG):
-                logging.debug(f'self._connected = {connected}', 'PicowNetwork.keepalive')
-
-            if connected:
-                if not self._access_point_mode:
-                    gateway_pingable = self.can_ping_gateway()
-                    if not gateway_pingable:
-                        logging.warning('ping failed, attempting reconnect', 'PicowNetwork:keep_alive')
-                        connected = False
-                    if logging.should_log(logging.DEBUG):
-                        logging.debug(f'connected = {connected}', 'PicowNetwork.keepalive')
+                logging.debug(f'connected = {connected}', 'PicowNetwork.keepalive')
 
             if not connected:
                 logging.warning('not connected...  attempting network connect...', 'PicowNetwork:keep_alive')
