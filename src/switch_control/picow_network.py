@@ -3,8 +3,7 @@
 #
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.9.97'  # 2025-10-26
-#
+__version__ = '0.9.98'  # 2025-10-29
 #
 # Copyright 2024, 2025, J. B. Otterson N1KDO.
 #
@@ -204,15 +203,15 @@ class PicowNetwork:
             logging.debug('Connecting to WLAN...6', 'PicowNetwork:connect_to_network')
             await sleep(0.1)
 
-            scan_results = self._wlan.scan()
+            # scan ssid option is not documented.  Using it here to reduce the result set size.
+            # see https://github.com/micropython/micropython/blob/master/extmod/network_cyw43.c#L192
+            scan_results = self._wlan.scan(ssid=self._ssid)
             logging.debug('Connecting to WLAN...7', 'PicowNetwork:connect_to_network')
             bssid = None
             best_rssi = -100
             for result in scan_results:
                 scan_ssid = result[0].decode()
-                scan_bssid = ''
-                for b in result[1]:
-                    scan_bssid += f'{b:02x}'
+                scan_bssid = ''.join([f'{b:02x}' for b in result[1]])
                 scan_channel = result[2]
                 scan_rssi = result[3]
                 scan_security = result[4]
@@ -223,11 +222,12 @@ class PicowNetwork:
                     if scan_rssi > best_rssi:
                         best_rssi = scan_rssi
                         bssid = result[1]
-            bssid_str = ''
-            if bssid is not None and logging.should_log(logging.DEBUG):
+            if bssid is not None:
                 bssid_str = ''.join([f'{b:02x}' for b in bssid])
                 logging.debug(f'Found best RSSI for SSID "{self._ssid}" on BSSID "{bssid_str}" RSSI {best_rssi}',
-                'PicowNetwork:connect_to_network')
+                              'PicowNetwork:connect_to_network')
+            else:
+                logging.info('cannot find SSID in scan', 'PicowNetwork:connect_to_network')
 
             if not self._is_dhcp:
                 if self._ip_address is not None and self._netmask is not None and self._gateway is not None and self._dns_server is not None:
@@ -248,7 +248,10 @@ class PicowNetwork:
             if self._long_messages:
                 await self.set_message(f'Connecting to\n{self._ssid}')
             try:
-                self._wlan.connect(self._ssid, self._secret, bssid=bssid)
+                if bssid is not None:
+                    self._wlan.connect(self._ssid, self._secret, bssid=bssid)
+                else:
+                    self._wlan.connect(self._ssid, self._secret)
             except OSError as ose:
                 logging.exception('got exception on wlan.connect', 'PicowNetwork:connect_to_network', ose)
             logging.info(f'...connecting to "{self._ssid}"...', 'PicowNetwork:connect_to_network')
@@ -402,11 +405,13 @@ class PicowNetwork:
                 logging.debug(f'connected = {connected}', 'PicowNetwork.keepalive')
 
             if not connected:
-                logging.warning('not connected...  attempting network connect...', 'PicowNetwork:keep_alive')
+                logging.warning('Not connected...  attempting network connect...', 'PicowNetwork:keep_alive')
                 await self.connect()
                 connected = self._connected
-                logging.info(f'tried to connect, connected = {connected}...', 'PicowNetwork:keep_alive')
-
+                if connected:
+                    logging.info(f'Network connected', 'PicowNetwork:keep_alive')
+                else:
+                    logging.warning(f'Failed to connect', 'PicowNetwork:keep_alive')
             await sleep(30 if connected else 10)  # check network every 30 seconds when connected, every 10 when not.
         logging.info('keepalive exit', 'PicowNetwork.keepalive loop exit.')
 
