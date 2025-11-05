@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.1'
+__version__ = '0.0.2'  # 2025-11-05
 
 from utils import upython
 import asyncio
@@ -65,7 +65,7 @@ class SendBroadcasts:
     class to send UDP status datagrams
     """
 
-    def __init__(self, target_ip, target_port, config: dict, antennas_selected:[]):
+    def __init__(self, target_ip, target_port, config: dict, antennas_selected):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sockaddr = socket.getaddrinfo(target_ip, target_port)[0][-1]
@@ -112,53 +112,6 @@ class SendBroadcasts:
                       hostname)
             self.send(buf)
             await sleep(1.0)
-
-    def stop(self):
-        self.run = False
-
-
-class ReceiveDatagrams:
-    """
-    class that receives antenna control UDP messages from BandSelectors.
-    None of this is implemented yet.
-    """
-
-    def __init__(self, receive_ip, receive_port, config:dict, my_name=None):
-        self.receive_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.receive_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.my_name = my_name
-        self.run = True
-        try:
-            sockaddr = socket.getaddrinfo(receive_ip, receive_port)[0][-1]
-            self.receive_socket.bind(sockaddr)
-            self.receive_socket.settimeout(0.001)
-        except Exception as exc:
-            logging.exception('problem setting up socket', 'udp_messages:ReceiveDatagrams.init', exc_info=exc)
-
-    async def wait_for_datagram(self):
-        while self.run:
-            try:
-                udp_data = self.receive_socket.recv(STATUS_BROADCAST_SIZE)
-                message = udp_data.decode('utf-8')
-                logging.debug(f'message "{message}"',
-                             'udp_messages:ReceiveDatagrams:wait_for_datagram')
-                rotor_name = "" # get_element(message, 'rotor')
-                if rotor_name == self.my_name:  # or rotor_name == '*':
-                    goazi = 0 # get_element(message, 'goazi')
-                    bearing = int(float(goazi))
-                    result = await self.rotator.set_rotator_bearing(bearing)
-                    if result < 0:
-                        logging.info(f'set_rotator_bearing result={result}',
-                                     'udp_messages:ReceiveDatagrams:wait_for_datagram')
-            except OSError as exc:
-                # this is a timeout exception, no data was received, this is not abnormal.
-                pass
-            except Exception as exc:
-                logging.exception('problem receiving datagram',
-                                  'udp_messages:ReceiveDatagrams:wait_for_datagram', exc_info=exc)
-            await asyncio.sleep(0.1)
-        while self.run:
-            pass
 
     def stop(self):
         self.run = False

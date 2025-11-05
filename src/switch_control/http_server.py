@@ -23,22 +23,21 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.1.3'
+__version__ = '0.1.5'
 
 import gc
 import json
 import os
 import re
+import micro_logging as logging
 
 from utils import milliseconds, safe_int, upython
-if upython:
-    import micro_logging as logging
-else:
-    import logging
+if not upython:
     def const(i):
         return i
 
 # these are the HTTP responses that will be sent.
+# noinspection PyUnboundLocalVariable
 HTTP_STATUS_OK = const(200)
 HTTP_STATUS_CREATED = const(201)
 HTTP_STATUS_BAD_REQUEST = const(400)
@@ -102,14 +101,23 @@ class HttpServer:
     def __init__(self, content_dir):
         self.content_dir = content_dir
         self.uri_map = {}
+        self.uri_map[b'/api/get_files'] = api_get_files_callback
+        self.uri_map[b'/api/upload_file'] = api_upload_file_callback
+        self.uri_map[b'/api/remove_file'] = api_remove_file_callback
+        self.uri_map[b'/api/rename_file'] = api_rename_file_callback
+
         self.buffer = bytearray(_BUFFER_SIZE)
         self.bmv = memoryview(self.buffer)
 
-    def add_uri_callback(self, uri, callback):
+    def route(self, uri):
         if isinstance(uri, str):
             logging.warning(f'uri {uri} is str not bytes', 'http_server:add_uri_callback')
             uri = uri.encode('utf-8')
-        self.uri_map[uri] = callback
+
+        def decorator(func):
+            self.uri_map[uri] = func
+            return func
+        return decorator
 
     async def serve_content(self, writer, filename):
         filename = self.content_dir + filename
@@ -127,12 +135,21 @@ class HttpServer:
         await self.start_response(writer, HTTP_STATUS_OK, content_type, content_length)
         try:
             with open(filename, 'rb', _BUFFER_SIZE) as infile:
+                bytes_since_drain = 0
+                # Drain after roughly 16 KB or at EOF to reduce syscall overhead while preventing buffer bloat.
+                DRAIN_THRESHOLD = _BUFFER_SIZE * 4
                 while True:
                     bytes_read = infile.readinto(self.buffer)
                     if bytes_read:
                         writer.write(self.bmv[:bytes_read])
-                        await writer.drain()
+                        bytes_since_drain += bytes_read
+                        if bytes_since_drain >= DRAIN_THRESHOLD:
+                            await writer.drain()
+                            bytes_since_drain = 0
                     if bytes_read < _BUFFER_SIZE:
+                        # EOF reached; ensure pending bytes are flushed.
+                        if bytes_since_drain:
+                            await writer.drain()
                         break
         except Exception as exc:
             logging.error(f'{type(exc)} {exc}', 'http_server:serve_content')
@@ -181,8 +198,10 @@ class HttpServer:
     def unpack_args(cls, value):
         if not value:
             return {}
+        # Accept bytes or str; decode only if needed to avoid extra allocations and errors.
+        if isinstance(value, bytes):
+            value = value.decode()
         args = {}
-        value = value.decode()
         args_list = value.split('&')
         for arg in args_list:
             arg_parts = arg.split('=')
@@ -207,7 +226,7 @@ class HttpServer:
         if len(pieces) != 3:  # does the http request line look approximately correct?
             http_status = HTTP_STATUS_BAD_REQUEST
             response = b'Bad Request !=3'
-            logging.warning('Bad request, wrong number of pieces')
+            logging.warning(f'Bad request, wrong number of pieces: {pieces}')
             bytes_sent = await self.send_simple_response(writer, http_status, self.CT_TEXT_HTML, response)
         else:
             verb = pieces[0]
@@ -255,7 +274,7 @@ class HttpServer:
                     if request_content_length > 0:
                         if request_content_type == self.CT_APP_WWW_FORM:
                             data = await reader.read(request_content_length)
-                            args = self.unpack_args(data.decode())
+                            args = self.unpack_args(data)
                         elif request_content_type == self.CT_APP_JSON:
                             data = await reader.read(request_content_length)
                             args = json.loads(data.decode())
@@ -282,15 +301,14 @@ class HttpServer:
         writer.close()
         await writer.wait_closed()
         elapsed = milliseconds() - t0
-        logging.info(f'{partner} {request} {http_status} {bytes_sent} {elapsed} ms',
-                     'http_server:serve_http_client')
+        if logging.should_log(logging.INFO):
+            logging.info(f'{partner} {request} {http_status} {bytes_sent} {elapsed} ms',
+                         'http_server:serve_http_client')
         gc.collect()
 
 #
 # common file operations callbacks, here because just about every app will use them...
 #
-
-
 def valid_filename(filename):
     if filename is None:
         return False

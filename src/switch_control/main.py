@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.21'
+__version__ = '0.1.22'  # 2025-11-05
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -34,10 +34,6 @@ import socket
 import time
 
 from http_server import (HttpServer,
-                         api_rename_file_callback,
-                         api_remove_file_callback,
-                         api_upload_file_callback,
-                         api_get_files_callback,
                          HTTP_STATUS_OK, HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CONFLICT,
                          HTTP_VERB_GET, HTTP_VERB_POST)
 from morse_code import MorseCode
@@ -60,6 +56,7 @@ else:
 
 BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
 # antenna_bands is a BITMASK, 16 bits wide.
+# noinspection PyUnboundLocalVariable
 BAND_160M_MASK = const(0x0001)
 BAND_80M_MASK = const(0x0002)
 BAND_60M_MASK = const(0x0004)
@@ -97,8 +94,11 @@ antennas_selected = [1, 2]
 keep_running = True
 config = {}
 
+# http server
+http_server = HttpServer(content_dir=CONTENT_DIR)
 
-def read_antennas_selected() -> []:
+
+def read_antennas_selected():
     result = [1, 2]
     try:
         with open(PORT_SETTINGS_FILE, 'r') as port_settings_file:
@@ -133,9 +133,9 @@ def read_config():
     return config
 
 
-def save_config(config):
+def save_config(config_data):
     with open(CONFIG_FILE, 'w') as config_file:
-        json.dump(config, config_file)
+        json.dump(config_data, config_file)
 
 
 def default_config():
@@ -160,6 +160,7 @@ def default_config():
 
 
 # noinspection PyUnusedLocal
+@http_server.route(b'/')
 async def slash_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/'
     # send redirect to /switch.html
     http_status = 301
@@ -168,6 +169,7 @@ async def slash_callback(http, verb, args, reader, writer, request_headers=None)
 
 
 # noinspection PyUnusedLocal
+@http_server.route(b'/api/config')
 async def api_config_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/api/config'
     global config
     if verb == HTTP_VERB_GET:
@@ -306,6 +308,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
 
 
 # noinspection PyUnusedLocal
+@http_server.route(b'/api/restart')
 async def api_restart_callback(http, verb, args, reader, writer, request_headers=None):
     global keep_running
     if upython:
@@ -320,6 +323,7 @@ async def api_restart_callback(http, verb, args, reader, writer, request_headers
     return bytes_sent, http_status
 
 
+@http_server.route(b'/api/status')
 async def api_status_callback(http, verb, args, reader, writer, request_headers=None):  # '/api/status'
     radio = safe_int(args.get('radio', -1))
     status = HTTP_STATUS_OK
@@ -365,7 +369,9 @@ def select_antenna(radio:int, antenna_requested:int) -> bool:
         set_port(radio, antenna_requested)
         write_antennas_selected(antennas_selected)
         return True
+    return False
 
+@http_server.route(b'/api/select_antenna')
 async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
     radio = safe_int(args.get('radio', '0'))
     antenna_requested = safe_int(args.get('antenna', '0'))
@@ -385,7 +391,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
     return bytes_sent, http_status
 
 
-async def serve_serial_client(reader, writer):
+async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.StreamWriter):
     """
     send the data over a dumb connection
     """
@@ -410,7 +416,7 @@ async def serve_serial_client(reader, writer):
                         client_connected = False
                     await writer.drain()
 
-        reader.close()
+        # reader.close()
         writer.close()
         await writer.wait_closed()
 
@@ -422,7 +428,8 @@ async def serve_serial_client(reader, writer):
 
 async def main():
     global antennas_selected, keep_running, config, restart
-
+    ip_address = None
+    netmask = None
     config = read_config()
     if len(config) == 0:
         # create default configuration
@@ -453,17 +460,9 @@ async def main():
         morse_code_sender = MorseCode(morse_led)
         #if logging.should_log(logging.DEBUG):
         #    _ = Watchdog()
-
-    http_server = HttpServer(content_dir=CONTENT_DIR)
-    http_server.add_uri_callback(b'/', slash_callback)
-    http_server.add_uri_callback(b'/api/config', api_config_callback)
-    http_server.add_uri_callback(b'/api/get_files', api_get_files_callback)
-    http_server.add_uri_callback(b'/api/upload_file', api_upload_file_callback)
-    http_server.add_uri_callback(b'/api/remove_file', api_remove_file_callback)
-    http_server.add_uri_callback(b'/api/rename_file', api_rename_file_callback)
-    http_server.add_uri_callback(b'/api/restart', api_restart_callback)
-    http_server.add_uri_callback(b'/api/status', api_status_callback)
-    http_server.add_uri_callback(b'/api/select_antenna', api_select_antenna_callback)
+    else:
+        picow_network = None
+        morse_code_sender = None
 
     logging.info(f'Starting web service on port {web_port}', 'main:main')
     web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
