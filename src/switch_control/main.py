@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.22'  # 2025-11-05
+__version__ = '0.1.23'  # 2025-11-06
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -34,7 +34,10 @@ import socket
 import time
 
 from http_server import (HttpServer,
-                         HTTP_STATUS_OK, HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_CONFLICT,
+                         HTTP_STATUS_OK,
+                         HTTP_STATUS_MOVED_PERMANENTLY,
+                         HTTP_STATUS_BAD_REQUEST,
+                         HTTP_STATUS_CONFLICT,
                          HTTP_VERB_GET, HTTP_VERB_POST)
 from morse_code import MorseCode
 from ntp import get_ntp_time
@@ -163,7 +166,7 @@ def default_config():
 @http_server.route(b'/')
 async def slash_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/'
     # send redirect to /switch.html
-    http_status = 301
+    http_status = HTTP_STATUS_MOVED_PERMANENTLY
     bytes_sent = await http.send_simple_response(writer, http_status, None, None, ['Location: /switch.html'])
     return bytes_sent, http_status
 
