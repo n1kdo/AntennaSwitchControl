@@ -50,10 +50,13 @@ import udp_messages
 import asyncio
 if upython:
     import machine
-    from watchdog import Watchdog
+    try:
+        from watchdog import Watchdog
+    except ImportError:
+        Watchdog = None
 else:
     from not_machine import machine
-
+    Watchdog = None
     def const(i):
         return i
 
@@ -461,8 +464,8 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
         morse_code_sender = MorseCode(morse_led)
-        #if logging.should_log(logging.DEBUG):
-        #    _ = Watchdog()
+        if logging.loglevel != logging.DEBUG and Watchdog is not None:
+            _ = Watchdog()
     else:
         picow_network = None
         morse_code_sender = None
