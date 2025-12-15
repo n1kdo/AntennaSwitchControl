@@ -2,8 +2,8 @@
 
 This project is intended to operate a remote antenna switch.  
 
-It supports (up to) a 2-radio, 8-antenna switch, however, my target is an Array 
-Solutions "SixPak" which is a 2-radio, 6-antenna remote switch.  
+It supports (up to) a 2-radio, 8-antenna switch.  2x6 switches for fine.  Active-hi
+or active low compatible.
 
 Why IOT?  That's really about WiFi.  The board uses WiFi to connect to your network,
 which means that only the power leads need to be protected from Zeus, not 14 +/- wires.  
@@ -21,7 +21,7 @@ See the Ecosystem diagram, below.
 
 ## Ecosystem
 
-![Ecosystem](images/antenna-switching-ecosystem.png)
+![Ecosystem](images/Antenna-Switching.png)
 
 ## Bill of Materials
 
@@ -31,12 +31,6 @@ See the Ecosystem diagram, below.
 ## Board Image
 
 ![Board Image](images/v003-board-image.jpg)
-
-## Interfaced to Six Pak
-
-(note that the hardware supports a 2x8 switch, too.)
-
-![Interfaced to Six Pak](images/with-six-pak.jpg)
 
 # UI Images
 
@@ -56,4 +50,4 @@ See the Ecosystem diagram, below.
 
 ![Network Setup UI](images/network-ui.png)
 
-n1kdo 20251016
+n1kdo 20251124
