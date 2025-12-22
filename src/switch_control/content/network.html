@@ -149,16 +149,16 @@
             document.getElementById("dhcp_input").checked = !!config.dhcp;
             let ip_address_element = document.getElementById("ip_address_input");
             ip_address_element.value = config.ip_address;
-            ip_address_element.disabled = dhcp;
+            ip_address_element.disabled = !!config.dhcp;
             let netmask_element = document.getElementById("netmask_input")
             netmask_element.value = config.netmask;
-            netmask_element.disabled = dhcp;
+            netmask_element.disabled = !!config.dhcp;
             let gateway_element = document.getElementById("gateway_input");
             gateway_element.value = config.gateway;
-            gateway_element.disabled = dhcp;
+            gateway_element.disabled = !!config.dhcp;
             let dns_element = document.getElementById("dns_server_input");
             dns_element.value = config.dns_server;
-            dns_element.disabled = dhcp;
+            dns_element.disabled = !!config.dhcp;
         }
 
         function set_config() {
