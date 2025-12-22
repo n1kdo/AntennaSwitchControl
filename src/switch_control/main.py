@@ -526,7 +526,7 @@ async def main():
                     last_message = picow_network.get_message()
                     morse_code_sender.set_message(last_message)
                 # can I get the time from NTP?
-                if picow_network is not None and not time_set and picow_network.is_connected():
+                if picow_network is not None and not time_set and not ap_mode and picow_network.is_connected():
                     get_ntp_time()
                     if time.time() > 1700000000:
                         time_set = True
@@ -550,6 +550,7 @@ async def main():
 
 if __name__ == '__main__':
     logging.loglevel = logging.INFO
+    logging.loglevel = logging.DEBUG
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())

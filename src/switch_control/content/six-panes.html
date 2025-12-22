@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Six Panes</title>
-</head>
-<style>
-    iframe {
-        background-color: red;
-        border: none;
-        height: 356px;
-        width: 506px;
-        margin: 5px;
-    }
-    .three_columns {
-        display: flex;
-        column-count: 3;
-        width: 100%;
-    }
-    .centered {
-        margin: 0 0 0 10px;
-        text-align: center;
-    }
+    <style>
+        iframe {
+            background-color: red;
+            border: none;
+            height: 356px;
+            width: 506px;
+            margin: 5px;
+        }
+
+        .three_columns {
+            display: flex;
+            width: 100%;
+        }
+
+        .centered {
+            margin: 0 0 0 10px;
+            text-align: center;
+        }
 
 
-</style>
-<script>
-    let pages = [
+    </style>
+    <script>
+
+        const frames = ["if0", "if1", "if2", "if3", "if4", "if5"];
+
+        const pages = [
             "http://192.168.1.166/switch.html?update=5",
             "http://192.168.1.167/status.html?update=5",
             "http://192.168.1.168/status.html?update=5",
@@ -35,49 +38,56 @@
 
         function page_load() {
 
-        let frames = ["if0", "if1", "if2", "if3", "if4", "if5"];
-        for (let index = 0; index < frames.length; index++) {
-            let url = localStorage.getItem(frames[index]);
-            if (url) {
-                pages[index] = url;
+            for (let index = 0; index < frames.length; index++) {
+                let url = localStorage.getItem(frames[index]);
+                if (url) {
+                    pages[index] = url;
+                }
+            }
+
+            for (let i = 0; i < frames.length; i++) {
+                let fname = frames[i];
+                document.getElementById(fname + "_url").value = pages[i];
+                document.getElementById(fname).src = pages[i];
             }
         }
 
-        for (let i = 0; i < frames.length; i++) {
-            let fname = frames[i];
-            document.getElementById(fname + "_url").value = pages[i];
-            document.getElementById(fname).src = pages[i];
+        function set_url(n) {
+            const fname = frames[n];
+            const input = document.getElementById(fname + "_url");
+            const url = input.value;
+            if (!input.checkValidity()) {
+                alert("Invalid URL " + url);
+                return;
+            }
+            localStorage.setItem(fname, url);
+            pages[n] = url;
+            document.getElementById(fname).src = url;
         }
-    }
 
-    function set_url(n) {
-        let fname = "if" + n;
-        let url = document.getElementById(fname + "_url").value;
-        localStorage.setItem(fname, url);
-        pages[n] = url;
-        document.getElementById(fname).src = pages[n];
-    }
-</script>
+        document.addEventListener("DOMContentLoaded", page_load);
+    </script>
+</head>
 
-<body onload="page_load()">
+<body>
 <div class="three_columns">
     <div class="centered">
         <label for="if0_url">URL:</label>
-        <input type="text" id="if0_url" name="if0_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if0_url" name="if0_url" maxlength="100" size="50">
         <input type="button" id="set_if0_url" value="Set" title="Set" onclick="set_url(0)"/>
         <br>
-        <iframe id="if0" title="Antenna Switch"></iframe>
+        <iframe id="if0"></iframe>
     </div>
     <div class="centered">
         <label for="if1_url">URL:</label>
-        <input type="text" id="if1_url" name="if1_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if1_url" name="if1_url" maxlength="100" size="50">
         <input type="button" id="set_if1_url" value="Set" title="Set" onclick="set_url(1)"/>
         <br>
         <iframe id="if1"></iframe>
     </div>
     <div class="centered">
         <label for="if2_url">URL:</label>
-        <input type="text" id="if2_url" name="if2_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if2_url" name="if2_url" maxlength="100" size="50">
         <input type="button" id="set_if2_url" value="Set" title="Set" onclick="set_url(2)"/>
         <br>
         <iframe id="if2"></iframe>
@@ -86,21 +96,21 @@
 <div class="three_columns">
     <div class="centered">
         <label for="if3_url">URL:</label>
-        <input type="text" id="if3_url" name="if3_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if3_url" name="if3_url" maxlength="100" size="50">
         <input type="button" id="set_if3_url" value="Set" title="Set" onclick="set_url(3)"/>
         <br>
         <iframe id="if3"></iframe>
     </div>
     <div class="centered">
         <label for="if4_url">URL:</label>
-        <input type="text" id="if4_url" name="if4_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if4_url" name="if4_url" maxlength="100" size="50">
         <input type="button" id="set_if4_url" value="Set" title="Set" onclick="set_url(4)"/>
         <br>
         <iframe id="if4"></iframe>
     </div>
     <div class="centered">
         <label for="if5_url">URL:</label>
-        <input type="text" id="if5_url" name="if5_url" maxlength="100" size="50" type="url">
+        <input type="url" id="if5_url" name="if5_url" maxlength="100" size="50">
         <input type="button" id="set_if5_url" value="Set" title="Set" onclick="set_url(5)"/>
         <br>
         <iframe id="if5"></iframe>
