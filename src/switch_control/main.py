@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.23'  # 2025-11-06
+__version__ = '0.1.24'  # 2025-12-27
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -502,7 +502,8 @@ async def main():
                 if picow_network is not None:
                     if not connected:
                         logging.debug('checking network connection', 'main:main')
-                        connected = picow_network.is_connected()
+                        ip_address = picow_network.get_ip_address()
+                        connected = ip_address is not None
                         if connected:
                             logging.info('network connection established', 'main:main')
                             ip_address = picow_network.get_ip_address()
@@ -511,11 +512,6 @@ async def main():
                             newly_connected = True
                         else:
                             logging.info('waiting for picow network', 'main:main')
-
-                    else:  # is connected, look for disconnect
-                        connected = picow_network.is_connected()
-                        if not connected:
-                            logging.info('network connection disconnected', 'main:main')
                 else:
                     ip_address = socket.gethostbyname_ex(socket.gethostname())[2][-1]
                     netmask = '255.255.255.0'
@@ -526,7 +522,7 @@ async def main():
                     last_message = picow_network.get_message()
                     morse_code_sender.set_message(last_message)
                 # can I get the time from NTP?
-                if picow_network is not None and not time_set and not ap_mode and picow_network.is_connected():
+                if picow_network is not None and not time_set and not ap_mode and ip_address is not None:
                     get_ntp_time()
                     if time.time() > 1700000000:
                         time_set = True
