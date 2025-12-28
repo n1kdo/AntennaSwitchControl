@@ -1,3 +1,7 @@
+<!--
+six-panes.html
+v 0.1.1 2025-12-28
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +9,7 @@
     <title>Six Panes</title>
     <style>
         body {
-            background-color: #bbb;
+            background-color: #777;
         }
 
         iframe {
@@ -13,13 +17,11 @@
             border: none;
             height: 356px;
             width: 506px;
-            margin-top: 5px;
         }
 
         .three_columns {
             display: flex;
             justify-content: space-evenly;
-            width: 100%;
         }
 
         .two_rows {
@@ -32,10 +34,28 @@
             width: 100%;
         }
 
-        .centered {
+        .pane_box {
             text-align: center;
         }
-
+        .pane_controls {
+            align-items: center;
+            background-color: #ddd;
+            border-style: double;
+            display: flex;
+            justify-content: space-between;
+        }
+        .pane_controls input[type=button] {
+            float: right;
+        }
+        .pane_controls input[type=url] {
+            width: 80%;
+        }
+        .pane_controls label {
+            float: left;
+        }
+        .pane_panel {
+            margin-top: 2px;
+        }
     </style>
     <script>
 
@@ -85,49 +105,68 @@
 <body>
 <div class="two_rows">
     <div class="three_columns">
-        <div class="centered">
-            <label for="if0_url">URL:</label>
-            <input type="url" id="if0_url" name="if0_url" maxlength="100" size="50">
-            <input type="button" id="set_if0_url" value="Set" title="Set" onclick="set_url(0)"/>
-            <br>
-            <iframe id="if0"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+                <label for="if0_url">URL:</label>
+                <input type="url" id="if0_url" name="if0_url" maxlength="100">
+                <input type="button" id="set_if0_url" value="Set" title="Set" onclick="set_url(0)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if0"></iframe>
+            </div>
         </div>
-        <div class="centered">
-            <label for="if1_url">URL:</label>
-            <input type="url" id="if1_url" name="if1_url" maxlength="100" size="50">
-            <input type="button" id="set_if1_url" value="Set" title="Set" onclick="set_url(1)"/>
-            <br>
-            <iframe id="if1"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+                <label for="if1_url">URL:</label>
+                <input type="url" id="if1_url" name="if1_url" maxlength="100">
+                <input type="button" id="set_if1_url" value="Set" title="Set" onclick="set_url(1)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if1"></iframe>
+            </div>
         </div>
-        <div class="centered">
-            <label for="if2_url">URL:</label>
-            <input type="url" id="if2_url" name="if2_url" maxlength="100" size="50">
-            <input type="button" id="set_if2_url" value="Set" title="Set" onclick="set_url(2)"/>
-            <br>
-            <iframe id="if2"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+                <label for="if2_url">URL:</label>
+                <input type="url" id="if2_url" name="if2_url" maxlength="100">
+                <input type="button" id="set_if2_url" value="Set" title="Set" onclick="set_url(2)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if2"></iframe>
+            </div>
         </div>
     </div>
     <div class="three_columns">
-        <div class="centered">
-            <label for="if3_url">URL:</label>
-            <input type="url" id="if3_url" name="if3_url" maxlength="100" size="50">
-            <input type="button" id="set_if3_url" value="Set" title="Set" onclick="set_url(3)"/>
-            <br>
-            <iframe id="if3"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+                <label for="if3_url">URL:</label>
+                <input type="url" id="if3_url" name="if3_url" maxlength="100">
+                <input type="button" id="set_if3_url" value="Set" title="Set" onclick="set_url(3)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if3"></iframe>
+            </div>
         </div>
-        <div class="centered">
-            <label for="if4_url">URL:</label>
-            <input type="url" id="if4_url" name="if4_url" maxlength="100" size="50">
-            <input type="button" id="set_if4_url" value="Set" title="Set" onclick="set_url(4)"/>
-            <br>
-            <iframe id="if4"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+
+                <label for="if4_url">URL:</label>
+                <input type="url" id="if4_url" name="if4_url" maxlength="100">
+                <input type="button" id="set_if4_url" value="Set" title="Set" onclick="set_url(4)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if4"></iframe>
+            </div>
         </div>
-        <div class="centered">
-            <label for="if5_url">URL:</label>
-            <input type="url" id="if5_url" name="if5_url" maxlength="100" size="50">
-            <input type="button" id="set_if5_url" value="Set" title="Set" onclick="set_url(5)"/>
-            <br>
-            <iframe id="if5"></iframe>
+        <div class="pane_box">
+            <div class="pane_controls">
+                <label for="if5_url">URL:</label>
+                <input type="url" id="if5_url" name="if5_url" maxlength="100">
+                <input type="button" id="set_if5_url" value="Set" title="Set" onclick="set_url(5)"/>
+            </div>
+            <div class="pane_panel">
+                <iframe id="if5"></iframe>
+            </div>
         </div>
     </div>
 </div>
