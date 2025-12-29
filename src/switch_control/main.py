@@ -136,6 +136,7 @@ def read_config():
             config = json.load(config_file)
     except Exception as ex:
         logging.error(f'failed to load configuration:  {type(ex)}, {ex}', 'main:read_config()')
+        config = default_config()
     return config
 
 
@@ -152,7 +153,7 @@ def default_config():
         'gateway': '192.168.1.1',
         'hostname': 'ant-switch',
         'ip_address': '192.168.1.73',
-        'log_level' : 'debug',
+        'log_level' : 'info',
         'netmask': '255.255.255.0',
         'SSID': 'your_network_ssid',
         'secret': 'your_network_password',
@@ -437,11 +438,6 @@ async def main():
     ip_address = None
     netmask = None
     config = read_config()
-    if len(config) == 0:
-        # create default configuration
-        config = default_config()
-        save_config(config)
-
     config_level = config.get('log_level')
     if config_level:
         logging.set_level(config_level)
