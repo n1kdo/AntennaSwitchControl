@@ -66,10 +66,13 @@ def set_port(radio: int, port_selected: int):
             pins = a_pins
         elif radio == 2:
             pins = b_pins
+        else:
+            logging.error(f'Invalid radio number: {radio}', 'relays:set_port')
+            return
         if pins is not None:
             for i in range(len(pins)):
                 pins[i].off()
             if port_selected > 0:
                 pins[port_selected - 1].on()
     else:
-        logging.error(f'Invalid port_selected {port_selected}')
+        logging.error(f'Invalid port_selected {port_selected}', 'relays:set_port')
