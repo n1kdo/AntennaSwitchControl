@@ -498,8 +498,7 @@ async def main():
                 if picow_network is not None:
                     if not connected:
                         logging.debug('checking network connection', 'main:main')
-                        ip_address = picow_network.get_ip_address()
-                        connected = ip_address is not None
+                        connected = picow_network.is_connected()
                         if connected:
                             logging.info('network connection established', 'main:main')
                             ip_address = picow_network.get_ip_address()
