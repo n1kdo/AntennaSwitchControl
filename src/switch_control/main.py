@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.25'  # 2025-12-31
+__version__ = '0.1.26'  # 2025-12-31
 
 #
 # Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
@@ -515,7 +515,7 @@ async def main():
                             logging.info(f'ip_address {ip_address}, netmask {netmask}', 'main:main')
                             newly_connected = True
                         else:
-                            logging.info('waiting for picow network', 'main:main')
+                            logging.debug('waiting for picow network', 'main:main')
                 else:
                     ip_address = socket.gethostbyname_ex(socket.gethostname())[2][-1]
                     netmask = '255.255.255.0'
