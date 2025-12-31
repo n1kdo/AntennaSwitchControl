@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="13021381-fe39-407d-9f2f-6a9d260f8144" name="Changes" comment="update for latest picow_network.py">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/MicroPythonToolsStubs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AntennaSwitchControl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AntennaSwitchControl.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/switch_control/http_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/switch_control/http_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/switch_control/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/switch_control/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/switch_control/picow_network.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/switch_control/picow_network.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/switch_control/udp_messages.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/switch_control/udp_messages.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +46,7 @@
     "Python.loader /dev/pico2w0.executor": "Run",
     "Python.loader /dev/ttyACM0.executor": "Run",
     "Python.loader /dev/ttyACM1.executor": "Run",
+    "Python.loader com19.executor": "Run",
     "Python.loader.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -74,7 +68,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.loader /dev/pico2w0">
+  <component name="RunManager" selected="Python.loader com19">
     <configuration name="loader /dev/pico2w0 --no-watchdog" type="PythonConfigurationType" factoryName="Python">
       <module name="AntennaSwitchControl" />
       <option name="ENV_FILES" value="" />
@@ -171,6 +165,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="loader com19" type="PythonConfigurationType" factoryName="Python">
+      <module name="AntennaSwitchControl" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/loader" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/loader/loader.py" />
+      <option name="PARAMETERS" value="--port com19" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="loader" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AntennaSwitchControl" />
       <option name="ENV_FILES" value="" />
@@ -199,6 +217,7 @@
       <item itemvalue="Python.loader /dev/pico2w0 --no-watchdog" />
       <item itemvalue="Python.loader /dev/pico2w0" />
       <item itemvalue="Python.loader /dev/ttyACM0" />
+      <item itemvalue="Python.loader com19" />
       <item itemvalue="Python.loader /dev/ttyACM1" />
       <item itemvalue="Python.loader" />
     </list>
@@ -465,9 +484,13 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__dev_pico2w0.coverage" NAME="loader /dev/pico2w0 Coverage Results" MODIFIED="1767205943874" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
-    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__dev_ttyACM1.coverage" NAME="loader /dev/ttyACM1 Coverage Results" MODIFIED="1766425806780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader.coverage" NAME="loader Coverage Results" MODIFIED="1762365325789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__com20.coverage" NAME="loader  com20 Coverage Results" MODIFIED="1765832437486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
     <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__dev_ttyACM0.coverage" NAME="loader /dev/ttyACM0 Coverage Results" MODIFIED="1766425817239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
-    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader.coverage" NAME="loader Coverage Results" MODIFIED="1766426077354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader_com19.coverage" NAME="loader com19 Coverage Results" MODIFIED="1767206559452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__com_19.coverage" NAME="loader  com 19 Coverage Results" MODIFIED="1767111932419" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader_.coverage" NAME="loader  Coverage Results" MODIFIED="1762368653223" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__dev_ttyACM1.coverage" NAME="loader /dev/ttyACM1 Coverage Results" MODIFIED="1766425806780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
+    <SUITE FILE_PATH="coverage/AntennaSwitchControl$loader__dev_pico2w0.coverage" NAME="loader /dev/pico2w0 Coverage Results" MODIFIED="1767206481464" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/loader" />
   </component>
 </project>
