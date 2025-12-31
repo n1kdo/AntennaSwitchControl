@@ -99,6 +99,7 @@ restart = False
 antennas_selected = [1, 2]
 keep_running = True
 config = {}
+_select_antenna_lock = None
 
 # http server
 http_server = HttpServer(content_dir=CONTENT_DIR)
@@ -364,18 +365,26 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
     return bytes_sent, status
 
 
-def select_antenna(radio:int, antenna_requested:int) -> bool:
-    global antennas_selected
+async def select_antenna(radio:int, antenna_requested:int) -> bool:
+    global antennas_selected, _select_antenna_lock
     if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
         other_radio = 2 if radio == 1 else 1
         if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio - 1]:
             return False
-        antennas_selected[radio - 1] = antenna_requested
-        if logging.should_log(logging.DEBUG):
-            logging.debug(f'calling set_port({radio}, {antenna_requested})')
-        set_port(radio, antenna_requested)
-        write_antennas_selected(antennas_selected)
-        return True
+
+        if _select_antenna_lock is None:
+            _select_antenna_lock = asyncio.Lock()
+
+        try:
+            await _select_antenna_lock.acquire()
+            antennas_selected[radio - 1] = antenna_requested
+            if logging.should_log(logging.DEBUG):
+                logging.debug(f'calling set_port({radio}, {antenna_requested})')
+            set_port(radio, antenna_requested)
+            write_antennas_selected(antennas_selected)
+            return True
+        finally:
+            _select_antenna_lock.release()
     return False
 
 @http_server.route(b'/api/select_antenna')
@@ -383,7 +392,7 @@ async def api_select_antenna_callback(http, verb, args, reader, writer, request_
     radio = safe_int(args.get('radio', '0'))
     antenna_requested = safe_int(args.get('antenna', '0'))
     if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
-        if select_antenna(radio, antenna_requested):
+        if await select_antenna(radio, antenna_requested):
             http_status = HTTP_STATUS_OK
             payload = {'radio': radio, 'antenna': antenna_requested}
             bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, payload)
@@ -444,10 +453,10 @@ async def main():
     antennas_selected = read_antennas_selected()
     if logging.should_log(logging.DEBUG):
         logging.debug(f'calling select_antenna(1, {antennas_selected[0]})')
-    select_antenna(1, antennas_selected[0])
+    await select_antenna(1, antennas_selected[0])
     if logging.should_log(logging.DEBUG):
         logging.debug(f'calling select_antenna(2, {antennas_selected[1]})')
-    select_antenna(2, antennas_selected[1])
+    await select_antenna(2, antennas_selected[1])
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
     if tcp_port < 0 or tcp_port > 65535:
         tcp_port = DEFAULT_TCP_PORT
