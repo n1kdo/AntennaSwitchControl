@@ -3,6 +3,8 @@
   "files": [
     "content/",
     "data/",
+    "antennas_selected_data.py",
+    "cached_config_data.py",
     "http_server.py",
     "main.py",
     "micro_logging.py",
@@ -23,6 +25,6 @@
   ],
   "special_files": [
     "data/config.json",
-    "data/port_settings.txt"
+    "data/antennas_selected.json"
   ]
 }

@@ -3,11 +3,11 @@
 #
 
 __author__ = 'J. B. Otterson'
-__copyright__ = 'Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.26'  # 2025-12-31
+__copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
+__version__ = '0.1.26'  # 2026-01-01
 
 #
-# Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
+# Copyright 2022, 2026  J. B. Otterson N1KDO.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -39,6 +39,7 @@ from http_server import (HttpServer,
                          HTTP_STATUS_BAD_REQUEST,
                          HTTP_STATUS_CONFLICT,
                          HTTP_VERB_GET, HTTP_VERB_POST)
+from antennas_selected_data import AntennasSelectedData
 from morse_code import MorseCode
 from ntp import get_ntp_time
 from picow_network import PicowNetwork
@@ -96,38 +97,13 @@ DEFAULT_WEB_PORT = 80
 
 # globals...
 restart = False
-antennas_selected = [1, 2]
 keep_running = True
 config = {}
 _select_antenna_lock = None
 
 # http server
 http_server = HttpServer(content_dir=CONTENT_DIR)
-
-
-def read_antennas_selected():
-    result = [1, 2]
-    try:
-        with open(PORT_SETTINGS_FILE, 'r') as port_settings_file:
-            result[0] = safe_int(port_settings_file.readline().strip())
-            result[1] = safe_int(port_settings_file.readline().strip())
-    except OSError:
-        logging.warning(f'failed to load selected antenna data, returning defaults.', 'main:read_port_selected()')
-    except Exception as ex:
-        logging.error(f'failed to load selected antenna data: {type(ex)}, {ex}', 'main:read_port_selected()')
-    logging.info(f'read antennas selected: {result[0]}, {result[1]}', 'main:read_port_selected')
-    return result
-
-
-def write_antennas_selected(new_antennas_selected):
-    try:
-        with open(PORT_SETTINGS_FILE, 'w') as port_settings_file:
-            port_settings_file.write(f'{new_antennas_selected[0]}\n')
-            port_settings_file.write(f'{new_antennas_selected[1]}\n')
-    except Exception as ex:
-        logging.error(f'failed to write selected antenna data: {type(ex)}, {ex}',
-                      'main:write_antennas_selected()')
-    return
+antennas_selected = AntennasSelectedData()
 
 
 def read_config():
@@ -319,6 +295,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
 @http_server.route(b'/api/restart')
 async def api_restart_callback(http, verb, args, reader, writer, request_headers=None):
     global keep_running
+    antennas_selected.flush()
     if upython:
         keep_running = False
         response = b'ok\r\n'
@@ -381,7 +358,6 @@ async def select_antenna(radio:int, antenna_requested:int) -> bool:
             if logging.should_log(logging.DEBUG):
                 logging.debug(f'calling set_port({radio}, {antenna_requested})')
             set_port(radio, antenna_requested)
-            write_antennas_selected(antennas_selected)
             return True
         finally:
             _select_antenna_lock.release()
@@ -450,7 +426,6 @@ async def main():
     config_level = config.get('log_level')
     if config_level:
         logging.set_level(config_level)
-    antennas_selected = read_antennas_selected()
     if logging.should_log(logging.DEBUG):
         logging.debug(f'calling select_antenna(1, {antennas_selected[0]})')
     await select_antenna(1, antennas_selected[0])
@@ -550,12 +525,13 @@ async def main():
 
 if __name__ == '__main__':
     logging.loglevel = logging.INFO
-    #logging.loglevel = logging.DEBUG
+    # logging.loglevel = logging.DEBUG
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logging.info('KeyboardInterrupt -- bye bye', 'main:__main__')
+        antennas_selected.flush()
     finally:
         asyncio.new_event_loop()
     logging.info('done', 'main:__main__')
