@@ -1,4 +1,3 @@
-/src/switch_control/data/config.json
-/src/switch_control/data/port_settings.txt
+/src/loader/__pycache__/
 /kicad/AntennaSwitchControl/AntennaSwitchControl-backups/
 /.idea/workspace.xml
