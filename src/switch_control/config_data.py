@@ -1,10 +1,10 @@
 #
-# antennas_selected_data.py -- antenna selected data class.
+# config_data.py -- antenna switch control configuration data class.
 #
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2026 J. B. Otterson N1KDO.'
-__version__ = '0.0.2'  # 2026-01-01
+__version__ = '0.0.1'  # 2026-01-01
 
 #
 # Copyright 2026 J. B. Otterson N1KDO.
@@ -29,39 +29,32 @@ __version__ = '0.0.2'  # 2026-01-01
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 from cached_config_data import CachedConfigData
 
-ANTENNAS_SELECTED_FILE = 'data/antennas_selected.json'
+CONFIG_FILE = 'data/config.json'
 
-_KEY0 = '0'
-_KEY1 = '1'
-_KEY_ERROR = 'key must be int 0 or 1'
-_VALUE_ERROR = 'value must be int 0 to 8'
-
-class AntennasSelectedData(CachedConfigData):
+class ConfigData(CachedConfigData):
     def __init__(self):
-        super().__init__(ANTENNAS_SELECTED_FILE)
+        super().__init__(CONFIG_FILE)
 
     @staticmethod
     def _default_config_data():
-        return {_KEY0:1, _KEY1:2}
-
-    def __getitem__(self, key):
-        if key == 0:
-            return self.get(_KEY0)
-        elif key == 1:
-            return self.get(_KEY1)
-        else:
-            raise KeyError(_KEY_ERROR)
-
-    def __setitem__(self, key, value):
-        if not isinstance(value, int) or not (0 <= value <= 8):
-            raise ValueError(_VALUE_ERROR)
-        if key == 0:
-            self.put(_KEY0, value)
-        elif key == 1:
-            self.put(_KEY1, value)
-        else:
-            raise KeyError(_KEY_ERROR)
+        return {
+            'ap_mode': True,
+            'dhcp': True,
+            'dns_server': '8.8.8.8',
+            'gateway': '192.168.1.1',
+            'hostname': 'ant-switch',
+            'ip_address': '192.168.1.73',
+            'log_level': 'info',
+            'netmask': '255.255.255.0',
+            'SSID': 'your_network_ssid',
+            'secret': 'your_network_password',
+            'tcp_port': '73',
+            'web_port': '80',
+            'antenna_bands': [0, 0, 0, 0, 0, 0, 0, 0],
+            'antenna_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set',
+                              'not set'],
+            'radio_names': ['Radio 1', 'Radio 2'],
+            'radio_hostnames': ['hostname1', 'hostname2'],
+        }

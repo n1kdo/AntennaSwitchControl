@@ -5,6 +5,7 @@
     "data/",
     "antennas_selected_data.py",
     "cached_config_data.py",
+    "config_data.py",
     "http_server.py",
     "main.py",
     "micro_logging.py",

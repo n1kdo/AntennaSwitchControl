@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.26'  # 2026-01-01
+__version__ = '0.1.27'  # 2026-01-01
 
 #
 # Copyright 2022, 2026  J. B. Otterson N1KDO.
@@ -40,6 +40,7 @@ from http_server import (HttpServer,
                          HTTP_STATUS_CONFLICT,
                          HTTP_VERB_GET, HTTP_VERB_POST)
 from antennas_selected_data import AntennasSelectedData
+from config_data import ConfigData
 from morse_code import MorseCode
 from ntp import get_ntp_time
 from picow_network import PicowNetwork
@@ -85,10 +86,7 @@ onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 morse_led = machine.Pin(17, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO17 / pin 22
 reset_button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO16 / pin 21
 
-CONFIG_FILE = 'data/config.json'
 CONTENT_DIR = 'content/'
-
-PORT_SETTINGS_FILE = 'data/port_settings.txt'
 
 DEFAULT_SECRET = 'antenna-switch'
 DEFAULT_SSID = 'switch'
@@ -98,49 +96,14 @@ DEFAULT_WEB_PORT = 80
 # globals...
 restart = False
 keep_running = True
-config = {}
 _select_antenna_lock = None
 
 # http server
 http_server = HttpServer(content_dir=CONTENT_DIR)
+
+# configuration data
 antennas_selected = AntennasSelectedData()
-
-
-def read_config():
-    global config
-    try:
-        with open(CONFIG_FILE, 'r') as config_file:
-            config = json.load(config_file)
-    except Exception as ex:
-        logging.error(f'failed to load configuration:  {type(ex)}, {ex}', 'main:read_config()')
-        config = default_config()
-    return config
-
-
-def save_config(config_data):
-    with open(CONFIG_FILE, 'w') as config_file:
-        json.dump(config_data, config_file)
-
-
-def default_config():
-    return {
-        'ap_mode': True,
-        'dhcp': True,
-        'dns_server': '8.8.8.8',
-        'gateway': '192.168.1.1',
-        'hostname': 'ant-switch',
-        'ip_address': '192.168.1.73',
-        'log_level' : 'info',
-        'netmask': '255.255.255.0',
-        'SSID': 'your_network_ssid',
-        'secret': 'your_network_password',
-        'tcp_port': '73',
-        'web_port': '80',
-        'antenna_bands': [0, 0, 0, 0, 0, 0, 0, 0],
-        'antenna_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set'],
-        'radio_names': ['Radio 1', 'Radio 2'],
-        'radio_hostnames': ['hostname1', 'hostname2'],
-    }
+config = ConfigData()
 
 
 # noinspection PyUnusedLocal
@@ -157,20 +120,17 @@ async def slash_callback(http, verb, args, reader, writer, request_headers=None)
 async def api_config_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/api/config'
     global config
     if verb == HTTP_VERB_GET:
-        response = read_config()
+        response = dict(config.get_data())  # copying config dict so removing secret does not trash original data
         response['secret'] = '' # do not return the secret
         http_status = HTTP_STATUS_OK
         bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == HTTP_VERB_POST:
-        config = read_config()
-        dirty = False
         errors = False
         log_level = args.get('log_level')
         if log_level is not None:
             log_level = log_level.strip().upper()
             if log_level in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
                 config['log_level'] = log_level
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'log level {log_level} not valid', 'main:api_config_callback')
@@ -179,7 +139,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             tcp_port_int = safe_int(tcp_port, -2)
             if 0 <= tcp_port_int <= 65535:
                 config['tcp_port'] = tcp_port
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'tcp_port {tcp_port_int} not valid', 'main:api_config_callback')
@@ -188,7 +147,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             web_port_int = safe_int(web_port, -2)
             if 0 <= web_port_int <= 65535:
                 config['web_port'] = web_port
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'web_port {web_port_int} not valid', 'main:api_config_callback')
@@ -196,7 +154,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if ssid is not None:
             if 0 < len(ssid) < 64:
                 config['SSID'] = ssid
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'ssid  {ssid} not valid', 'main:api_config_callback')
@@ -204,7 +161,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if secret is not None and len(secret) > 0:
             if 8 <= len(secret) < 32:
                 config['secret'] = secret
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
@@ -212,7 +168,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if hostname is not None:
             if 0 < len(hostname) < 64:
                 config['hostname'] = hostname
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'hostname {hostname} not valid', 'main:api_config_callback')
@@ -220,33 +175,26 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if ap_mode_arg is not None:
             ap_mode = True if ap_mode_arg == '1' else False
             config['ap_mode'] = ap_mode
-            dirty = True
         dhcp_arg = args.get('dhcp')
         if dhcp_arg is not None:
             dhcp = True if dhcp_arg == 1 else False
             config['dhcp'] = dhcp
-            dirty = True
         ip_address = args.get('ip_address')
         if ip_address is not None:
             config['ip_address'] = ip_address
-            dirty = True
         netmask = args.get('netmask')
         if netmask is not None:
             config['netmask'] = netmask
-            dirty = True
         gateway = args.get('gateway')
         if gateway is not None:
             config['gateway'] = gateway
-            dirty = True
         dns_server = args.get('dns_server')
         if dns_server is not None:
             config['dns_server'] = dns_server
-            dirty = True
         antenna_bands = args.get('antenna_bands')
         if antenna_bands is not None:
             if len(antenna_bands) == 8:
                 config['antenna_bands'] = antenna_bands
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'antenna_bands {antenna_bands} not valid', 'main:api_config_callback')
@@ -254,7 +202,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if antenna_names is not None:
             if len(antenna_names) == 8:
                 config['antenna_names'] = antenna_names
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'antenna_names {antenna_names} not valid', 'main:api_config_callback')
@@ -262,7 +209,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if radio_names is not None:
             if len(radio_names) == 2:
                 config['radio_names'] = radio_names
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
@@ -270,13 +216,10 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         if radio_hostnames is not None:
             if len(radio_hostnames) == 2:
                 config['radio_hostnames'] = radio_hostnames
-                dirty = True
             else:
                 errors = True
                 logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
         if not errors:
-            if dirty:
-                save_config(config)
             response = b'ok\r\n'
             http_status = HTTP_STATUS_OK
             bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
@@ -295,7 +238,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
 @http_server.route(b'/api/restart')
 async def api_restart_callback(http, verb, args, reader, writer, request_headers=None):
     global keep_running
-    antennas_selected.flush()
+
     if upython:
         keep_running = False
         response = b'ok\r\n'
@@ -422,7 +365,6 @@ async def main():
     global antennas_selected, keep_running, config, restart
     ip_address = None
     netmask = None
-    config = read_config()
     config_level = config.get('log_level')
     if config_level:
         logging.set_level(config_level)
@@ -476,7 +418,6 @@ async def main():
                 logging.info('reset button pressed', 'main:main')
                 ap_mode = not ap_mode
                 config['ap_mode'] = ap_mode
-                save_config(config)
                 keep_running = False
             if four_count >= 3:  # check for new message every one second
                 if picow_network is not None:
@@ -519,19 +460,23 @@ async def main():
         else:
             await asyncio.sleep(10.0)
 
+    antennas_selected.flush()
+    config.flush()
+
     if upython:
         machine.soft_reset()
 
 
 if __name__ == '__main__':
     logging.loglevel = logging.INFO
-    # logging.loglevel = logging.DEBUG
+    logging.loglevel = logging.DEBUG
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
         logging.info('KeyboardInterrupt -- bye bye', 'main:__main__')
         antennas_selected.flush()
+        config.flush()
     finally:
         asyncio.new_event_loop()
     logging.info('done', 'main:__main__')

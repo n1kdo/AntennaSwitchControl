@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2026 J. B. Otterson N1KDO.'
-__version__ = '0.0.1'  # 2026-01-01
+__version__ = '0.0.2'  # 2026-01-01
 
 #
 # Copyright 2026 J. B. Otterson N1KDO.
@@ -77,13 +77,26 @@ class CachedConfigData:
             logging.error(f'failed to write configuration to {self._config_file_name},:  {type(ex)}, {ex}',
                           'cached_config_data:_write_config_data()')
 
-    def get_item(self, key):
+    def get_data(self):
+        if self._config_data is None:
+            self._read_config_data()
+        return self._config_data
+
+    def __getitem__(self, key):
         if self._config_data is None:
             self._read_config_data()
         return self._config_data.get(key)
 
-    def set_item(self, key, value):
-        old_value = self.get_item(key)
+    def __setitem__(self, key, value):
+        self.put(key, value)
+
+    def get(self, key, default=None):
+        if self._config_data is None:
+            self._read_config_data()
+        return self._config_data.get(key, default)
+
+    def put(self, key, value):
+        old_value = self.get(key)
         if value != old_value:
             self._config_data[key] = value
             self._dirty = True
