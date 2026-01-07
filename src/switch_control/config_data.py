@@ -56,5 +56,4 @@ class ConfigData(CachedConfigData):
             'antenna_names': ['not set', 'not set', 'not set', 'not set', 'not set', 'not set', 'not set',
                               'not set'],
             'radio_names': ['Radio 1', 'Radio 2'],
-            'radio_hostnames': ['hostname1', 'hostname2'],
         }

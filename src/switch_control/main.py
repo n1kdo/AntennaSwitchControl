@@ -212,13 +212,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             else:
                 errors = True
                 logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
-        radio_hostnames = args.get('radio_hostnames')
-        if radio_hostnames is not None:
-            if len(radio_hostnames) == 2:
-                config['radio_hostnames'] = radio_hostnames
-            else:
-                errors = True
-                logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
         if not errors:
             response = b'ok\r\n'
             http_status = HTTP_STATUS_OK
