@@ -1,6 +1,6 @@
 __author__ = 'J. B. Otterson'
 __copyright__ = """
-Copyright 2025, J. B. Otterson N1KDO.
+Copyright 2025, 2026 J. B. Otterson N1KDO.
 Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
   1. Redistributions of source code must retain the above copyright notice, 
@@ -19,9 +19,8 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.3'  # 2025-12-31
+__version__ = '0.0.4'  # 2026-01-07
 
-from utils import upython
 import asyncio
 import micro_logging as logging
 import socket
@@ -92,7 +91,10 @@ class SendBroadcasts:
         self.run = True
 
     def send(self, payload):
-        self.socket.sendto(payload, self.sockaddr)
+        try:
+            self.socket.sendto(payload, self.sockaddr)
+        except OSError as ose:
+            logging.error(f'UDP Broadcast send failed: OSError {ose}', 'udp_messages:send_datagrams')
 
     async def send_datagrams(self):
         radio_names = self.config['radio_names']
@@ -129,7 +131,7 @@ class SendBroadcasts:
                 # send the raw buffer
                 self.send(buf)
             except Exception as ex:
-                logging.error(f'Broadcast pack/send failed: {ex}', 'udp_messages:send_datagrams')
+                logging.error(f'UDP Broadcast pack failed: {type(ex)} {ex}', 'udp_messages:send_datagrams')
             await sleep(1.0)
 
     def stop(self):
