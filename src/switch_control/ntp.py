@@ -1,12 +1,7 @@
 #
-# NTP client for MicroPython and CPython
-# This module provides a function to get the current time from an NTP server.
+# ntp.py -- set pico time from NTP
 #
-__author__ = 'J. B. Otterson'
-__copyright__ = 'Copyright 2024, 2025 J. B. Otterson N1KDO.'
-__version__ = '0.0.9'
-#
-# Copyright 2024, 2025, J. B. Otterson N1KDO.
+# Copyright 2024, 2025, 2026, J. B. Otterson N1KDO.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -27,6 +22,10 @@ __version__ = '0.0.9'
 # LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 # OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+__author__ = 'J. B. Otterson'
+__copyright__ = 'Copyright 2024, 2025, 2026 J. B. Otterson N1KDO.'
+__version__ = '0.1.1'  # 2026-05-20
 
 import socket
 import struct
@@ -36,14 +35,14 @@ import time
 _IS_MICROPYTHON = sys.implementation.name == 'micropython'
 
 if _IS_MICROPYTHON:
-    import micro_logging as logging
     from machine import RTC
     _rtc = RTC()
+    import micro_logging as logging
 else:
-    import logging
     _rtc = None
     def const(i):
         return i
+    import logging
 
 _UNIX_EPOCH = const(2208988800)  # 1970-01-01 00:00:00
 _NTP_PORT = const(123)
@@ -61,7 +60,6 @@ def get_ntp_time(host='pool.ntp.org'):
         sock.settimeout(_SOCKET_TIMEOUT)
         sock.sendto(_NTP_MSG, address)
         msg = sock.recvfrom(_BUF_SIZE)[0]
-        sock.close()
 
         t = struct.unpack(_STRUCT_FORMAT, msg)[10] - _UNIX_EPOCH
         tt = time.gmtime(t)
@@ -69,11 +67,11 @@ def get_ntp_time(host='pool.ntp.org'):
             # set the RTC
             try:
                 _rtc.datetime((tt[0], tt[1], tt[2], tt[6], tt[3], tt[4], tt[5], 0))
-            except OSError as ose:
-                logging.exception('OSError', 'ntp.get_ntp_time', ose)
+            except OSError as e:
+                logging.exception('error setting time', 'ntp:get_ntp_time', e)
         return tt
     except OSError as ose:
-        logging.exception('OSError', 'ntp.get_ntp_time', ose)
+        logging.exception('error getting ntp time', 'ntp:get_ntp_time', ose)
         return None
     finally:
         if sock:
