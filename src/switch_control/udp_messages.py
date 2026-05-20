@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.4'  # 2026-01-07
+__version__ = '0.0.5'  # 2026-05-20
 
 import asyncio
 import micro_logging as logging
@@ -32,7 +32,7 @@ from struct import calcsize, pack_into
                    'radio_names': config['radio_names'],     # 2x16 char limit from UI
                    'antenna_names': config['antenna_names'], # 8x20 char limit from UI
                    'antenna_bands': config['antenna_bands'], # 8x int, could be uint16
-                   # 'hostname': config['hostname'],         # 64 char limit from UI
+                   'hostname': config['hostname'],         # 64 char limit from UI
                    }
 '''
 # uint8 uint8 16s 16s 20s 20s 20s 20s 20s 20s 20s 20s hhhhhhhh64s
@@ -97,14 +97,20 @@ class SendBroadcasts:
             logging.error(f'UDP Broadcast send failed: OSError {ose}', 'udp_messages:send_datagrams')
 
     async def send_datagrams(self):
-        radio_names = self.config['radio_names']
-        antenna_names = self.config['antenna_names']
-        antenna_bands = self.config['antenna_bands']
-        antennas_selected = self.antennas_selected
-        hostname = self.config['hostname']
         buf = self.buf
         sleep = asyncio.sleep
         while self.run:
+            radio_names = self.config['radio_names']
+            antenna_names = self.config['antenna_names']
+            antenna_bands = self.config['antenna_bands']
+            antennas_selected = self.antennas_selected
+            hostname = self.config['hostname']
+            if logging.should_log(logging.DEBUG):
+                logging.debug(f'radio_names: {radio_names}', 'udp_messages:send_datagrams')
+                logging.debug(f'antenna_names: {antenna_names}', 'udp_messages:send_datagrams')
+                logging.debug(f'antenna_bands: {antenna_bands}', 'udp_messages:send_datagrams')
+                logging.debug(f'antennas_selected: {antennas_selected}', 'udp_messages:send_datagrams')
+                logging.debug(f'hostname: {hostname}', 'udp_messages:send_datagrams')
             try:
                 pack_into(STATUS_BROADCAST_FMT, buf, 0,
                           int(antennas_selected[0]),
