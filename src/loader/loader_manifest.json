@@ -13,6 +13,7 @@
     "ntp.py",
     "picow_network.py",
     "relays.py",
+    "ringbuf_queue.py",
     "udp_messages.py",
     "utils.py",
     "watchdog.py",

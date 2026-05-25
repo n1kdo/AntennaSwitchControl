@@ -174,7 +174,7 @@
             let netmask = document.getElementById("netmask_input").value;
             let gateway = document.getElementById("gateway_input").value;
             let dns_server = document.getElementById("dns_server_input").value;
-            if (ssid.length < 1 || ssid.length > 64) {
+            if (ssid.length < 1 || ssid.length > 32) {
                 alert("Invalid SSID!");
                 return;
             }
@@ -286,7 +286,7 @@
     <form>
         <p>
             <label for="ssid_input">SSID:</label>
-            <input type="text" id="ssid_input" maxlength="64">
+            <input type="text" id="ssid_input" maxlength="32">
         </p>
         <p>
             <label for="secret_input">Secret:</label>
@@ -298,11 +298,11 @@
         </p>
         <p>
             <label for="tcp_port_input">TCP Port:</label>
-            <input type="number" id="tcp_port_input" min="0" max="65535">
+            <input type="number" id="tcp_port_input" min="1" max="65535">
         </p>
         <p>
             <label for="web_port_input">Web Port:</label>
-            <input type="number" id="web_port_input" min="0" max="65535"/>
+            <input type="number" id="web_port_input" min="1" max="65535"/>
         </p>
         <p>
             <label for="dhcp_input">Use DHCP:</label>
@@ -347,7 +347,7 @@
         <span class="selected">Network</span>
         <a href="files.html">Files</a>
     </div>
-    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20260428</div>
+    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20260525</div>
 </div>
 </body>
 </html>

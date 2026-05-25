@@ -94,7 +94,6 @@ DEFAULT_TCP_PORT = 73
 DEFAULT_WEB_PORT = 80
 
 # globals...
-restart = False
 keep_running = True
 _select_antenna_lock = None
 
@@ -137,7 +136,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         tcp_port = args.get('tcp_port')
         if tcp_port is not None:
             tcp_port_int = safe_int(tcp_port, -2)
-            if 0 <= tcp_port_int <= 65535:
+            if 1 <= tcp_port_int <= 65535:
                 config['tcp_port'] = tcp_port
             else:
                 errors = True
@@ -145,40 +144,38 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         web_port = args.get('web_port')
         if web_port is not None:
             web_port_int = safe_int(web_port, -2)
-            if 0 <= web_port_int <= 65535:
+            if 1 <= web_port_int <= 65535:
                 config['web_port'] = web_port
             else:
                 errors = True
                 logging.warning(f'web_port {web_port_int} not valid', 'main:api_config_callback')
         ssid = args.get('SSID')
         if ssid is not None:
-            if 0 < len(ssid) < 64:
+            if 0 < len(ssid) <= 32:
                 config['SSID'] = ssid
             else:
                 errors = True
                 logging.warning(f'ssid  {ssid} not valid', 'main:api_config_callback')
         secret = args.get('secret')
         if secret is not None and len(secret) > 0:
-            if 8 <= len(secret) < 32:
+            if 8 <= len(secret) <= 64:
                 config['secret'] = secret
             else:
                 errors = True
                 logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
         hostname = args.get('hostname')
         if hostname is not None:
-            if 0 < len(hostname) < 64:
+            if 0 < len(hostname) <= 64:
                 config['hostname'] = hostname
             else:
                 errors = True
                 logging.warning(f'hostname {hostname} not valid', 'main:api_config_callback')
         ap_mode_arg = args.get('ap_mode')
         if ap_mode_arg is not None:
-            ap_mode = True if ap_mode_arg == '1' else False
-            config['ap_mode'] = ap_mode
+            config['ap_mode'] = safe_int(ap_mode_arg, 0) == 1
         dhcp_arg = args.get('dhcp')
         if dhcp_arg is not None:
-            dhcp = True if dhcp_arg == 1 else False
-            config['dhcp'] = dhcp
+            config['dhcp'] = safe_int(dhcp_arg, 0) == 1
         ip_address = args.get('ip_address')
         if ip_address is not None:
             config['ip_address'] = ip_address
@@ -221,7 +218,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             http_status = HTTP_STATUS_BAD_REQUEST
             bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     else:
-        response = b'GET or PUT only.'
+        response = b'GET or POST only.'
         http_status = HTTP_STATUS_BAD_REQUEST
         bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
     return bytes_sent, http_status
@@ -258,7 +255,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                    }
     elif radio == 1 or radio == 2:
         antenna_index = antennas_selected[radio-1]
-        if antenna_index < 0 or antenna_index > 8:
+        if antenna_index <= 0 or antenna_index > 8:
             antenna_name = 'No Antenna'
             antenna_band = 0
         else:
@@ -281,23 +278,22 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
 async def select_antenna(radio:int, antenna_requested:int) -> bool:
     global antennas_selected, _select_antenna_lock
     if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
-        other_radio = 2 if radio == 1 else 1
-        if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio - 1]:
-            return False
-
         if _select_antenna_lock is None:
             _select_antenna_lock = asyncio.Lock()
 
-        try:
-            await _select_antenna_lock.acquire()
+        async with _select_antenna_lock:
+            other_radio = 2 if radio == 1 else 1
+            if antenna_requested != 0 and antenna_requested == antennas_selected[other_radio - 1]:
+                return False
+
             antennas_selected[radio - 1] = antenna_requested
             if logging.should_log(logging.DEBUG):
                 logging.debug(f'calling set_port({radio}, {antenna_requested})')
             set_port(radio, antenna_requested)
             return True
-        finally:
-            _select_antenna_lock.release()
+
     return False
+
 
 @http_server.route(b'/api/select_antenna')
 async def api_select_antenna_callback(http, verb, args, reader, writer, request_headers=None):
@@ -355,7 +351,7 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
 
 
 async def main():
-    global antennas_selected, keep_running, config, restart
+    global antennas_selected, keep_running, config
     ip_address = None
     netmask = None
     config_level = config.get('log_level')
@@ -368,10 +364,10 @@ async def main():
         logging.debug(f'calling select_antenna(2, {antennas_selected[1]})')
     await select_antenna(2, antennas_selected[1])
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
-    if tcp_port < 0 or tcp_port > 65535:
+    if tcp_port < 1 or tcp_port > 65535:
         tcp_port = DEFAULT_TCP_PORT
     web_port = safe_int(config.get('web_port') or DEFAULT_WEB_PORT, DEFAULT_WEB_PORT)
-    if web_port < 0 or web_port > 65535:
+    if web_port < 1 or web_port > 65535:
         web_port = DEFAULT_WEB_PORT
 
     ap_mode = config.get('ap_mode', False)
@@ -462,7 +458,7 @@ async def main():
 
 if __name__ == '__main__':
     logging.loglevel = logging.INFO
-    # logging.loglevel = logging.DEBUG
+    #logging.loglevel = logging.DEBUG
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
