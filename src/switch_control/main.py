@@ -95,7 +95,7 @@ DEFAULT_WEB_PORT = 80
 
 # globals...
 keep_running = True
-_select_antenna_lock = None
+_select_antenna_lock = asyncio.Lock()
 
 # http server
 http_server = HttpServer(content_dir=CONTENT_DIR)
@@ -278,8 +278,6 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
 async def select_antenna(radio:int, antenna_requested:int) -> bool:
     global antennas_selected, _select_antenna_lock
     if 1 <= radio <= 2 and 0 <= antenna_requested <= 8:
-        if _select_antenna_lock is None:
-            _select_antenna_lock = asyncio.Lock()
 
         async with _select_antenna_lock:
             other_radio = 2 if radio == 1 else 1
