@@ -425,14 +425,15 @@ async def main():
                     connected = True
                     newly_connected = True
 
-                if picow_network.get_message() != last_message:
-                    last_message = picow_network.get_message()
-                    morse_code_sender.set_message(last_message)
-                # can I get the time from NTP?
-                if picow_network is not None and not time_set and not ap_mode and ip_address is not None:
-                    get_ntp_time()
-                    if time.time() > 1700000000:
-                        time_set = True
+                if picow_network is not None:
+                    if picow_network.get_message() != last_message:
+                        last_message = picow_network.get_message()
+                        morse_code_sender.set_message(last_message)
+                    # can I get the time from NTP?
+                    if not time_set and not ap_mode and ip_address is not None:
+                        get_ntp_time()
+                        if time.time() > 1700000000:
+                            time_set = True
                 four_count = 0
             if newly_connected:
                 if not ap_mode:
