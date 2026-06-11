@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.27'  # 2026-01-01
+__version__ = '0.1.28'  # 2026-06-10
 
 #
 # Copyright 2022, 2026  J. B. Otterson N1KDO.
@@ -268,7 +268,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                    'radio_number': radio,
                    }
     else:
-        payload = {'error', f'invalid radio {radio}'}
+        payload = {'error': f'invalid radio {radio}'}
         status = HTTP_STATUS_BAD_REQUEST
 
     bytes_sent = await http.send_simple_response(writer, status, http.CT_APP_JSON, payload)
