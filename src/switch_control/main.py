@@ -338,18 +338,22 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
                         client_connected = False
                     await writer.drain()
 
+    except Exception as ex:
+        logging.error(f'exception in serve_serial_client: {type(ex)}, {ex}', 'main:serve_serial_client')
+    finally:
         # reader.close()
         writer.close()
         await writer.wait_closed()
 
-    except Exception as ex:
-        logging.error(f'exception in serve_serial_client: {type(ex)}, {ex}', 'main:serve_serial_client')
+
     tc = milliseconds()
     logging.info(f'client disconnected, elapsed time {(tc - t0) / 1000.0:6.3f} seconds', 'main:serve_serial_client')
 
 
 async def main():
     global antennas_selected, keep_running, config
+    send_status_broadcasts = None
+    status_broadcast_sender = None
     ip_address = None
     netmask = None
     config_level = config.get('log_level')
@@ -439,6 +443,13 @@ async def main():
                 if not ap_mode:
                     # UDP send/receive
                     broadcast_address = udp_messages.calculate_broadcast_address(ip_address, netmask)
+                    if send_status_broadcasts is not None:
+                        if status_broadcast_sender is not None:
+                            try:
+                                status_broadcast_sender.cancel()
+                            finally:
+                                status_broadcast_sender = None
+                        send_status_broadcasts = None
                     send_status_broadcasts = udp_messages.SendBroadcasts(target_ip=broadcast_address,
                                                                          target_port=65073,
                                                                          config=config,
