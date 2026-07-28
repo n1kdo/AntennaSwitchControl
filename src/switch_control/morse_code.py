@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = """
-Copyright 2022, 2024, 2025 J. B. Otterson N1KDO.
+Copyright 2022, 2024, 2025, 2026 J. B. Otterson N1KDO.
 Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
   1. Redistributions of source code must retain the above copyright notice, 
@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.9.7'  # 2026-04-27
+__version__ = '0.9.8'  # 2026-07-28
 
 # disable pylint import error
 # pylint: disable=E0401
@@ -73,6 +73,8 @@ class MorseCode:
 
     def set_message(self, new_message):
         # do not send periods in Morse code, send a space instead.
+        if isinstance(new_message, bytes):
+            new_message = new_message.decode()
         new_message = new_message.upper().replace('.', ' ')
         if self.message != new_message:
             logging.info(f'new message "{new_message}")', 'morse_code:set_message')

@@ -62,7 +62,8 @@ else:
     def const(i):
         return i
 
-BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
+BANDS = (b'None', b'160M', b'80M', b'60M', b'40M', b'30M', b'20M',
+         b'17M', b'15M', b'12M', b'10M', b'6M', b'2M', b'70cm')
 # antenna_bands is a BITMASK, 16 bits wide.
 # noinspection PyUnboundLocalVariable
 BAND_160M_MASK = const(0x0001)
