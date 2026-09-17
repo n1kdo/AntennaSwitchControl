@@ -66,6 +66,7 @@ BANDS = (b'None', b'160M', b'80M', b'60M', b'40M', b'30M', b'20M',
          b'17M', b'15M', b'12M', b'10M', b'6M', b'2M', b'70cm')
 # antenna_bands is a BITMASK, 16 bits wide.
 # noinspection PyUnboundLocalVariable
+"""
 BAND_160M_MASK = const(0x0001)
 BAND_80M_MASK = const(0x0002)
 BAND_60M_MASK = const(0x0004)
@@ -82,6 +83,7 @@ BAND_70CM_MASK = const(0x1000)
 BAND_OTHER1_MASK = const(0x2000)  # not used
 BAND_OTHER2_MASK = const(0x4000)  # not used
 BAND_OTHER3_MASK = const(0x8000)  # not used
+"""
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 morse_led = machine.Pin(17, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO17 / pin 22
