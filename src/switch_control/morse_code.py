@@ -88,6 +88,9 @@ class MorseCode:
 
         while self.keep_running:
             msg = self.message
+            if not msg:
+                await sleep_ms(morse_esp)  # empty message: nothing to send; yield so we don't hog the loop
+                continue
             logging.debug(f'starting message "{msg}"', 'morse_code:morse_sender')
             for morse_letter in msg:
                 blink_pattern = patterns.get(morse_letter)
