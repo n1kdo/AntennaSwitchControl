@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2026 J. B. Otterson N1KDO.'
-__version__ = '0.0.5'  # 2026-09-03
+__version__ = '0.0.6'  # 2026-09-18
 
 #
 # Copyright 2026 J. B. Otterson N1KDO.
