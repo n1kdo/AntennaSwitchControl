@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.29'  # 2026-09-17
+__version__ = '0.1.30'  # 2026-09-18
 
 #
 # Copyright 2022, 2026 J. B. Otterson N1KDO.
@@ -43,8 +43,7 @@ from antennas_selected_data import AntennasSelectedData
 from config_data import ConfigData
 from morse_code import MorseCode
 from ntp import get_ntp_time
-from picow_network import PicowNetwork
-from utils import milliseconds, upython, safe_int
+from utils import is_hostname, is_ipv4, milliseconds, safe_int, upython
 from relays import set_port
 import micro_logging as logging
 import udp_messages
@@ -52,6 +51,7 @@ import udp_messages
 import asyncio
 if upython:
     import machine
+    from picow_network import PicowNetwork
     try:
         from watchdog import Watchdog
     except ImportError:
@@ -127,6 +127,19 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         http_status = HTTP_STATUS_OK
         bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == HTTP_VERB_POST:
+        # A POST with no recognized configuration keys has nothing to do. That includes malformed JSON
+        # bodies, which the server decodes as an empty dict -- do not pretend they succeeded.
+        if not isinstance(args, dict) or not any(key in args for key in ('log_level', 'tcp_port',
+                                                                         'web_port', 'SSID', 'secret',
+                                                                         'hostname', 'ap_mode', 'dhcp',
+                                                                         'ip_address', 'netmask',
+                                                                         'gateway', 'dns_server',
+                                                                         'antenna_bands', 'antenna_names',
+                                                                         'radio_names')):
+            response = b'no configuration data\r\n'
+            http_status = HTTP_STATUS_BAD_REQUEST
+            bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+            return bytes_sent, http_status
         errors = False
         log_level = args.get('log_level')
         if log_level is not None:
@@ -168,7 +181,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
         hostname = args.get('hostname')
         if hostname is not None:
-            if 0 < len(hostname) <= 64:
+            if is_hostname(hostname):
                 config['hostname'] = hostname
             else:
                 errors = True
@@ -181,19 +194,36 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             config['dhcp'] = safe_int(dhcp_arg, 0) == 1
         ip_address = args.get('ip_address')
         if ip_address is not None:
-            config['ip_address'] = ip_address
+            if ip_address == '' or is_ipv4(ip_address):
+                config['ip_address'] = ip_address
+            else:
+                errors = True
+                logging.warning(f'ip_address {ip_address} not valid', 'main:api_config_callback')
         netmask = args.get('netmask')
         if netmask is not None:
-            config['netmask'] = netmask
+            if netmask == '' or (is_ipv4(netmask) and netmask != '0.0.0.0'):
+                config['netmask'] = netmask
+            else:
+                errors = True
+                logging.warning(f'netmask {netmask} not valid', 'main:api_config_callback')
         gateway = args.get('gateway')
         if gateway is not None:
-            config['gateway'] = gateway
+            if gateway == '' or is_ipv4(gateway):
+                config['gateway'] = gateway
+            else:
+                errors = True
+                logging.warning(f'gateway {gateway} not valid', 'main:api_config_callback')
         dns_server = args.get('dns_server')
         if dns_server is not None:
-            config['dns_server'] = dns_server
+            if dns_server == '' or is_ipv4(dns_server):
+                config['dns_server'] = dns_server
+            else:
+                errors = True
+                logging.warning(f'dns_server {dns_server} not valid', 'main:api_config_callback')
         antenna_bands = args.get('antenna_bands')
         if antenna_bands is not None:
-            if len(antenna_bands) == 8:
+            # bits 0-12 only; anything wider overflows the signed-16 pack and kills every broadcast.
+            if len(antenna_bands) == 8 and all(isinstance(b, int) and 0 <= b <= 0x1FFF for b in antenna_bands):
                 config['antenna_bands'] = antenna_bands
             else:
                 errors = True
