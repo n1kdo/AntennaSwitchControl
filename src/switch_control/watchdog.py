@@ -6,7 +6,7 @@ watchdog processor for micropython IOT projects.
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2025 J. B. Otterson N1KDO.'
-__version__ = '0.0.3'  # 2026-09-17
+__version__ = '0.0.2'  # 2026-09-14
 
 #
 # Copyright 2025, J. B. Otterson N1KDO.
