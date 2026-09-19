@@ -4,10 +4,10 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.28'  # 2026-06-10
+__version__ = '0.1.30'  # 2026-09-18
 
 #
-# Copyright 2022, 2026  J. B. Otterson N1KDO.
+# Copyright 2022, 2026 J. B. Otterson N1KDO.
 #
 # Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
@@ -43,8 +43,7 @@ from antennas_selected_data import AntennasSelectedData
 from config_data import ConfigData
 from morse_code import MorseCode
 from ntp import get_ntp_time
-from picow_network import PicowNetwork
-from utils import milliseconds, upython, safe_int
+from utils import is_hostname, is_ipv4, milliseconds, safe_int, upython
 from relays import set_port
 import micro_logging as logging
 import udp_messages
@@ -52,6 +51,7 @@ import udp_messages
 import asyncio
 if upython:
     import machine
+    from picow_network import PicowNetwork
     try:
         from watchdog import Watchdog
     except ImportError:
@@ -62,9 +62,11 @@ else:
     def const(i):
         return i
 
-BANDS = ['None', '160M', '80M', '60M', '40M', '30M', '20M', '17M', '15M', '12M', '10M', '6M', '2M', '70cm']
+BANDS = (b'None', b'160M', b'80M', b'60M', b'40M', b'30M', b'20M',
+         b'17M', b'15M', b'12M', b'10M', b'6M', b'2M', b'70cm')
 # antenna_bands is a BITMASK, 16 bits wide.
 # noinspection PyUnboundLocalVariable
+"""
 BAND_160M_MASK = const(0x0001)
 BAND_80M_MASK = const(0x0002)
 BAND_60M_MASK = const(0x0004)
@@ -81,6 +83,7 @@ BAND_70CM_MASK = const(0x1000)
 BAND_OTHER1_MASK = const(0x2000)  # not used
 BAND_OTHER2_MASK = const(0x4000)  # not used
 BAND_OTHER3_MASK = const(0x8000)  # not used
+"""
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 morse_led = machine.Pin(17, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO17 / pin 22
@@ -124,6 +127,19 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         http_status = HTTP_STATUS_OK
         bytes_sent = await http.send_simple_response(writer, http_status, http.CT_APP_JSON, response)
     elif verb == HTTP_VERB_POST:
+        # A POST with no recognized configuration keys has nothing to do. That includes malformed JSON
+        # bodies, which the server decodes as an empty dict -- do not pretend they succeeded.
+        if not isinstance(args, dict) or not any(key in args for key in ('log_level', 'tcp_port',
+                                                                         'web_port', 'SSID', 'secret',
+                                                                         'hostname', 'ap_mode', 'dhcp',
+                                                                         'ip_address', 'netmask',
+                                                                         'gateway', 'dns_server',
+                                                                         'antenna_bands', 'antenna_names',
+                                                                         'radio_names')):
+            response = b'no configuration data\r\n'
+            http_status = HTTP_STATUS_BAD_REQUEST
+            bytes_sent = await http.send_simple_response(writer, http_status, http.CT_TEXT_TEXT, response)
+            return bytes_sent, http_status
         errors = False
         log_level = args.get('log_level')
         if log_level is not None:
@@ -165,7 +181,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
         hostname = args.get('hostname')
         if hostname is not None:
-            if 0 < len(hostname) <= 64:
+            if is_hostname(hostname):
                 config['hostname'] = hostname
             else:
                 errors = True
@@ -178,19 +194,36 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             config['dhcp'] = safe_int(dhcp_arg, 0) == 1
         ip_address = args.get('ip_address')
         if ip_address is not None:
-            config['ip_address'] = ip_address
+            if ip_address == '' or is_ipv4(ip_address):
+                config['ip_address'] = ip_address
+            else:
+                errors = True
+                logging.warning(f'ip_address {ip_address} not valid', 'main:api_config_callback')
         netmask = args.get('netmask')
         if netmask is not None:
-            config['netmask'] = netmask
+            if netmask == '' or (is_ipv4(netmask) and netmask != '0.0.0.0'):
+                config['netmask'] = netmask
+            else:
+                errors = True
+                logging.warning(f'netmask {netmask} not valid', 'main:api_config_callback')
         gateway = args.get('gateway')
         if gateway is not None:
-            config['gateway'] = gateway
+            if gateway == '' or is_ipv4(gateway):
+                config['gateway'] = gateway
+            else:
+                errors = True
+                logging.warning(f'gateway {gateway} not valid', 'main:api_config_callback')
         dns_server = args.get('dns_server')
         if dns_server is not None:
-            config['dns_server'] = dns_server
+            if dns_server == '' or is_ipv4(dns_server):
+                config['dns_server'] = dns_server
+            else:
+                errors = True
+                logging.warning(f'dns_server {dns_server} not valid', 'main:api_config_callback')
         antenna_bands = args.get('antenna_bands')
         if antenna_bands is not None:
-            if len(antenna_bands) == 8:
+            # bits 0-12 only; anything wider overflows the signed-16 pack and kills every broadcast.
+            if len(antenna_bands) == 8 and all(isinstance(b, int) and 0 <= b <= 0x1FFF for b in antenna_bands):
                 config['antenna_bands'] = antenna_bands
             else:
                 errors = True
@@ -325,26 +358,26 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
     try:
         while client_connected:
             data = await reader.read(1)
-            if data is None:
+            if not data:  # b'' on EOF (peer closed); read() never returns None
                 break
             else:
-                if len(data) == 1:
-                    b = data[0]
-                    if b == 10:  # line feed, get status
-                        payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
-                        response = (json.dumps(payload) + '\n').encode('utf-8')
-                        writer.write(response)
-                    elif b == 4 or b == 26 or b == 81 or b == 113:  # ^D/^z/q/Q exit
-                        client_connected = False
-                    await writer.drain()
+                b = data[0]
+                if b == 10:  # line feed, get status
+                    payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
+                    response = (json.dumps(payload) + '\n').encode('utf-8')
+                    writer.write(response)
+                elif b == 4 or b == 26 or b == 81 or b == 113:  # ^D/^z/q/Q exit
+                    client_connected = False
+                await writer.drain()
 
     except Exception as ex:
         logging.error(f'exception in serve_serial_client: {type(ex)}, {ex}', 'main:serve_serial_client')
     finally:
-        # reader.close()
-        writer.close()
-        await writer.wait_closed()
-
+        try:
+            writer.close()
+            await writer.wait_closed()
+        except Exception as ex:
+            logging.warning(f'error closing writer: {ex}', 'main:serve_serial_client')
 
     tc = milliseconds()
     logging.info(f'client disconnected, elapsed time {(tc - t0) / 1000.0:6.3f} seconds', 'main:serve_serial_client')
@@ -392,6 +425,7 @@ async def main():
     four_count = 0
     last_message = ''
     time_set = False
+    ntp_failures = 0
     connected = False
     newly_connected = False
 
@@ -423,6 +457,13 @@ async def main():
                             newly_connected = True
                         else:
                             logging.debug('waiting for picow network', 'main:main')
+                    elif ip_address != picow_network.get_ip_address():
+                        # IP changed without a disconnect event (e.g. DHCP renewal)
+                        logging.info(f'ip_address changed {ip_address} -> {picow_network.get_ip_address()}',
+                                     'main:main')
+                        ip_address = picow_network.get_ip_address()
+                        netmask = picow_network.get_netmask()
+                        newly_connected = True
                 else:
                     ip_address = socket.gethostbyname_ex(socket.gethostname())[2][-1]
                     netmask = '255.255.255.0'
@@ -433,23 +474,31 @@ async def main():
                     if picow_network.get_message() != last_message:
                         last_message = picow_network.get_message()
                         morse_code_sender.set_message(last_message)
-                    # can I get the time from NTP?
-                    if not time_set and not ap_mode and ip_address is not None:
-                        get_ntp_time()
+                    # can I get the time from NTP? give up after 3 failures.
+                    if not time_set and ntp_failures < 3 and not ap_mode and ip_address is not None:
+                        try:
+                            await get_ntp_time(dns_servers=picow_network.get_dns_servers())
+                        except Exception as ex:
+                            logging.warning(f'NTP attempt failed: {type(ex)}, {ex}', 'main:main')
                         if time.time() > 1700000000:
                             time_set = True
+                        else:
+                            ntp_failures += 1
+                            if ntp_failures >= 3:
+                                logging.warning('NTP time sync failed after 3 attempts; giving up.',
+                                                'main:main')
                 four_count = 0
             if newly_connected:
                 if not ap_mode:
                     # UDP send/receive
                     broadcast_address = udp_messages.calculate_broadcast_address(ip_address, netmask)
                     if send_status_broadcasts is not None:
-                        if status_broadcast_sender is not None:
-                            try:
-                                status_broadcast_sender.cancel()
-                            finally:
-                                status_broadcast_sender = None
+                        old_broadcaster = send_status_broadcasts
                         send_status_broadcasts = None
+                        if status_broadcast_sender is not None:
+                            status_broadcast_sender.cancel()
+                            status_broadcast_sender = None
+                        old_broadcaster.stop()  # run=False + close UDP socket deterministically
                     send_status_broadcasts = udp_messages.SendBroadcasts(target_ip=broadcast_address,
                                                                          target_port=65073,
                                                                          config=config,

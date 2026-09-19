@@ -152,11 +152,7 @@
             xmlHttp.setRequestHeader("Content-Type", "application/json");
             xmlHttp.send(payload);
             // update the UI after a short period
-            if (update_timeout !== 0) {
-                clearTimeout(update_timeout)
-                update_timeout = 0;
-            }
-            update_timeout = setTimeout(get_status, 500);
+            schedule_update(500);
         }
 
         function process_get_status_response(message) {
@@ -188,12 +184,12 @@
 
             let button_secs = update_secs;
             if (auto_updates > 0) {
-                update_timeout = setTimeout(get_status, 1000);
+                schedule_update(1000);
                 button_secs = 1;
                 auto_updates--;
             } else {
                 if (update_secs > 0) {
-                    update_timeout = setTimeout(get_status, update_secs * 1000);
+                    schedule_update(update_secs * 1000);
                 }
             }
 
@@ -201,6 +197,15 @@
             document.getElementById('refresh_radio_0').checked = (button_secs === 0);
             document.getElementById('refresh_radio_1').checked = (button_secs === 1);
             document.getElementById('refresh_radio_5').checked = (button_secs === 5);
+        }
+
+        // single choke point for polling: at most one pending timer, ever.
+        function schedule_update(ms) {
+            if (update_timeout !== 0) {
+                clearTimeout(update_timeout);
+                update_timeout = 0;
+            }
+            update_timeout = setTimeout(get_status, ms);
         }
 
         function get_status() {
@@ -216,12 +221,12 @@
             }
             xmlHttp.onerror = function () {
                 if (update_secs > 0) {
-                    update_timeout = setTimeout(get_status, update_secs * 1000);
+                    schedule_update(update_secs * 1000);
                 }
             }
             xmlHttp.ontimeout = function () {
                 if (update_secs > 0) {
-                    update_timeout = setTimeout(get_status, update_secs * 1000);
+                    schedule_update(update_secs * 1000);
                 }
             }
             xmlHttp.open("GET", "/api/status", true);
@@ -236,6 +241,11 @@
                     update_timeout = 0;
                 }
             } else {
+                // drop any pending timer so the immediate fetch is the only chain in flight
+                if (update_timeout !== 0) {
+                    clearTimeout(update_timeout)
+                    update_timeout = 0;
+                }
                 get_status();
             }
         }
@@ -324,7 +334,7 @@
         <a href="network.html">Network</a>
         <a href="files.html">Files</a>
     </div>
-    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20260428</div>
+    <div class="author"><a href="https://www.n1kdo.com" target="_blank">N1KDO</a> 20260918</div>
 </div>
 </body>
 </html>

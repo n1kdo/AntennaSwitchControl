@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = """
-Copyright 2024, 2025, J. B. Otterson N1KDO.
+Copyright 2024, 2025, 2026, J. B. Otterson N1KDO.
 Redistribution and use in source and binary forms, with or without modification, 
 are permitted provided that the following conditions are met:
   1. Redistributions of source code must retain the above copyright notice, 
@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.2.0'  # 2025-12-29
+__version__ = '0.2.1'  # 2026-09-18
 
 from utils import upython
 import micro_logging as logging
@@ -52,7 +52,7 @@ b_pins = [
     machine.Pin(6, machine.Pin.OUT, value=0),  # B2 GP6 pin 9
     machine.Pin(5, machine.Pin.OUT, value=0),  # B3 GP5 pin 7
     machine.Pin(4, machine.Pin.OUT, value=0),  # B4 GP4 pin 6
-    machine.Pin(3, machine.Pin.OUT, value=0),  # B4 GP3 pin 5
+    machine.Pin(3, machine.Pin.OUT, value=0),  # B5 GP3 pin 5
     machine.Pin(2, machine.Pin.OUT, value=0),  # B6 GP2 pin 4
     machine.Pin(1, machine.Pin.OUT, value=0),  # B7 GP1 pin 2
     machine.Pin(0, machine.Pin.OUT, value=0),  # B8 GP0 pin 1
