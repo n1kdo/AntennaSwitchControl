@@ -50,11 +50,16 @@ class AntennasSelectedData(CachedConfigData):
 
     def __getitem__(self, key):
         if key == 0:
-            return self.get(_KEY0)
+            value = self.get(_KEY0)
         elif key == 1:
-            return self.get(_KEY1)
+            value = self.get(_KEY1)
         else:
             raise KeyError(_KEY_ERROR)
+        # missing or corrupt values (e.g. hand-edited file) fall back to 0, the
+        # safe "all relays off" state, instead of propagating None into callers.
+        if not isinstance(value, int) or not (0 <= value <= 8):
+            return 0
+        return value
 
     def __setitem__(self, key, value):
         if not isinstance(value, int) or not (0 <= value <= 8):

@@ -87,7 +87,7 @@ BAND_OTHER3_MASK = const(0x8000)  # not used
 
 onboard = machine.Pin('LED', machine.Pin.OUT, value=1)  # turn on right away
 morse_led = machine.Pin(17, machine.Pin.OUT, value=0)  # status/morse code LED on GPIO17 / pin 22
-reset_button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO16 / pin 21
+ap_mode_button = machine.Pin(16, machine.Pin.IN, machine.Pin.PULL_UP)  # mode button input on GPIO16 / pin 21
 
 CONTENT_DIR = 'content/'
 
@@ -131,7 +131,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
         # bodies, which the server decodes as an empty dict -- do not pretend they succeeded.
         if not isinstance(args, dict) or not any(key in args for key in ('log_level', 'tcp_port',
                                                                          'web_port', 'SSID', 'secret',
-                                                                         'hostname', 'ap_mode', 'dhcp',
+                                                                         'hostname', 'dhcp',
                                                                          'ip_address', 'netmask',
                                                                          'gateway', 'dns_server',
                                                                          'antenna_bands', 'antenna_names',
@@ -186,9 +186,6 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
             else:
                 errors = True
                 logging.warning(f'hostname {hostname} not valid', 'main:api_config_callback')
-        ap_mode_arg = args.get('ap_mode')
-        if ap_mode_arg is not None:
-            config['ap_mode'] = safe_int(ap_mode_arg, 0) == 1
         dhcp_arg = args.get('dhcp')
         if dhcp_arg is not None:
             config['dhcp'] = safe_int(dhcp_arg, 0) == 1
@@ -364,7 +361,7 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
                 b = data[0]
                 if b == 10:  # line feed, get status
                     payload = {'radio_1_port': antennas_selected[0], 'radio_2_port': antennas_selected[1]}
-                    response = (json.dumps(payload) + '\n').encode('utf-8')
+                    response = json.dumps(payload).encode() + b'\n'
                     writer.write(response)
                 elif b == 4 or b == 26 or b == 81 or b == 113:  # ^D/^z/q/Q exit
                     client_connected = False
@@ -405,10 +402,10 @@ async def main():
     if web_port < 1 or web_port > 65535:
         web_port = DEFAULT_WEB_PORT
 
-    ap_mode = config.get('ap_mode', False)
+    ap_mode = ap_mode_button.value() == 0
 
     if upython:
-        picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET)
+        picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET, access_point_mode=ap_mode)
         morse_code_sender = MorseCode(morse_led)
         if logging.loglevel != logging.DEBUG and Watchdog is not None:
             _ = Watchdog()
@@ -421,7 +418,6 @@ async def main():
     logging.info(f'Starting tcp service on port {tcp_port}', 'main:main')
     tcp_server = asyncio.create_task(asyncio.start_server(serve_serial_client, '0.0.0.0', tcp_port))
 
-    reset_button_pressed_count = 0
     four_count = 0
     last_message = ''
     time_set = False
@@ -433,17 +429,7 @@ async def main():
         if upython:
             await asyncio.sleep(0.25)
             four_count += 1
-            pressed = reset_button.value() == 0
-            if pressed:
-                reset_button_pressed_count += 1
-            else:
-                if reset_button_pressed_count > 0:
-                    reset_button_pressed_count -= 1
-            if reset_button_pressed_count > 7:
-                logging.info('reset button pressed', 'main:main')
-                ap_mode = not ap_mode
-                config['ap_mode'] = ap_mode
-                keep_running = False
+
             if four_count >= 3:  # check for new message every one second
                 if picow_network is not None:
                     if not connected:
