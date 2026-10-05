@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.30'  # 2026-09-18
+__version__ = '0.1.32'  # 2026-10-04
 
 #
 # Copyright 2022, 2026 J. B. Otterson N1KDO.
@@ -49,6 +49,10 @@ import micro_logging as logging
 import udp_messages
 
 import asyncio
+if upython:
+    from asyncio import TimeoutError  # micropython has no builtin TimeoutError
+else:
+    from asyncio.exceptions import TimeoutError  # same class as the builtin on 3.11+
 if upython:
     import machine
     from picow_network import PicowNetwork
@@ -113,7 +117,7 @@ config = ConfigData()
 async def slash_callback(http, verb, args, reader, writer, request_headers=None):  # callback for '/'
     # send redirect to /switch.html
     http_status = HTTP_STATUS_MOVED_PERMANENTLY
-    bytes_sent = await http.send_simple_response(writer, http_status, None, None, ['Location: /switch.html'])
+    bytes_sent = await http.send_simple_response(writer, http_status, None, None, [b'Location: /switch.html'])
     return bytes_sent, http_status
 
 
@@ -227,14 +231,14 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 logging.warning(f'antenna_bands {antenna_bands} not valid', 'main:api_config_callback')
         antenna_names = args.get('antenna_names')
         if antenna_names is not None:
-            if len(antenna_names) == 8:
+            if len(antenna_names) == 8 and all(isinstance(name, str) for name in antenna_names):
                 config['antenna_names'] = antenna_names
             else:
                 errors = True
                 logging.warning(f'antenna_names {antenna_names} not valid', 'main:api_config_callback')
         radio_names = args.get('radio_names')
         if radio_names is not None:
-            if len(radio_names) == 2:
+            if len(radio_names) == 2 and all(isinstance(name, str) for name in radio_names):
                 config['radio_names'] = radio_names
             else:
                 errors = True
@@ -354,7 +358,11 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
 
     try:
         while client_connected:
-            data = await reader.read(1)
+            try:
+                data = await asyncio.wait_for(reader.read(1), 60)  # drop silent peers so a stuck client can't hold the socket forever
+            except TimeoutError:
+                logging.warning('serial client timed out, closing', 'main:serve_serial_client')
+                break
             if not data:  # b'' on EOF (peer closed); read() never returns None
                 break
             else:
@@ -429,8 +437,7 @@ async def main():
         if upython:
             await asyncio.sleep(0.25)
             four_count += 1
-
-            if four_count >= 3:  # check for new message every one second
+            if four_count >= 4:  # check for new message every one second
                 if picow_network is not None:
                     if not connected:
                         logging.debug('checking network connection', 'main:main')
@@ -475,6 +482,7 @@ async def main():
                                                 'main:main')
                 four_count = 0
             if newly_connected:
+                ntp_failures = 0  # give NTP a fresh set of attempts on each (re)connect / IP change
                 if not ap_mode:
                     # UDP send/receive
                     broadcast_address = udp_messages.calculate_broadcast_address(ip_address, netmask)

@@ -1,3 +1,5 @@
 /src/loader/__pycache__/
+/src/switch_control/__pycache__/
+/src/switch_control/data/config.json
 /kicad/AntennaSwitchControl/AntennaSwitchControl-backups/
 /.idea/workspace.xml
