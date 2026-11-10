@@ -23,9 +23,10 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
-__version__ = '0.1.25'  # 2026-10-27
+__version__ = '0.1.27'  # 2026-11-01
 
 import asyncio
+import gc
 import os
 import re
 
@@ -221,7 +222,7 @@ class HttpServer:
         except Exception as exc:
             if isinstance(exc, OSError) and ('ECONNRESET' in str(exc) or 'CONN_EOF' in str(exc)
                                              or 'FATAL_ALERT' in str(exc)):
-                logging.info(b'client went away', 'http_server:serve_content')
+                logging.debug(b'client went away', 'http_server:serve_content')
             else:
                 logging.exception(b'error serving %s' % filename, 'http_server:serve_content', exc_info=exc)
         return content_length, HTTP_STATUS_OK
@@ -341,7 +342,7 @@ class HttpServer:
             if isinstance(ex, OSError) and (
                     'FATAL_ALERT' in str(ex) or 'CONN_EOF' in str(ex) or 'ECONNRESET' in str(ex)
             ):
-                logging.info(b'client went away', 'http_server:serve_http_client')
+                logging.debug(b'client went away', 'http_server:serve_http_client')
             else:
                 logging.exception(
                     b'exception serving %s' % partner, 'http_server:serve_http_client', ex
@@ -352,6 +353,7 @@ class HttpServer:
                 await writer.wait_closed()
             except Exception:
                 pass  # the peer may have gone away already.
+            gc.collect()
 
     async def _handle_request(self, reader, writer, lines, request_line):
         t0 = milliseconds()

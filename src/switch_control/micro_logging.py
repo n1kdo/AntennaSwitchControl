@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.1.7'  # 2026-09-22
+__version__ = '0.1.9'  # 2026-11-10
 
 from utils import get_timestamp, upython
 
@@ -64,8 +64,6 @@ def should_log(level):
 
 
 def _log(level: str, message: str | bytes, caller: str = None):
-    if isinstance(message, bytes):
-        message = message.decode('utf-8', 'replace')
     if caller is None:
         print(get_timestamp(), level, message)
     else:
@@ -93,9 +91,9 @@ def error(message: str | bytes, caller: str = None):
 
 
 def exception(message: str | bytes, caller: str = None, exc_info: Exception = None) -> None:
-    # note that exceptions log regardless of loglevel -- these messages are always logged.
+    # Note that exceptions log regardless of loglevel -- these messages are always logged.
     if exc_info is not None:
-        _log('[EXCEPTION]', f'{message} {type(exc_info)} {exc_info}', caller)
+        _log('[EXCEPTION]', '%s %s %s' % (message, type(exc_info).__name__, exc_info), caller)
     else:
         _log('[EXCEPTION]', message, caller)
 
