@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.9'  # 2026-11-11
+__version__ = '0.1.0'  # 2026-11-11
 
 import asyncio
 import micro_logging as logging
@@ -153,7 +153,7 @@ class SendBroadcasts:
                 # send the raw buffer
                 self.send(buf)
             except Exception as ex:
-                logging.exception(f'UDP Broadcast pack or send failed', 'udp_messages:send_datagrams', ex)
+                logging.exception('UDP Broadcast pack or send failed', 'udp_messages:send_datagrams', ex)
             await sleep(1.0)
 
     def stop(self):
