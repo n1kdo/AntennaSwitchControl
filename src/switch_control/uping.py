@@ -11,7 +11,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2025 J. B. Otterson N1KDO.'
-__version__ = '0.1.1'
+__version__ = '0.1.2'  # 2026-11-11
 
 #
 # Copyright 2025, J. B. Otterson N1KDO.
@@ -117,7 +117,7 @@ def ping(host, count=4, timeout=5000, interval=10, size=16) -> tuple[int, int]:
     sock.settimeout(timeout/1000)
     addr = socket.getaddrinfo(host, 1)[0][-1][0] # ip address
     sock.connect((addr, 1))
-    logging.debug(f'PING {host} ({addr}): {len(payload)} data bytes', 'uping:ping')
+    logging.debug('PING %s (%s): %d data bytes' % (host, addr, len(payload)), 'uping:ping')
 
     pending = set(range(1, count + 1))
     ident = random.getrandbits(16)
@@ -146,7 +146,7 @@ def ping(host, count=4, timeout=5000, interval=10, size=16) -> tuple[int, int]:
                     ttl = 0
                     n_recv += 1
                     if logging.should_log(logging.DEBUG):
-                        logging.debug(f'{len(resp)} bytes from {addr}: icmp_seq={r_seq}, ttl={ttl}, time={t_elapsed} ms',
+                        logging.debug('%d bytes from %s: icmp_seq=%d, ttl=%d, time=%f ms' % (len(resp), addr, r_seq, ttl, t_elapsed),
                                       'uping:ping')
                     pending.discard(r_seq)
                     if len(pending) == 0:
@@ -168,7 +168,7 @@ def ping(host, count=4, timeout=5000, interval=10, size=16) -> tuple[int, int]:
 
     sock.close()
     if logging.should_log(logging.DEBUG):
-        logging.debug(f'{n_trans} packets transmitted, {n_recv} packets received.',
+        logging.debug('%d packets transmitted, %d packets received.' % (n_trans, n_recv),
                       'uping:ping')
     return n_trans, n_recv
 
