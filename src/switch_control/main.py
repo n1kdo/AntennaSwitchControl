@@ -415,7 +415,7 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET, access_point_mode=ap_mode)
         morse_code_sender = MorseCode(morse_led)
-        if logging._loglevel != logging.DEBUG and Watchdog is not None:
+        if logging.get_level() != logging.DEBUG and Watchdog is not None:
             _ = Watchdog()
     else:
         picow_network = None
