@@ -22,7 +22,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.9.12'  # 2026-10-30
+__version__ = '0.9.13'  # 2026-11-11
 
 import ssl
 import sys
@@ -236,7 +236,7 @@ class LineReader:
 def num_bits_set(n: int) -> int:
     #       0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1111
     if not isinstance(n, int):
-        raise TypeError(f"num_bits_set expects an integer, got {type(n).__name__}")
+        raise TypeError("num_bits_set expects an integer, got %s" % type(n).__name__)
 
     nn = n
     set_bits = 0

@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.2.1'  # 2026-09-18
+__version__ = '0.2.2'  # 2026-11-11
 
 from utils import upython
 import micro_logging as logging
@@ -67,7 +67,7 @@ def set_port(radio: int, port_selected: int):
         elif radio == 2:
             pins = b_pins
         else:
-            logging.error(f'Invalid radio number: {radio}', 'relays:set_port')
+            logging.error('Invalid radio number: %s' % radio, 'relays:set_port')
             return
         if pins is not None:
             for i in range(len(pins)):
@@ -75,4 +75,4 @@ def set_port(radio: int, port_selected: int):
             if port_selected > 0:
                 pins[port_selected - 1].on()
     else:
-        logging.error(f'Invalid port_selected {port_selected}', 'relays:set_port')
+        logging.error('Invalid port_selected %s' % port_selected, 'relays:set_port')

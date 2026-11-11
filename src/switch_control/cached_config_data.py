@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2026 J. B. Otterson N1KDO.'
-__version__ = '0.0.9'  # 2026-10-26
+__version__ = '0.1.0'  # 2026-11-11
 
 #
 # Copyright 2026 J. B. Otterson N1KDO.
@@ -65,10 +65,10 @@ class CachedConfigData:
                     raise ValueError('config file is not a JSON object')
                 self._config_data = data
                 if logging.should_log(logging.DEBUG):
-                    logging.debug(f'read configuration from {self._config_file_name}',
+                    logging.debug('read configuration from %s' % self._config_file_name,
                                   'cached_config_data:_read_config_data()')
         except Exception as ex:
-            logging.info(f'failed to load configuration from {self._config_file_name},:  {type(ex)}, {ex}',
+            logging.info('failed to load configuration from %s: %s, %s' % (self._config_file_name, type(ex), ex),
                          'cached_config_data:_read_config_data()')
             self._config_data = self._default_config_data()
         finally:

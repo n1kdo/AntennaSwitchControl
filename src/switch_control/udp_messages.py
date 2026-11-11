@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.0.8'  # 2026-07-16
+__version__ = '0.0.9'  # 2026-11-11
 
 import asyncio
 import micro_logging as logging
@@ -59,7 +59,7 @@ def calculate_broadcast_address(ip_address, netmask):
         if len(ip_parts) != 4 or len(mask_parts) != 4:
             raise ValueError('invalid ip or netmask format')
     except Exception as ex:
-        logging.error(f'calculate_broadcast_address: invalid input: {ex}', 'udp_messages:calculate_broadcast_address')
+        logging.error('calculate_broadcast_address: invalid input: %s' % ex, 'udp_messages:calculate_broadcast_address')
         raise
 
     ip_int = sum([int(x) << 8 * i for i, x in enumerate(reversed(ip_address.split('.')))])
@@ -101,15 +101,15 @@ class SendBroadcasts:
         self.config = config
         self.antennas_selected = antennas_selected
         self.buf = bytearray(STATUS_BROADCAST_SIZE)
-        logging.info(f'Broadcast address is {target_ip}:{target_port}', 'udp_messages:SendBroadcasts()')
-        logging.info(f'Starting status broadcasts', 'udp_messages:SendBroadcasts()')
+        logging.info('Broadcast address is %s:%s' % (target_ip, target_port), 'udp_messages:SendBroadcasts()')
+        logging.info('Starting status broadcasts', 'udp_messages:SendBroadcasts()')
         self.run = True
 
     def send(self, payload):
         try:
             self.socket.sendto(payload, self.sockaddr)
         except OSError as ose:
-            logging.error(f'UDP Broadcast send failed: OSError {ose}', 'udp_messages:send_datagrams')
+            logging.error('UDP Broadcast send failed: OSError %s' % ose, 'udp_messages:send_datagrams')
 
     async def send_datagrams(self):
         buf = self.buf
@@ -181,8 +181,8 @@ class ReceiveBroadcasts:
             sockaddr = socket.getaddrinfo(receive_ip, receive_port)[0][-1]
             self.receive_socket.bind(sockaddr)
             self.receive_socket.settimeout(0.001)
-            logging.info(f'Listening on {receive_ip}:{receive_port}', 'udp_messages:ReceiveBroadcasts.init')
-            logging.info(f'Listening for status broadcasts', 'udp_messages:ReceiveBroadcasts.init')
+            logging.info('Listening on %s:%s' % (receive_ip, receive_port), 'udp_messages:ReceiveBroadcasts.init')
+            logging.info('Listening for status broadcasts', 'udp_messages:ReceiveBroadcasts.init')
         except Exception as exc:
             logging.exception('problem setting up socket', 'udp_messages:ReceiveBroadcasts.init', exc_info=exc)
             self.run = False
@@ -203,7 +203,7 @@ class ReceiveBroadcasts:
                 bytes_in = self.receive_socket.readinto(self.buf)
                 if bytes_in != STATUS_BROADCAST_SIZE:
                     if logging.should_log(logging.WARNING):
-                        logging.warning(f'received {bytes_in} but expected {STATUS_BROADCAST_SIZE} bytes.',
+                        logging.warning('received %d but expected %d bytes.' % (bytes_in, STATUS_BROADCAST_SIZE),
                                         'udp_messages:ReceiveBroadcasts:wait_for_datagram')
                 else:
                     # if logging.should_log(logging.DEBUG):
