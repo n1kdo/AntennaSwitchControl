@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.32'  # 2026-10-04
+__version__ = '0.1.33'  # 2026-11-11
 
 #
 # Copyright 2022, 2026 J. B. Otterson N1KDO.
@@ -152,7 +152,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 config['log_level'] = log_level
             else:
                 errors = True
-                logging.warning(f'log level {log_level} not valid', 'main:api_config_callback')
+                logging.warning('log level %s not valid' % log_level, 'main:api_config_callback')
         tcp_port = args.get('tcp_port')
         if tcp_port is not None:
             tcp_port_int = safe_int(tcp_port, -2)
@@ -160,7 +160,7 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 config['tcp_port'] = tcp_port
             else:
                 errors = True
-                logging.warning(f'tcp_port {tcp_port_int} not valid', 'main:api_config_callback')
+                logging.warning('tcp_port %s not valid' % tcp_port_int, 'main:api_config_callback')
         web_port = args.get('web_port')
         if web_port is not None:
             web_port_int = safe_int(web_port, -2)
@@ -168,28 +168,28 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 config['web_port'] = web_port
             else:
                 errors = True
-                logging.warning(f'web_port {web_port_int} not valid', 'main:api_config_callback')
+                logging.warning('web_port %s not valid' % web_port_int, 'main:api_config_callback')
         ssid = args.get('SSID')
         if ssid is not None:
             if 0 < len(ssid) <= 32:
                 config['SSID'] = ssid
             else:
                 errors = True
-                logging.warning(f'ssid  {ssid} not valid', 'main:api_config_callback')
+                logging.warning('ssid  %s not valid' % ssid, 'main:api_config_callback')
         secret = args.get('secret')
         if secret is not None and len(secret) > 0:
             if 8 <= len(secret) <= 64:
                 config['secret'] = secret
             else:
                 errors = True
-                logging.warning(f'secret {secret} not valid', 'main:api_config_callback')
+                logging.warning('secret %s not valid' % secret, 'main:api_config_callback')
         hostname = args.get('hostname')
         if hostname is not None:
             if is_hostname(hostname):
                 config['hostname'] = hostname
             else:
                 errors = True
-                logging.warning(f'hostname {hostname} not valid', 'main:api_config_callback')
+                logging.warning('hostname %s not valid' % hostname, 'main:api_config_callback')
         dhcp_arg = args.get('dhcp')
         if dhcp_arg is not None:
             config['dhcp'] = safe_int(dhcp_arg, 0) == 1
@@ -199,28 +199,28 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 config['ip_address'] = ip_address
             else:
                 errors = True
-                logging.warning(f'ip_address {ip_address} not valid', 'main:api_config_callback')
+                logging.warning('ip_address %s not valid' % ip_address, 'main:api_config_callback')
         netmask = args.get('netmask')
         if netmask is not None:
             if netmask == '' or (is_ipv4(netmask) and netmask != '0.0.0.0'):
                 config['netmask'] = netmask
             else:
                 errors = True
-                logging.warning(f'netmask {netmask} not valid', 'main:api_config_callback')
+                logging.warning('netmask %s not valid' % netmask, 'main:api_config_callback')
         gateway = args.get('gateway')
         if gateway is not None:
             if gateway == '' or is_ipv4(gateway):
                 config['gateway'] = gateway
             else:
                 errors = True
-                logging.warning(f'gateway {gateway} not valid', 'main:api_config_callback')
+                logging.warning('gateway %s not valid' % gateway, 'main:api_config_callback')
         dns_server = args.get('dns_server')
         if dns_server is not None:
             if dns_server == '' or is_ipv4(dns_server):
                 config['dns_server'] = dns_server
             else:
                 errors = True
-                logging.warning(f'dns_server {dns_server} not valid', 'main:api_config_callback')
+                logging.warning('dns_server %s not valid' % dns_server, 'main:api_config_callback')
         antenna_bands = args.get('antenna_bands')
         if antenna_bands is not None:
             # bits 0-12 only; anything wider overflows the signed-16 pack and kills every broadcast.
@@ -228,21 +228,21 @@ async def api_config_callback(http, verb, args, reader, writer, request_headers=
                 config['antenna_bands'] = antenna_bands
             else:
                 errors = True
-                logging.warning(f'antenna_bands {antenna_bands} not valid', 'main:api_config_callback')
+                logging.warning('antenna_bands %s not valid' % antenna_bands, 'main:api_config_callback')
         antenna_names = args.get('antenna_names')
         if antenna_names is not None:
             if len(antenna_names) == 8 and all(isinstance(name, str) for name in antenna_names):
                 config['antenna_names'] = antenna_names
             else:
                 errors = True
-                logging.warning(f'antenna_names {antenna_names} not valid', 'main:api_config_callback')
+                logging.warning('antenna_names %s not valid' % antenna_names, 'main:api_config_callback')
         radio_names = args.get('radio_names')
         if radio_names is not None:
             if len(radio_names) == 2 and all(isinstance(name, str) for name in radio_names):
                 config['radio_names'] = radio_names
             else:
                 errors = True
-                logging.warning(f'radio_names {radio_names} not valid', 'main:api_config_callback')
+                logging.warning('radio_names %s not valid' % radio_names, 'main:api_config_callback')
         if not errors:
             response = b'ok\r\n'
             http_status = HTTP_STATUS_OK
@@ -302,7 +302,7 @@ async def api_status_callback(http, verb, args, reader, writer, request_headers=
                    'radio_number': radio,
                    }
     else:
-        payload = {'error': f'invalid radio {radio}'}
+        payload = {'error': 'invalid radio %s' % radio}
         status = HTTP_STATUS_BAD_REQUEST
 
     bytes_sent = await http.send_simple_response(writer, status, http.CT_APP_JSON, payload)
@@ -320,7 +320,7 @@ async def select_antenna(radio:int, antenna_requested:int) -> bool:
 
             antennas_selected[radio - 1] = antenna_requested
             if logging.should_log(logging.DEBUG):
-                logging.debug(f'calling set_port({radio}, {antenna_requested})')
+                logging.debug('calling set_port(%s, %s)' % (radio, antenna_requested))
             set_port(radio, antenna_requested)
             return True
 
@@ -353,7 +353,7 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
     """
     t0 = milliseconds()
     partner = writer.get_extra_info('peername')[0]
-    logging.info(f'client connected from {partner}', 'main:serve_serial_client')
+    logging.info('client connected from %s' % partner, 'main:serve_serial_client')
     client_connected = True
 
     try:
@@ -376,16 +376,16 @@ async def serve_serial_client(reader:asyncio.StreamReader, writer:asyncio.Stream
                 await writer.drain()
 
     except Exception as ex:
-        logging.error(f'exception in serve_serial_client: {type(ex)}, {ex}', 'main:serve_serial_client')
+        logging.error('exception in serve_serial_client: %s, %s' % (type(ex), ex), 'main:serve_serial_client')
     finally:
         try:
             writer.close()
             await writer.wait_closed()
         except Exception as ex:
-            logging.warning(f'error closing writer: {ex}', 'main:serve_serial_client')
+            logging.warning('error closing writer: %s' % ex, 'main:serve_serial_client')
 
     tc = milliseconds()
-    logging.info(f'client disconnected, elapsed time {(tc - t0) / 1000.0:6.3f} seconds', 'main:serve_serial_client')
+    logging.info('client disconnected, elapsed time %6.3f seconds' % ((tc - t0) / 1000.0), 'main:serve_serial_client')
 
 
 async def main():
@@ -398,10 +398,10 @@ async def main():
     if config_level:
         logging.set_level(config_level)
     if logging.should_log(logging.DEBUG):
-        logging.debug(f'calling select_antenna(1, {antennas_selected[0]})')
+        logging.debug('calling select_antenna(1, %s)' % antennas_selected[0])
     await select_antenna(1, antennas_selected[0])
     if logging.should_log(logging.DEBUG):
-        logging.debug(f'calling select_antenna(2, {antennas_selected[1]})')
+        logging.debug('calling select_antenna(2, %s)' % antennas_selected[1])
     await select_antenna(2, antennas_selected[1])
     tcp_port = safe_int(config.get('tcp_port') or DEFAULT_TCP_PORT, DEFAULT_TCP_PORT)
     if tcp_port < 1 or tcp_port > 65535:
@@ -415,15 +415,15 @@ async def main():
     if upython:
         picow_network = PicowNetwork(config, DEFAULT_SSID, DEFAULT_SECRET, access_point_mode=ap_mode)
         morse_code_sender = MorseCode(morse_led)
-        if logging.loglevel != logging.DEBUG and Watchdog is not None:
+        if logging._loglevel != logging.DEBUG and Watchdog is not None:
             _ = Watchdog()
     else:
         picow_network = None
         morse_code_sender = None
 
-    logging.info(f'Starting web service on port {web_port}', 'main:main')
+    logging.info('Starting web service on port %s' % web_port, 'main:main')
     web_server = asyncio.create_task(asyncio.start_server(http_server.serve_http_client, '0.0.0.0', web_port))
-    logging.info(f'Starting tcp service on port {tcp_port}', 'main:main')
+    logging.info('Starting tcp service on port %s' % tcp_port, 'main:main')
     tcp_server = asyncio.create_task(asyncio.start_server(serve_serial_client, '0.0.0.0', tcp_port))
 
     four_count = 0
@@ -446,13 +446,13 @@ async def main():
                             logging.info('network connection established', 'main:main')
                             ip_address = picow_network.get_ip_address()
                             netmask = picow_network.get_netmask()
-                            logging.info(f'ip_address {ip_address}, netmask {netmask}', 'main:main')
+                            logging.info('ip_address %s, netmask %s' % (ip_address, netmask), 'main:main')
                             newly_connected = True
                         else:
                             logging.debug('waiting for picow network', 'main:main')
                     elif ip_address != picow_network.get_ip_address():
                         # IP changed without a disconnect event (e.g. DHCP renewal)
-                        logging.info(f'ip_address changed {ip_address} -> {picow_network.get_ip_address()}',
+                        logging.info('ip_address changed %s -> %s' % (ip_address, picow_network.get_ip_address()),
                                      'main:main')
                         ip_address = picow_network.get_ip_address()
                         netmask = picow_network.get_netmask()
@@ -472,7 +472,7 @@ async def main():
                         try:
                             await get_ntp_time(dns_servers=picow_network.get_dns_servers())
                         except Exception as ex:
-                            logging.warning(f'NTP attempt failed: {type(ex)}, {ex}', 'main:main')
+                            logging.warning('NTP attempt failed: %s, %s' % (type(ex), ex), 'main:main')
                         if time.time() > 1700000000:
                             time_set = True
                         else:
@@ -510,8 +510,7 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.loglevel = logging.INFO
-    #logging.loglevel = logging.DEBUG
+    logging.set_level(logging.INFO)  # logging.DEBUG
     logging.info('starting', 'main:__main__')
     try:
         asyncio.run(main())
