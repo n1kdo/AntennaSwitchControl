@@ -4,7 +4,7 @@
 
 __author__ = 'J. B. Otterson'
 __copyright__ = 'Copyright 2022, 2026 J. B. Otterson N1KDO.'
-__version__ = '0.1.33'  # 2026-11-11
+__version__ = '0.1.34'  # 2026-11-16
 
 #
 # Copyright 2022, 2026 J. B. Otterson N1KDO.
@@ -516,8 +516,6 @@ if __name__ == '__main__':
         asyncio.run(main())
     except KeyboardInterrupt:
         logging.info('KeyboardInterrupt -- bye bye', 'main:__main__')
-        antennas_selected.flush()
-        config.flush()
-    finally:
-        asyncio.new_event_loop()
+    antennas_selected.flush()
+    config.flush()
     logging.info('done', 'main:__main__')
