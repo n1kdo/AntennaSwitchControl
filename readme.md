@@ -45,9 +45,13 @@ See the Ecosystem diagram, below.
 ## Radio Setup UI
 
 ![Radio Setup UI](images/radios-ui.png)
-
 ## Network Setup UI
 
 ![Network Setup UI](images/network-ui.png)
 
-n1kdo 20251124
+
+## YouTube Demo
+
+[YouTube Demo](https://youtu.be/y5SEW0WDm0o)
+
+n1kdo 20261120
