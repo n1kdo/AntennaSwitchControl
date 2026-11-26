@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-__version__ = '0.1.0'  # 2026-11-11
+__version__ = '0.1.1'  # 2026-11-25
 
 import asyncio
 import micro_logging as logging
@@ -114,42 +114,50 @@ class SendBroadcasts:
     async def send_datagrams(self):
         buf = self.buf
         sleep = asyncio.sleep
+        # The static fields (radio/antenna names, band masks, hostname) change rarely; cache
+        # references to them so the frame is repacked only when one of them actually changes.
+        # Only bytes 0 and 1 (the selected antennas) vary on a normal tick.
+        cached_radio_names = None
+        cached_antenna_names = None
+        cached_antenna_bands = None
+        cached_hostname = None
         while self.run:
             radio_names = self.config['radio_names']
             antenna_names = self.config['antenna_names']
             antenna_bands = self.config['antenna_bands']
             antennas_selected = self.antennas_selected
             hostname = self.config['hostname']
-            #if logging.should_log(logging.DEBUG):
-            #    logging.debug(f'radio_names: {radio_names}', 'udp_messages:send_datagrams')
-            #    logging.debug(f'antenna_names: {antenna_names}', 'udp_messages:send_datagrams')
-            #    logging.debug(f'antenna_bands: {antenna_bands}', 'udp_messages:send_datagrams')
-            #    logging.debug(f'antennas_selected: {antennas_selected[0]}, {antennas_selected[1]}',
-            #                  'udp_messages:send_datagrams')
-            #    logging.debug(f'hostname: {hostname}', 'udp_messages:send_datagrams')
             try:
-                pack_into(STATUS_BROADCAST_FMT, buf, 0,
-                          int(antennas_selected[0]),
-                          int(antennas_selected[1]),
-                          _fit_and_encode(radio_names[0] if len(radio_names) > 0 else '', 16),
-                          _fit_and_encode(radio_names[1] if len(radio_names) > 1 else '', 16),
-                          _fit_and_encode(antenna_names[0] if len(antenna_names) > 0 else '', 20),
-                          _fit_and_encode(antenna_names[1] if len(antenna_names) > 1 else '', 20),
-                          _fit_and_encode(antenna_names[2] if len(antenna_names) > 2 else '', 20),
-                          _fit_and_encode(antenna_names[3] if len(antenna_names) > 3 else '', 20),
-                          _fit_and_encode(antenna_names[4] if len(antenna_names) > 4 else '', 20),
-                          _fit_and_encode(antenna_names[5] if len(antenna_names) > 5 else '', 20),
-                          _fit_and_encode(antenna_names[6] if len(antenna_names) > 6 else '', 20),
-                          _fit_and_encode(antenna_names[7] if len(antenna_names) > 7 else '', 20),
-                          int(antenna_bands[0]) if len(antenna_bands) > 0 else 0,
-                          int(antenna_bands[1]) if len(antenna_bands) > 1 else 0,
-                          int(antenna_bands[2]) if len(antenna_bands) > 2 else 0,
-                          int(antenna_bands[3]) if len(antenna_bands) > 3 else 0,
-                          int(antenna_bands[4]) if len(antenna_bands) > 4 else 0,
-                          int(antenna_bands[5]) if len(antenna_bands) > 5 else 0,
-                          int(antenna_bands[6]) if len(antenna_bands) > 6 else 0,
-                          int(antenna_bands[7]) if len(antenna_bands) > 7 else 0,
-                          _fit_and_encode(hostname, 64))
+                if (radio_names is not cached_radio_names or antenna_names is not cached_antenna_names or
+                        antenna_bands is not cached_antenna_bands or hostname is not cached_hostname):
+                    pack_into(STATUS_BROADCAST_FMT, buf, 0,
+                              0,
+                              0,
+                              _fit_and_encode(radio_names[0] if len(radio_names) > 0 else '', 16),
+                              _fit_and_encode(radio_names[1] if len(radio_names) > 1 else '', 16),
+                              _fit_and_encode(antenna_names[0] if len(antenna_names) > 0 else '', 20),
+                              _fit_and_encode(antenna_names[1] if len(antenna_names) > 1 else '', 20),
+                              _fit_and_encode(antenna_names[2] if len(antenna_names) > 2 else '', 20),
+                              _fit_and_encode(antenna_names[3] if len(antenna_names) > 3 else '', 20),
+                              _fit_and_encode(antenna_names[4] if len(antenna_names) > 4 else '', 20),
+                              _fit_and_encode(antenna_names[5] if len(antenna_names) > 5 else '', 20),
+                              _fit_and_encode(antenna_names[6] if len(antenna_names) > 6 else '', 20),
+                              _fit_and_encode(antenna_names[7] if len(antenna_names) > 7 else '', 20),
+                              int(antenna_bands[0]) if len(antenna_bands) > 0 else 0,
+                              int(antenna_bands[1]) if len(antenna_bands) > 1 else 0,
+                              int(antenna_bands[2]) if len(antenna_bands) > 2 else 0,
+                              int(antenna_bands[3]) if len(antenna_bands) > 3 else 0,
+                              int(antenna_bands[4]) if len(antenna_bands) > 4 else 0,
+                              int(antenna_bands[5]) if len(antenna_bands) > 5 else 0,
+                              int(antenna_bands[6]) if len(antenna_bands) > 6 else 0,
+                              int(antenna_bands[7]) if len(antenna_bands) > 7 else 0,
+                              _fit_and_encode(hostname, 64))
+                    cached_radio_names = radio_names
+                    cached_antenna_names = antenna_names
+                    cached_antenna_bands = antenna_bands
+                    cached_hostname = hostname
+                buf[0] = int(antennas_selected[0])
+                buf[1] = int(antennas_selected[1])
                 # send the raw buffer
                 self.send(buf)
             except Exception as ex:
